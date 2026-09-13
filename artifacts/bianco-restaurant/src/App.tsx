@@ -45,7 +45,7 @@ function Home() {
       <header className="fixed inset-x-0 top-0 z-40 border-b border-white/10 bg-[#421712]/90 text-[#fbf2e2] backdrop-blur-md">
         <div className="mx-auto flex h-[76px] max-w-[1320px] items-center justify-between px-5 md:px-10">
           <a href="#top" data-testid="link-logo" className="flex items-center gap-3" onClick={closeMenu}>
-            <img src="/bianco-logo.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-9 w-auto object-contain" />
+            <img src="/bianco-logo.jpg" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-9 w-auto object-contain mix-blend-screen" />
             <span className="hidden border-l border-white/25 pl-3 font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#d6c5ac] sm:block">Madinah</span>
           </a>
           <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[76px] flex flex-col border-t border-white/10 bg-[#421712] p-6' : 'hidden'} gap-5 text-sm md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label="Main navigation">
@@ -158,7 +158,7 @@ function Home() {
       <footer className="bg-[#421712] px-5 py-12 text-[#fbf2e2] md:px-10">
         <div className="mx-auto max-w-[1320px]">
           <div className="flex flex-col justify-between gap-10 border-b border-[#d6c5ac]/20 pb-12 md:flex-row md:items-end">
-            <div><img src="/bianco-logo.png" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-auto" /><p className="mt-5 max-w-[270px] font-display text-2xl leading-tight text-[#e2b960]">Italian evenings, the Madinah way.</p></div>
+            <div><img src="/bianco-logo.jpg" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-auto mix-blend-screen" /><p className="mt-5 max-w-[270px] font-display text-2xl leading-tight text-[#e2b960]">Italian evenings, the Madinah way.</p></div>
             <div className="flex gap-4"><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" aria-label="Bianco on Instagram" data-testid="link-instagram" className="rounded-full border border-[#d6c5ac]/35 p-3 transition hover:border-[#e2b960] hover:text-[#e2b960]"><Instagram size={18} /></a><a href="https://www.facebook.com/" target="_blank" rel="noreferrer" aria-label="Bianco on Facebook" data-testid="link-facebook" className="rounded-full border border-[#d6c5ac]/35 p-3 transition hover:border-[#e2b960] hover:text-[#e2b960]"><Facebook size={18} /></a><a href="tel:+966559949069" aria-label="Call Bianco" data-testid="link-footer-phone" className="rounded-full border border-[#d6c5ac]/35 p-3 transition hover:border-[#e2b960] hover:text-[#e2b960]"><Phone size={18} /></a></div>
           </div>
           <div className="flex flex-col justify-between gap-3 pt-6 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#bfa993] md:flex-row"><span>بيانكو · Bianco · Madinah</span><span>12 PM — 2 AM · Every day</span><span>© {new Date().getFullYear()} Bianco</span></div>
