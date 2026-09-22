@@ -1,8 +1,7 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AnimatePresence, motion, type Variants } from 'framer-motion';
+import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
 import {
-  ArrowDown,
   ArrowUpRight,
   ChevronLeft,
   ChevronRight,
@@ -129,6 +128,14 @@ const reveal: Variants = {
 const stagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } },
+};
+const heroReveal: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
+};
+const heroStagger: Variants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.16, delayChildren: 0.2 } },
 };
 
 function formatPrice(value: number) {
@@ -259,6 +266,7 @@ function ProductDetailModal({ product, onClose, onAdd }: { product: Product; onC
 }
 
 function Home() {
+  const prefersReducedMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -332,28 +340,23 @@ function Home() {
         </div>
       </header>
 
-      <section id="top" className="beast-hero relative overflow-hidden border-b border-[#f5eee2]/10 pt-[74px]">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_20%,rgba(188,51,38,.38),transparent_24%),radial-gradient(circle_at_12%_70%,rgba(242,180,109,.12),transparent_26%)]" />
-        <div className="beast-grid absolute inset-0 opacity-40" />
-        <motion.div initial={{ opacity: 0, scale: .85, rotate: -8 }} animate={{ opacity: .22, scale: 1, rotate: 0 }} transition={{ duration: 1.5, ease: 'easeOut' }} className="beast-stamp absolute right-[-7%] top-[18%] hidden h-[520px] w-[520px] rounded-full border border-[#f2b46d]/40 p-7 md:block"><div className="flex h-full w-full items-center justify-center rounded-full border border-[#f2b46d]/25 font-display text-[150px] italic text-[#f2b46d]">B</div></motion.div>
-        <div className="relative z-10 mx-auto grid min-h-[700px] max-w-[1440px] items-center gap-12 px-5 py-16 md:grid-cols-[1fr_.86fr] md:px-10 md:py-20">
-          <motion.div initial="hidden" animate="visible" variants={stagger} className="max-w-[700px]">
-            <motion.div variants={reveal} className="mb-7 flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.24em] text-[#f2b46d]"><span className="h-px w-10 bg-[#f2b46d]" />Madinah's Italian kitchen · open until 02:00</motion.div>
-            <motion.h1 variants={reveal} data-testid="text-hero-heading" className="font-display text-[clamp(4.8rem,12vw,10.5rem)] leading-[.72] tracking-[-.08em] text-[#f5eee2]">Feed<br /><em className="ml-[.15em] text-[#e85d43]">the beast.</em></motion.h1>
-            <motion.p variants={reveal} data-testid="text-hero-description" className="mt-10 max-w-[480px] text-base leading-relaxed text-[#c4b7a9] md:text-lg">Big flavors, blistered crust, and plates made for the table. Pick your favorites, build the bag, and send it straight to the Bianco kitchen.</motion.p>
-            <motion.div variants={reveal} className="mt-8 flex flex-wrap items-center gap-4">
-              <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="group flex items-center gap-4 bg-[#f2b46d] px-6 py-4 text-[11px] font-bold uppercase tracking-[.15em] text-[#210f0c] transition hover:bg-[#ffd097]">Start your order <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
-              <span className="flex items-center gap-2 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9c8f84]"><span className="h-2 w-2 animate-pulse rounded-full bg-[#e85d43]" /> Kitchen is live</span>
-            </motion.div>
+      <section id="top" className="quiet-hero relative border-b border-white/10 pt-[74px]">
+        <motion.div
+          initial={prefersReducedMotion ? false : 'hidden'}
+          animate="visible"
+          variants={heroStagger}
+          className="relative mx-auto flex min-h-[calc(100dvh-74px)] max-w-[760px] flex-col items-center justify-center px-6 py-28 text-center md:py-36"
+        >
+          <motion.p variants={heroReveal} data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.68rem] uppercase tracking-[.42em] text-white/80 md:text-[.75rem]">Cucina Italiana</motion.p>
+          <motion.h1 variants={heroReveal} data-testid="text-hero-heading" className="quiet-hero-serif mt-7 text-[clamp(3rem,9vw,6.75rem)] font-normal leading-[1.02] tracking-[-.01em] text-white md:mt-9">A taste of Italy.</motion.h1>
+          <motion.div variants={heroReveal} aria-hidden="true" className="quiet-hero-diamonds mt-9 flex items-center justify-center gap-4 md:mt-11">
+            <span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" />
           </motion.div>
-          <motion.div initial={{ opacity: 0, x: 45, rotate: 2 }} animate={{ opacity: 1, x: 0, rotate: 0 }} transition={{ duration: .9, delay: .2, ease: [0.22, 1, 0.36, 1] }} className="featured-order relative mx-auto w-full max-w-[510px]">
-            <div className="absolute -right-3 -top-3 z-20 flex h-20 w-20 rotate-12 items-center justify-center rounded-full bg-[#e85d43] text-center font-mono-ui text-[9px] font-bold uppercase leading-tight tracking-[.08em] text-[#fff2df] shadow-[0_15px_35px_rgba(0,0,0,.3)]">House<br />favorite<br />★</div>
-            <div className="relative aspect-[.93] overflow-hidden border border-[#f5eee2]/20 bg-[#261512] p-3 shadow-[0_30px_90px_rgba(0,0,0,.4)]">
-              <div className="relative h-full overflow-hidden"><img src={mapsPhoto} alt="Bianco signature Pizza Ajwa" className="h-full w-full object-cover transition duration-1000 hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-[#110d0c] via-transparent to-[#110d0c]/10" /><div className="absolute left-5 top-5 font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#f5eee2]/80">01 / Signature plate</div><div className="absolute inset-x-5 bottom-5"><div className="flex items-end justify-between gap-4"><div><h2 className="font-display text-5xl leading-none text-[#f5eee2]">Pizza Ajwa</h2><p className="mt-2 max-w-[250px] text-sm text-[#c4b7a9]">Tomato, fior di latte, Madinah ajwa, chili.</p></div><span className="font-mono-ui text-sm font-bold text-[#f2b46d]">54 SAR</span></div><button type="button" onClick={() => addToCart(products[0])} data-testid="button-featured-add" className="mt-5 flex w-full items-center justify-between bg-[#f2b46d] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.16em] text-[#210f0c] transition hover:bg-[#ffd097]">Add signature to bag <Plus size={16} /></button></div></div>
-            </div>
+          <motion.p variants={heroReveal} data-testid="text-hero-description" className="quiet-hero-serif mt-9 max-w-[34rem] text-[1.05rem] leading-[1.7] text-white/75 md:mt-11 md:text-[1.25rem]">Pizza, pasta, and a taste of Italy in the heart of Madinah.</motion.p>
+          <motion.div variants={heroReveal} className="mt-12 md:mt-14">
+            <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-cta focus-ring inline-block border border-white bg-transparent px-9 py-4 text-[.7rem] uppercase tracking-[.28em] text-white">View the menu</a>
           </motion.div>
-        </div>
-        <div className="relative z-10 mx-auto flex max-w-[1440px] items-center justify-between border-t border-[#f5eee2]/10 px-5 py-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9c8f84] md:px-10"><span>Fast ordering · pickup or delivery</span><span className="hidden md:inline">Scroll to shop ↓</span><span>Al Qiblatayn, Madinah</span></div>
+        </motion.div>
       </section>
 
       <div className="overflow-hidden border-b border-[#210f0c] bg-[#e85d43] py-3 text-[#210f0c]">
