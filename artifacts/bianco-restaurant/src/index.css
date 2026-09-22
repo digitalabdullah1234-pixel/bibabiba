@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,600;6..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,600;6..96,700&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Noto+Kufi+Arabic:wght@400;500;600&family=Noto+Naskh+Arabic:wght@400;500;600;700&display=swap');
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @plugin "@tailwindcss/typography";
@@ -53,13 +53,18 @@ body { overflow-x: hidden; }
 .text-copper { color: hsl(var(--primary)); }
 .bg-copper { background-color: hsl(var(--primary)); }
 .editorial-grid { background-image: linear-gradient(hsl(var(--foreground) / .045) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / .045) 1px, transparent 1px); background-size: 42px 42px; }
-/* Hero: the Bianco terrace after dark, veiled in oxblood */
+/* Hero: warm neutral veil stays visually distinct from the oxblood navbar. */
 .quiet-hero { background: #530F0C; }
 .quiet-hero-serif { font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif; font-weight: 400; }
 .quiet-hero-photo { filter: saturate(.78) contrast(1.05) brightness(.96); transform: scale(1.02); object-position: 50% 48%; }
 @media (min-width: 768px) { .quiet-hero-photo { object-position: 50% 44%; } }
+.hero-photo-veil {
+  background:
+    linear-gradient(90deg, rgba(26,18,13,.58), rgba(54,40,29,.28) 48%, rgba(21,15,12,.46)),
+    linear-gradient(180deg, rgba(15,12,10,.18), rgba(35,24,18,.34));
+}
 .quiet-hero-shade {
-  background: rgba(83,15,12,.28);
+  background: linear-gradient(180deg, rgba(10,8,7,.08), rgba(22,16,12,.22) 62%, rgba(10,8,7,.38));
 }
 .quiet-hero-frame { border: 1px solid rgba(255,246,232,.26); }
 .quiet-hero-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,246,232,.1); pointer-events: none; }
@@ -88,6 +93,12 @@ body { overflow-x: hidden; }
 .line-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
 .line-link:hover::after { transform: scaleX(1); transform-origin: left; }
 .focus-ring:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 4px; }
+.locale-ar { font-family: 'Noto Kufi Arabic', 'DM Sans', sans-serif; }
+.locale-ar .font-display,
+.locale-ar .quiet-hero-serif { font-family: 'Noto Naskh Arabic', Georgia, serif; }
+.locale-ar .font-mono-ui { font-family: 'Noto Kufi Arabic', sans-serif; }
+.locale-ar [class*="tracking-"] { letter-spacing: 0; }
+.locale-ar .quiet-hero-headline { line-height: 1.08; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { .marquee-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
