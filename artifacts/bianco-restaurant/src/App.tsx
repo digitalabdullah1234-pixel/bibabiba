@@ -21,6 +21,7 @@ import {
 import { ErrorBoundary } from '@/components/error-boundary';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { trackEvent } from '@/lib/analytics';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
@@ -154,7 +155,7 @@ function ProductCard({
       data-testid={`card-product-${product.id}`}
       className="product-card group relative flex flex-col overflow-hidden border border-white/[.12] bg-[#1a1210] shadow-[0_18px_55px_rgba(0,0,0,.18)]"
     >
-      <button type="button" onClick={() => onDetails(product)} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-[1.12] w-full overflow-hidden text-left">
+        <button type="button" onClick={() => { trackEvent('product_viewed', { product_id: product.id, product_name: product.name, category: product.category }); onDetails(product); }} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-[1.12] w-full overflow-hidden text-left">
         <img src={product.image} alt={`${product.name} at Bianco`} loading="lazy" style={{ objectPosition: product.imagePosition }} className="h-full w-full object-cover opacity-75 transition duration-700 group-hover:scale-105 group-hover:opacity-95" />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,14,13,.08),rgba(15,14,13,.72))]" />
         <span className="absolute left-4 top-4 border border-[#f2b46d]/45 bg-[#110d0c]/75 px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f2b46d] backdrop-blur-sm">{product.category}</span>
@@ -236,8 +237,8 @@ function CartDrawer({
         </div>
         <div className="border-t border-white/[.12] bg-[#1c1917] px-5 py-5 md:px-7">
           <div className="flex items-center justify-between"><span className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-[#a9a097]">Estimated subtotal</span><motion.span key={subtotal} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} data-testid="text-cart-subtotal" className="font-display text-3xl">{formatPrice(subtotal)}</motion.span></div>
-          <a href={whatsappUrl} target="_blank" rel="noreferrer" data-testid="link-checkout-whatsapp" className={`mt-5 flex items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.14em] text-[#171513] transition hover:bg-[#f0d7a9] ${cart.length === 0 ? 'pointer-events-none opacity-40' : ''}`}><span>Order via WhatsApp</span><ArrowUpRight size={16} /></a>
-          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-checkout-call" className="mt-3 flex items-center justify-center gap-2 py-2 text-[10px] uppercase tracking-[.15em] text-[#a9a097] transition hover:text-[#e8c78e]"><Phone size={13} /> Prefer to call? {phoneNumber}</a>
+          <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => { if (cart.length > 0) trackEvent('checkout_intent', { method: 'whatsapp', item_count: cart.reduce((sum, line) => sum + line.quantity, 0), subtotal }); }} data-testid="link-checkout-whatsapp" className={`mt-5 flex items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.14em] text-[#171513] transition hover:bg-[#f0d7a9] ${cart.length === 0 ? 'pointer-events-none opacity-40' : ''}`}><span>Order via WhatsApp</span><ArrowUpRight size={16} /></a>
+          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('phone_order_intent', { item_count: cart.reduce((sum, line) => sum + line.quantity, 0), subtotal })} data-testid="link-checkout-call" className="mt-3 flex items-center justify-center gap-2 py-2 text-[10px] uppercase tracking-[.15em] text-[#a9a097] transition hover:text-[#e8c78e]"><Phone size={13} /> Prefer to call? {phoneNumber}</a>
         </div>
       </motion.aside>
     </AnimatePresence>
@@ -302,6 +303,7 @@ function Home() {
       if (existing) return current.map((line) => line.product.id === product.id ? { ...line, quantity: line.quantity + 1 } : line);
       return [...current, { product, quantity: 1 }];
     });
+    trackEvent('product_added_to_bag', { product_id: product.id, product_name: product.name, category: product.category, price: product.price });
     setCartOpen(true);
   };
 
@@ -324,7 +326,7 @@ function Home() {
             <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link transition hover:text-[#f2b46d]">Maps <ArrowUpRight className="ml-1 inline" size={12} /></a>
           </nav>
           <div className="flex items-center gap-2">
-            <button type="button" onClick={() => setCartOpen(true)} aria-label={`Open cart with ${cartCount} items`} data-testid="button-open-cart" className="focus-ring relative flex items-center gap-2 bg-[#f2b46d] px-3.5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#210f0c] transition hover:bg-[#ffd097]"><ShoppingBag size={15} strokeWidth={2} /><span className="hidden sm:inline">Your bag</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
+            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setCartOpen(true); }} aria-label={`Open cart with ${cartCount} items`} data-testid="button-open-cart" className="focus-ring relative flex items-center gap-2 bg-[#f2b46d] px-3.5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#210f0c] transition hover:bg-[#ffd097]"><ShoppingBag size={15} strokeWidth={2} /><span className="hidden sm:inline">Your bag</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
             <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu" className="focus-ring rounded-full p-2 text-[#f2b46d] md:hidden">{menuOpen ? <X size={21} /> : <Menu size={21} />}</button>
           </div>
         </div>
@@ -340,7 +342,7 @@ function Home() {
             <motion.h1 variants={reveal} data-testid="text-hero-heading" className="font-display text-[clamp(4.8rem,12vw,10.5rem)] leading-[.72] tracking-[-.08em] text-[#f5eee2]">Feed<br /><em className="ml-[.15em] text-[#e85d43]">the beast.</em></motion.h1>
             <motion.p variants={reveal} data-testid="text-hero-description" className="mt-10 max-w-[480px] text-base leading-relaxed text-[#c4b7a9] md:text-lg">Big flavors, blistered crust, and plates made for the table. Pick your favorites, build the bag, and send it straight to the Bianco kitchen.</motion.p>
             <motion.div variants={reveal} className="mt-8 flex flex-wrap items-center gap-4">
-              <a href="#order" data-testid="link-hero-order" className="group flex items-center gap-4 bg-[#f2b46d] px-6 py-4 text-[11px] font-bold uppercase tracking-[.15em] text-[#210f0c] transition hover:bg-[#ffd097]">Start your order <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
+              <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="group flex items-center gap-4 bg-[#f2b46d] px-6 py-4 text-[11px] font-bold uppercase tracking-[.15em] text-[#210f0c] transition hover:bg-[#ffd097]">Start your order <ArrowDown size={15} className="transition-transform group-hover:translate-y-1" /></a>
               <span className="flex items-center gap-2 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9c8f84]"><span className="h-2 w-2 animate-pulse rounded-full bg-[#e85d43]" /> Kitchen is live</span>
             </motion.div>
           </motion.div>
@@ -363,14 +365,14 @@ function Home() {
           <motion.div variants={reveal}><p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">02 — Shop the menu</p><h2 data-testid="text-menu-heading" className="mt-4 max-w-[620px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">Choose your<br /><em className="text-[#e85d43]">damage.</em></h2></motion.div>
           <motion.p variants={reveal} className="max-w-[330px] text-sm leading-relaxed text-[#9c8f84] md:pb-1">Tap a plate to see the details. Hit add and your bag is ready for the kitchen.</motion.p>
         </motion.div>
-        <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Menu categories">{categories.map((category) => <button type="button" key={category} onClick={() => setSelectedCategory(category)} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#9c8f84] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category}</button>)}</div>
+        <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label="Menu categories">{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#9c8f84] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category}</button>)}</div>
         <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
           <motion.div layout className="grid gap-4 sm:grid-cols-2">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div>
           <aside className="order-first border border-[#f5eee2]/15 bg-[#1a1210] p-5 lg:order-last lg:sticky lg:top-24" data-testid="summary-order">
             <div className="flex items-center justify-between"><p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-[#f2b46d]">Your bag</p><ShoppingBag size={17} className="text-[#f2b46d]" /></div>
             {cart.length === 0 ? <div className="border-t border-[#f5eee2]/10 pt-8"><p className="font-display text-3xl">Empty for now.</p><p className="mt-3 text-sm leading-relaxed text-[#9c8f84]">Add a plate and we’ll keep your order here while you browse.</p></div> : <div className="mt-6 space-y-3 border-t border-[#f5eee2]/10 pt-4">{cart.slice(0, 3).map(({ product, quantity }) => <div key={product.id} className="flex items-center justify-between gap-3 text-sm"><span className="truncate text-[#c4b7a9]"><b className="mr-2 text-[#f2b46d]">{quantity}×</b>{product.name}</span><span className="font-mono-ui text-[10px] text-[#f5eee2]">{formatPrice(product.price * quantity)}</span></div>)}{cart.length > 3 && <p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#9c8f84]">+ {cart.length - 3} more</p>}</div>}
             <div className="mt-7 flex items-end justify-between border-t border-[#f5eee2]/10 pt-4"><span className="font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#9c8f84]">Subtotal</span><span className="font-display text-3xl text-[#f2b46d]">{formatPrice(subtotal)}</span></div>
-            <button type="button" onClick={() => setCartOpen(true)} data-testid="button-summary-checkout" className="mt-5 flex w-full items-center justify-between bg-[#e85d43] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#f2765d]">Review & checkout <ArrowUpRight size={15} /></button>
+            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'summary' }); setCartOpen(true); }} data-testid="button-summary-checkout" className="mt-5 flex w-full items-center justify-between bg-[#e85d43] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#f2765d]">Review & checkout <ArrowUpRight size={15} /></button>
             <p className="mt-3 text-center font-mono-ui text-[8px] uppercase tracking-[.13em] text-[#716760]">Checkout securely via WhatsApp</p>
           </aside>
         </div>
