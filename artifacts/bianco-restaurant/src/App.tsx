@@ -1,6 +1,6 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { AnimatePresence, motion, useReducedMotion, type Variants } from 'framer-motion';
+import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import {
   ArrowUpRight,
   ChevronLeft,
@@ -18,6 +18,7 @@ import {
   X,
 } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { trackEvent } from '@/lib/analytics';
@@ -30,6 +31,7 @@ const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
 const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatayn,+Madinah+42351,+Saudi+Arabia&output=embed';
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
+const heroImage = mapsPhotoPortrait.replace('=w900-h1200-k-no', '=w1800-h2400-k-no');
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
 
@@ -128,14 +130,6 @@ const reveal: Variants = {
 const stagger: Variants = {
   hidden: {},
   visible: { transition: { staggerChildren: 0.1 } },
-};
-const heroReveal: Variants = {
-  hidden: { opacity: 0, y: 14 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1.1, ease: [0.22, 1, 0.36, 1] } },
-};
-const heroStagger: Variants = {
-  hidden: {},
-  visible: { transition: { staggerChildren: 0.16, delayChildren: 0.2 } },
 };
 
 function formatPrice(value: number) {
@@ -265,9 +259,32 @@ function ProductDetailModal({ product, onClose, onAdd }: { product: Product; onC
   );
 }
 
+function ReservationDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent data-testid="dialog-reservation" className="reserve-dialog w-[calc(100%-2rem)] max-w-[430px] gap-0 rounded-none border border-white/25 bg-[#530F0C] p-3 text-white shadow-[0_40px_120px_rgba(0,0,0,.6)] sm:rounded-none">
+        <div className="relative border border-white/[.18] px-6 py-9 text-center sm:px-9 sm:py-11">
+          <span aria-hidden="true" className="quiet-hero-corner -left-[5px] -top-[5px]" />
+          <span aria-hidden="true" className="quiet-hero-corner -right-[5px] -top-[5px]" />
+          <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -left-[5px]" />
+          <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
+          <p className="quiet-hero-serif text-[.64rem] uppercase tracking-[.4em] text-white/70">Bianco, Madinah</p>
+          <DialogTitle data-testid="text-reservation-heading" className="quiet-hero-serif mt-4 text-[2.6rem] font-normal leading-[1] tracking-[-.01em] text-white">Reserve a table</DialogTitle>
+          <div aria-hidden="true" className="quiet-hero-diamonds mt-6 flex items-center justify-center gap-4">
+            <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
+          </div>
+          <DialogDescription data-testid="text-reservation-description" className="quiet-hero-serif mx-auto mt-6 max-w-[21rem] text-[1.08rem] leading-[1.6] text-white/85">Call with your party size and preferred time to check availability and confirm your reservation with our team.</DialogDescription>
+          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('reservation_call_intent', { location: 'dialog' })} data-testid="link-reservation-call" className="quiet-hero-cta focus-ring mt-8 flex items-center justify-center gap-3 border border-white px-6 py-4 text-[.7rem] uppercase tracking-[.26em] text-white"><Phone size={14} strokeWidth={1.6} /> Call {phoneNumber}</a>
+          <p className="quiet-hero-serif mt-6 text-[.62rem] uppercase tracking-[.3em] text-white/60">Open daily · 12 PM — 2 AM</p>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
 function Home() {
-  const prefersReducedMotion = useReducedMotion();
   const [menuOpen, setMenuOpen] = useState(false);
+  const [reservationOpen, setReservationOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
@@ -321,42 +338,77 @@ function Home() {
 
   const removeFromCart = (id: string) => setCart((current) => current.filter((line) => line.product.id !== id));
   const closeMenu = () => setMenuOpen(false);
+  const openReservation = (location: string) => {
+    trackEvent('reservation_started', { location });
+    setReservationOpen(true);
+  };
 
   return (
     <main className="grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2]">
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#f5eee2]/10 bg-[#110d0c]/90 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[.14] bg-[#530F0C]/88 backdrop-blur-xl">
         <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
-          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center gap-3"><img src="/bianco-logo.jpg" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-9 w-[106px] object-cover object-center mix-blend-screen" /><span className="hidden border-l border-[#f5eee2]/20 pl-3 font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#9c8f84] sm:block">Madinah / KSA</span></a>
-          <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-[#f5eee2]/10 bg-[#110d0c] p-6' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.17em] text-[#c4b7a9] md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label="Main navigation">
-            <a href="#order" onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-[#f2b46d]">Menu</a>
-            <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link transition hover:text-[#f2b46d]">The Bianco energy</a>
-            <a href="#visit" onClick={closeMenu} data-testid="link-nav-visit" className="line-link transition hover:text-[#f2b46d]">Find us</a>
-            <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link transition hover:text-[#f2b46d]">Maps <ArrowUpRight className="ml-1 inline" size={12} /></a>
+          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center gap-3"><img src="/bianco-logo.jpg" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-9 w-[106px] object-cover object-center mix-blend-screen" /><span className="quiet-hero-serif hidden border-l border-white/25 pl-3 text-[.66rem] uppercase tracking-[.3em] text-white/70 sm:block">Madinah</span></a>
+          <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-white/[.14] bg-[#530F0C] px-6 pb-7 pt-6' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.2em] text-white/75 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label="Main navigation">
+            <a href="#order" onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-white">Menu</a>
+            <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link transition hover:text-white">The Bianco energy</a>
+            <a href="#visit" onClick={closeMenu} data-testid="link-nav-visit" className="line-link transition hover:text-white">Find us</a>
+            <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link transition hover:text-white">Maps <ArrowUpRight className="ml-1 inline" size={12} /></a>
+            <button type="button" onClick={() => { closeMenu(); openReservation('nav_mobile'); }} data-testid="button-nav-reserve-mobile" className="quiet-hero-cta focus-ring mt-2 flex items-center justify-between border border-white px-5 py-3.5 text-[.68rem] uppercase tracking-[.26em] text-white md:hidden"><span>Reserve a table</span><Phone size={13} strokeWidth={1.6} /></button>
           </nav>
-          <div className="flex items-center gap-2">
-            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setCartOpen(true); }} aria-label={`Open cart with ${cartCount} items`} data-testid="button-open-cart" className="focus-ring relative flex items-center gap-2 bg-[#f2b46d] px-3.5 py-2.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#210f0c] transition hover:bg-[#ffd097]"><ShoppingBag size={15} strokeWidth={2} /><span className="hidden sm:inline">Your bag</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
-            <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu" className="focus-ring rounded-full p-2 text-[#f2b46d] md:hidden">{menuOpen ? <X size={21} /> : <Menu size={21} />}</button>
+          <div className="flex items-center gap-2 md:gap-3">
+            <button type="button" onClick={() => openReservation('nav')} data-testid="button-nav-reserve" className="quiet-hero-cta focus-ring hidden border border-white px-4 py-2.5 text-[.64rem] uppercase tracking-[.24em] text-white md:inline-flex">Reserve a table</button>
+            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setCartOpen(true); }} aria-label={`Open cart with ${cartCount} items`} data-testid="button-open-cart" className="quiet-hero-bag focus-ring relative flex items-center gap-2 border border-white/40 px-3.5 py-2.5 text-[.64rem] uppercase tracking-[.2em] text-white"><ShoppingBag size={14} strokeWidth={1.6} /><span className="hidden sm:inline">Your bag</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
+            <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? 'Close menu' : 'Open menu'} data-testid="button-mobile-menu" className="focus-ring rounded-full p-2 text-white md:hidden">{menuOpen ? <X size={21} strokeWidth={1.5} /> : <Menu size={21} strokeWidth={1.5} />}</button>
           </div>
         </div>
       </header>
 
-      <section id="top" className="quiet-hero relative border-b border-white/10 pt-[74px]">
-        <motion.div
-          initial={prefersReducedMotion ? false : 'hidden'}
-          animate="visible"
-          variants={heroStagger}
-          className="relative mx-auto flex min-h-[calc(100dvh-74px)] max-w-[760px] flex-col items-center justify-center px-6 py-28 text-center md:py-36"
-        >
-          <motion.p variants={heroReveal} data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.68rem] uppercase tracking-[.42em] text-white/80 md:text-[.75rem]">Cucina Italiana</motion.p>
-          <motion.h1 variants={heroReveal} data-testid="text-hero-heading" className="quiet-hero-serif mt-7 text-[clamp(3rem,9vw,6.75rem)] font-normal leading-[1.02] tracking-[-.01em] text-white md:mt-9">A taste of Italy.</motion.h1>
-          <motion.div variants={heroReveal} aria-hidden="true" className="quiet-hero-diamonds mt-9 flex items-center justify-center gap-4 md:mt-11">
-            <span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" />
-          </motion.div>
-          <motion.p variants={heroReveal} data-testid="text-hero-description" className="quiet-hero-serif mt-9 max-w-[34rem] text-[1.05rem] leading-[1.7] text-white/75 md:mt-11 md:text-[1.25rem]">Pizza, pasta, and a taste of Italy in the heart of Madinah.</motion.p>
-          <motion.div variants={heroReveal} className="mt-12 md:mt-14">
-            <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-cta focus-ring inline-block border border-white bg-transparent px-9 py-4 text-[.7rem] uppercase tracking-[.28em] text-white">View the menu</a>
-          </motion.div>
-        </motion.div>
+      <section id="top" className="quiet-hero relative isolate overflow-hidden border-b border-white/10">
+        <img
+          src={heroImage}
+          alt="The Bianco terrace and glass front on Abo Bakr Al Siddiq, lit after dark"
+          data-testid="img-hero"
+          fetchPriority="high"
+          className="quiet-hero-photo absolute inset-0 h-full w-full object-cover"
+          style={{ objectPosition: '38% 64%' }}
+        />
+        <div aria-hidden="true" className="absolute inset-0 bg-[rgba(83,15,12,.55)]" />
+        <div aria-hidden="true" className="quiet-hero-shade absolute inset-0" />
+
+        <div className="relative mx-auto flex min-h-[100svh] max-w-[1440px] flex-col px-4 pt-[74px] sm:px-6 md:px-10">
+          <div className="quiet-hero-frame relative my-4 flex flex-1 flex-col md:my-7">
+            <span aria-hidden="true" className="quiet-hero-corner -left-[5px] -top-[5px]" />
+            <span aria-hidden="true" className="quiet-hero-corner -right-[5px] -top-[5px]" />
+            <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -left-[5px]" />
+            <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
+
+            <div className="quiet-hero-serif flex items-center justify-between gap-4 px-5 pt-5 text-[.62rem] uppercase tracking-[.26em] text-white/70 sm:tracking-[.32em] md:px-8 md:pt-7 md:text-[.68rem]">
+              <span data-testid="text-hero-meta-place" className="whitespace-nowrap"><span className="hidden sm:inline">Al Qiblatayn, </span>Madinah</span>
+              <span className="hidden whitespace-nowrap md:block">Terrace &amp; dining room</span>
+              <span data-testid="text-hero-meta-hours" className="whitespace-nowrap"><span className="hidden sm:inline">Daily </span>12 PM — 2 AM</span>
+            </div>
+
+            <div className="flex flex-1 flex-col items-center justify-center px-5 py-12 text-center md:py-16">
+              <p data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.7rem] uppercase tracking-[.44em] text-white/85 md:text-[.78rem]">Cucina Italiana</p>
+              <h1 data-testid="text-hero-heading" className="quiet-hero-serif quiet-hero-headline mt-6 text-[clamp(3.1rem,10vw,7.6rem)] font-normal leading-[.98] tracking-[-.012em] text-white md:mt-8">
+                Buonasera,<br /><em className="font-normal italic text-[#FBF3E8]">Madinah.</em>
+              </h1>
+              <div aria-hidden="true" className="quiet-hero-diamonds mt-8 flex items-center justify-center gap-4 md:mt-10">
+                <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
+              </div>
+              <p data-testid="text-hero-description" className="quiet-hero-serif mt-8 max-w-[33rem] text-[1.08rem] leading-[1.65] text-white/85 md:mt-10 md:text-[1.3rem]">Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.</p>
+              <div className="mt-10 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:gap-7 md:mt-12">
+                <button type="button" onClick={() => openReservation('hero')} data-testid="button-hero-reserve" className="quiet-hero-cta focus-ring inline-flex w-full items-center justify-center gap-3 border border-white bg-[rgba(83,15,12,.35)] px-10 py-4 text-[.7rem] uppercase tracking-[.28em] text-white backdrop-blur-[2px] sm:w-auto">Reserve a table</button>
+                <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-link focus-ring inline-flex items-center gap-2 py-2 text-[.7rem] uppercase tracking-[.28em] text-white/90">View the menu <ChevronRight size={13} strokeWidth={1.5} className="translate-y-px rotate-90" /></a>
+              </div>
+            </div>
+
+            <div className="quiet-hero-serif flex items-center justify-start gap-2 border-t border-white/[.18] px-5 py-4 text-[.62rem] uppercase tracking-[.3em] text-white/70 sm:justify-between md:px-8 md:text-[.68rem]">
+              <span className="whitespace-nowrap">Reservations by phone</span>
+              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('reservation_call_intent', { location: 'hero_footer' })} data-testid="link-hero-phone" className="quiet-hero-link hidden tracking-[.22em] text-white sm:inline-block">{phoneNumber}</a>
+            </div>
+          </div>
+        </div>
       </section>
 
       <div className="overflow-hidden border-b border-[#210f0c] bg-[#e85d43] py-3 text-[#210f0c]">
@@ -406,8 +458,8 @@ function Home() {
       </footer>
 
       <AnimatePresence>{cartOpen && <CartDrawer cart={cart} subtotal={subtotal} onClose={() => setCartOpen(false)} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} />}</AnimatePresence>
+      <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} />
       <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} />}</AnimatePresence>
-      <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-mobile-call" className="fixed bottom-4 right-4 z-30 flex items-center gap-2 bg-[#e8c78e] px-4 py-3 text-[10px] font-semibold uppercase tracking-[.12em] text-[#171513] shadow-xl md:hidden"><Phone size={14} /> Call Bianco</a>
     </main>
   );
 }

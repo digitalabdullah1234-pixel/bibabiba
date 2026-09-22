@@ -53,13 +53,31 @@ body { overflow-x: hidden; }
 .text-copper { color: hsl(var(--primary)); }
 .bg-copper { background-color: hsl(var(--primary)); }
 .editorial-grid { background-image: linear-gradient(hsl(var(--foreground) / .045) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--foreground) / .045) 1px, transparent 1px); background-size: 42px 42px; }
+/* Hero: the Bianco terrace after dark, veiled in oxblood */
 .quiet-hero { background: #530F0C; }
 .quiet-hero-serif { font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif; font-weight: 400; }
-.quiet-hero-diamond { display: block; width: 7px; height: 7px; border: 1px solid rgba(255, 246, 232, .45); transform: rotate(45deg); }
-.quiet-hero-diamond:nth-child(2) { width: 9px; height: 9px; border-color: rgba(255, 246, 232, .6); }
-.quiet-hero-cta { transition: background-color .45s ease, color .45s ease; }
+.quiet-hero-photo { filter: saturate(.78) contrast(1.05) brightness(.96); transform: scale(1.02); }
+.quiet-hero-shade {
+  background: rgba(83,15,12,.28);
+}
+.quiet-hero-frame { border: 1px solid rgba(255,246,232,.26); }
+.quiet-hero-frame::before { content: ''; position: absolute; inset: 6px; border: 1px solid rgba(255,246,232,.1); pointer-events: none; }
+.quiet-hero-corner { position: absolute; z-index: 1; display: block; width: 9px; height: 9px; border: 1px solid rgba(255,246,232,.8); background: #530F0C; transform: rotate(45deg); }
+.quiet-hero-headline { text-shadow: 0 2px 40px rgba(46,7,5,.55), 0 1px 2px rgba(46,7,5,.35); }
+.quiet-hero-diamond { display: block; width: 7px; height: 7px; border: 1px solid rgba(255, 246, 232, .55); transform: rotate(45deg); }
+.quiet-hero-diamond:nth-child(3) { width: 9px; height: 9px; border-color: rgba(255, 246, 232, .75); }
+.quiet-hero-rule { display: block; width: 44px; height: 1px; background: rgba(255,246,232,.35); }
+.quiet-hero-cta { transition: background-color .45s ease, color .45s ease, border-color .45s ease; }
 .quiet-hero-cta:hover, .quiet-hero-cta:focus-visible { background-color: #FFFFFF; color: #530F0C; }
 .quiet-hero-cta:focus-visible { outline-color: #FFFFFF; }
+.quiet-hero-bag { transition: border-color .35s ease, background-color .35s ease; }
+.quiet-hero-bag:hover { border-color: #FFFFFF; background-color: rgba(255,255,255,.1); }
+.quiet-hero-link { position: relative; transition: color .3s ease; }
+.quiet-hero-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -3px; height: 1px; background: currentColor; opacity: .55; transform: scaleX(1); transform-origin: left; transition: opacity .3s ease; }
+.quiet-hero-link:hover { color: #FFFFFF; }
+.quiet-hero-link:hover::after { opacity: 1; }
+.quiet-hero-link:focus-visible, .quiet-hero-bag:focus-visible { outline-color: #FFFFFF; }
+.reserve-dialog:focus-visible { outline: none; }
 .marquee-track { animation: marquee 26s linear infinite; }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
@@ -71,4 +89,4 @@ body { overflow-x: hidden; }
 .focus-ring:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 4px; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .marquee-track, .hero-orbit { animation: none; } .quiet-hero-cta { transition: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .marquee-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
