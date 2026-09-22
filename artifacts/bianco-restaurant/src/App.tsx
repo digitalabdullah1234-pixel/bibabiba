@@ -345,10 +345,10 @@ function Home() {
 
   return (
     <main className="grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2]">
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[.14] bg-[#530F0C]/88 backdrop-blur-xl">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[.12] bg-[#160E0E]/95 shadow-[0_12px_34px_rgba(0,0,0,.28)] backdrop-blur-xl">
         <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
-          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center gap-3"><img src="/bianco-logo.jpg" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-9 w-[106px] object-cover object-center mix-blend-screen" /><span className="quiet-hero-serif hidden border-l border-white/25 pl-3 text-[.66rem] uppercase tracking-[.3em] text-white/70 sm:block">Madinah</span></a>
-          <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-white/[.14] bg-[#530F0C] px-6 pb-7 pt-6' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.2em] text-white/75 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label="Main navigation">
+          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center gap-3"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-8 w-[112px] object-contain object-left" /><span className="quiet-hero-serif hidden border-l border-white/20 pl-3 text-[.66rem] uppercase tracking-[.3em] text-white/65 sm:block">Madinah</span></a>
+          <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-white/[.12] bg-[#160E0E] px-6 pb-7 pt-6 shadow-2xl' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.2em] text-white/75 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label="Main navigation">
             <a href="#order" onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-white">Menu</a>
             <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link transition hover:text-white">The Bianco energy</a>
             <a href="#visit" onClick={closeMenu} data-testid="link-nav-visit" className="line-link transition hover:text-white">Find us</a>
