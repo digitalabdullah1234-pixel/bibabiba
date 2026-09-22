@@ -56,7 +56,8 @@ body { overflow-x: hidden; }
 /* Hero: the Bianco terrace after dark, veiled in oxblood */
 .quiet-hero { background: #530F0C; }
 .quiet-hero-serif { font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif; font-weight: 400; }
-.quiet-hero-photo { filter: saturate(.78) contrast(1.05) brightness(.96); transform: scale(1.02); }
+.quiet-hero-photo { filter: saturate(.78) contrast(1.05) brightness(.96); transform: scale(1.02); object-position: 50% 48%; }
+@media (min-width: 768px) { .quiet-hero-photo { object-position: 50% 44%; } }
 .quiet-hero-shade {
   background: rgba(83,15,12,.28);
 }

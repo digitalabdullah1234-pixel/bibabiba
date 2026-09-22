@@ -31,7 +31,7 @@ const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
 const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatayn,+Madinah+42351,+Saudi+Arabia&output=embed';
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
-const heroImage = mapsPhotoPortrait.replace('=w900-h1200-k-no', '=w1800-h2400-k-no');
+const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
 
@@ -366,11 +366,10 @@ function Home() {
       <section id="top" className="quiet-hero relative isolate overflow-hidden border-b border-white/10">
         <img
           src={heroImage}
-          alt="The Bianco terrace and glass front on Abo Bakr Al Siddiq, lit after dark"
+          alt="Bianco's dining room viewed from above, with tall columns and hanging lights"
           data-testid="img-hero"
           fetchPriority="high"
           className="quiet-hero-photo absolute inset-0 h-full w-full object-cover"
-          style={{ objectPosition: '38% 64%' }}
         />
         <div aria-hidden="true" className="absolute inset-0 bg-[rgba(83,15,12,.55)]" />
         <div aria-hidden="true" className="quiet-hero-shade absolute inset-0" />
