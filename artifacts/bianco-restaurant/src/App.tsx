@@ -481,6 +481,16 @@ function LoadingScreen({ progress }: { progress: number }) {
           >
             <img src={loadingHandImage} alt="" className="loading-hand-active-image" draggable={false} />
           </div>
+          <div
+            className="loading-hand-wash"
+            style={{ clipPath: `inset(${100 - progress}% 0 0 0)` }}
+            aria-hidden="true"
+          />
+          <div
+            className="loading-hand-sweep"
+            style={{ bottom: `${progress}%`, opacity: progress > 0 ? 1 : 0 }}
+            aria-hidden="true"
+          />
         </div>
         <div className="mt-2 flex w-full max-w-[340px] items-center justify-between font-mono-ui text-[9px] uppercase tracking-[.3em] text-white/55">
           <span>Bianco</span>
