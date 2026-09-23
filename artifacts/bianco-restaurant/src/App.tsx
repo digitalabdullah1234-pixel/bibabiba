@@ -60,6 +60,7 @@ const ui: Record<Locale, Record<string, string>> = {
     reserve: 'Reserve a table', callForTable: 'Call for a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
     dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
+    heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
     heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
     cartEyebrow: 'Your table, to go', cartTitle: 'Your order', closeCart: 'Close cart',
@@ -94,6 +95,7 @@ const ui: Record<Locale, Record<string, string>> = {
     reserve: 'احجز طاولة', callForTable: 'اتصل لحجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
     dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
+    heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
     heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
     cartEyebrow: 'مائدتك، أينما كنت', cartTitle: 'طلبك', closeCart: 'إغلاق السلة',
@@ -513,9 +515,10 @@ function Home() {
               </div>
             </div>
 
-            <div className="quiet-hero-serif flex items-center justify-start gap-2 border-t border-white/[.18] px-5 py-4 text-[.62rem] uppercase tracking-[.3em] text-white/70 sm:justify-between md:px-8 md:text-[.68rem]">
-              <span className="whitespace-nowrap">{t('reservationsPhone')}</span>
-              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('reservation_call_intent', { location: 'hero_footer' })} data-testid="link-hero-phone" className="quiet-hero-link hidden tracking-[.22em] text-white sm:inline-block">{phoneNumber}</a>
+            <div className="quiet-hero-serif flex items-center justify-between gap-3 border-t border-white/[.18] px-5 py-4 text-[.62rem] uppercase tracking-[.3em] text-white/70 md:px-8 md:text-[.68rem]">
+              <span className="whitespace-nowrap">{t('heroFooterLeft')}</span>
+              <span className="hidden whitespace-nowrap text-white/55 md:block">{t('heroFooterCenter')}</span>
+              <span className="whitespace-nowrap">{t('heroFooterRight')}</span>
             </div>
           </div>
         </div>
