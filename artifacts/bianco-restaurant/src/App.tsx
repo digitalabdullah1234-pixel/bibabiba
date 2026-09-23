@@ -36,6 +36,7 @@ const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
+const menuPath = `${import.meta.env.BASE_URL}menu`;
 
 type Product = {
   id: string;
@@ -594,7 +595,7 @@ function Home() {
         <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
           <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-8 w-[112px] object-contain object-left" /></a>
           <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-white/[.14] bg-[#530F0C] px-6 pb-7 pt-6' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.2em] text-white/75 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label={t('menu')}>
-            <a href="#order" onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-white">{t('menu')}</a>
+            <a href={menuPath} onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-white">{t('menu')}</a>
             <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link transition hover:text-white">{t('energy')}</a>
             <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link transition hover:text-white">{t('maps')} <ArrowUpRight className="ms-1 inline" size={12} /></a>
             <button type="button" onClick={() => { closeMenu(); openReservation('nav_mobile'); }} data-testid="button-nav-reserve-mobile" className="quiet-hero-cta focus-ring mt-2 flex items-center justify-between border border-white px-5 py-3.5 text-[.68rem] uppercase tracking-[.26em] text-white md:hidden"><span>{t('callForTable')}</span><Phone size={13} strokeWidth={1.6} /></button>
@@ -637,7 +638,7 @@ function Home() {
               <p data-testid="text-hero-description" className="quiet-hero-serif mt-8 max-w-[33rem] text-[1.08rem] leading-[1.65] text-white/85 md:mt-10 md:text-[1.3rem]">{t('heroDescription')}</p>
               <div className="mt-10 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:gap-7 md:mt-12">
                 <button type="button" onClick={() => openReservation('hero')} data-testid="button-hero-reserve" className="quiet-hero-cta focus-ring inline-flex w-full items-center justify-center gap-3 border border-white bg-black/20 px-10 py-4 text-[.7rem] uppercase tracking-[.28em] text-white backdrop-blur-[2px] sm:w-auto">{t('callForTable')}</button>
-                <a href="#order" onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-link focus-ring inline-flex items-center gap-2 py-2 text-[.7rem] uppercase tracking-[.28em] text-white/90">{t('viewMenu')} <ChevronRight size={13} strokeWidth={1.5} className="translate-y-px rotate-90" /></a>
+                <a href={menuPath} onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-link focus-ring inline-flex items-center gap-2 py-2 text-[.7rem] uppercase tracking-[.28em] text-white/90">{t('viewMenu')} <ChevronRight size={13} strokeWidth={1.5} className="translate-y-px rotate-90" /></a>
               </div>
             </div>
 
@@ -708,7 +709,8 @@ function Router() {
   return (
     <RoutedErrorBoundary>
       <Switch>
-        <Route path="/" component={ProductionMenu} />
+        <Route path="/" component={Home} />
+        <Route path="/menu" component={ProductionMenu} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
