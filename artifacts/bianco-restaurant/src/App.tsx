@@ -671,15 +671,8 @@ function Home() {
             <motion.p variants={reveal} className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae] md:pb-1">{t('menuIntro')}</motion.p>
           </motion.div>
           <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#f4c6ae] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>)}</div>
-          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
+          <div className="mt-8">
             <motion.div layout className="grid gap-4 sm:grid-cols-2">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
-            <aside className="order-first border border-[#f5eee2]/15 bg-[#420b09] p-5 lg:order-last lg:sticky lg:top-24" data-testid="summary-order">
-              <div className="flex items-center justify-between"><p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-[#f2b46d]">{t('bag')}</p><ShoppingBag size={17} className="text-[#f2b46d]" /></div>
-              {cart.length === 0 ? <div className="border-t border-[#f5eee2]/10 pt-8"><p className="font-display text-3xl">{t('emptyNow')}</p><p className="mt-3 text-sm leading-relaxed text-[#f4c6ae]">{t('emptySummary')}</p></div> : <div className="mt-6 space-y-3 border-t border-[#f5eee2]/10 pt-4">{cart.slice(0, 3).map(({ product, quantity }) => <div key={product.id} className="flex items-center justify-between gap-3 text-sm"><span className="truncate text-[#f4c6ae]"><b className="me-2 text-[#f2b46d]">{quantity}×</b>{productText(product, locale).name}</span><span className="font-mono-ui text-[10px] text-[#f5eee2]">{formatPrice(product.price * quantity, locale)}</span></div>)}{cart.length > 3 && <p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#f4c6ae]">+ {cart.length - 3} {t('more')}</p>}</div>}
-              <div className="mt-7 flex items-end justify-between border-t border-[#f5eee2]/10 pt-4"><span className="font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#f4c6ae]">{t('subtotal')}</span><span className="font-display text-3xl text-[#f2b46d]">{formatPrice(subtotal, locale)}</span></div>
-              <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'summary' }); setCartOpen(true); }} data-testid="button-summary-checkout" className="mt-5 flex w-full items-center justify-between bg-[#e85d43] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#f2765d]">{t('reviewCheckout')} <ArrowUpRight size={15} /></button>
-              <p className="mt-3 text-center font-mono-ui text-[8px] uppercase tracking-[.13em] text-[#d49d8a]">{t('secureWhatsapp')}</p>
-            </aside>
           </div>
           <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#d49d8a] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setCartOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
         </div>
@@ -708,6 +701,18 @@ function Home() {
         <div className="mx-auto max-w-[1440px]"><div className="flex flex-col justify-between gap-12 border-b border-[#f5eee2]/12 pb-12 md:flex-row md:items-end"><div><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-[142px] object-contain object-start" /><p className="mt-6 max-w-[320px] font-display text-3xl leading-[.95] text-[#f2b46d]">{t('orderLoud')}<br />{t('eatWell')}</p></div><div className="flex flex-col items-start gap-4 text-[10px] uppercase tracking-[.15em] text-[#9c8f84] md:items-end"><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp" className="transition hover:text-[#f2b46d]">{t('whatsappKitchen')} <ArrowUpRight className="ms-1 inline" size={13} /></a><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-footer-phone" className="transition hover:text-[#f2b46d]">{t('call')} <span dir="ltr">{phoneNumber}</span></a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" data-testid="link-instagram" className="flex items-center gap-2 transition hover:text-[#f2b46d]"><Instagram size={14} /> {t('followRoom')}</a></div></div><div className="flex flex-col justify-between gap-3 pt-6 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#716760] md:flex-row"><span>بيانكو · Bianco · {t('madinah')}</span><span data-testid="text-footer-hours">{t('footerHours')}</span><span>© {new Date().getFullYear()} Bianco</span></div></div>
       </footer>
 
+      {menuEntered && <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(620px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
+        <div className="flex items-center gap-3 border border-[#dba16f]/60 bg-[#dba16f] p-2 ps-4 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir="ltr">
+          <ShoppingBag size={17} />
+          <div className="min-w-0 flex-1">
+            <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.16em]">{cartCount ? `${cartCount} ${cartCount === 1 ? 'PLATE' : 'PLATES'} SELECTED` : 'YOUR TABLE IS OPEN'}</p>
+            <p className="font-mono-ui text-[9px] text-[#663528]">{cartCount ? `Subtotal · ${formatPrice(subtotal, locale)}` : 'Gather something good'}</p>
+          </div>
+          <button type="button" onClick={() => setCartOpen(true)} data-testid="button-open-tray" className="focus-ring flex items-center gap-2 border border-[#5c281d]/35 px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.14em]">OPEN TRAY <ChevronRight size={14} className="rotate-[-90deg]" /></button>
+          <button type="button" disabled={!cartCount} onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'tray' }); setCartOpen(true); }} data-testid="button-tray-checkout" className="hidden bg-[#5d1d18] px-3 py-2 font-mono-ui text-[9px] font-bold uppercase text-[#f8e4cc] disabled:opacity-35 sm:flex sm:items-center sm:gap-2">CHECKOUT <ArrowUpRight size={14} /></button>
+        </div>
+      </div>}
+
       <AnimatePresence>{cartOpen && <CartDrawer cart={cart} subtotal={subtotal} onClose={() => setCartOpen(false)} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} locale={locale} t={t} />}</AnimatePresence>
       <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
        <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
@@ -721,7 +726,6 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/menu" component={() => <ProductionMenu />} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
