@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import {
   ArrowUpRight,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
@@ -288,7 +289,7 @@ function ProductCard({
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,14,13,.08),rgba(15,14,13,.72))]" />
         <span className="absolute start-4 top-4 border border-[#f2b46d]/45 bg-[#110d0c]/75 px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f2b46d] backdrop-blur-sm">{text.category}</span>
         <span className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] text-[#efe8dc]/65">{text.note}</span>
-        <span className="absolute bottom-3 end-4 flex h-9 w-9 translate-y-2 items-center justify-center rounded-full border border-white/30 bg-[#f5eee2] text-[#210f0c] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"><ArrowUpRight size={15} /></span>
+        <span className="absolute bottom-3 end-4 flex h-7 w-7 translate-y-2 items-center justify-center rounded-full border border-white/30 bg-[#f5eee2] text-[#210f0c] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"><ArrowUpRight size={12} /></span>
       </button>
       <div className="flex flex-1 flex-col justify-between p-5 md:p-6">
         <div>
@@ -299,7 +300,7 @@ function ProductCard({
           <p data-testid={`text-product-description-${product.id}`} className="mt-4 max-w-[28rem] text-sm leading-relaxed text-[#9c8f84]">{text.description}</p>
         </div>
         <button type="button" onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`} className="focus-ring mt-7 flex w-full items-center justify-between border-t border-white/[.13] pt-4 text-left text-[11px] font-semibold uppercase tracking-[.16em] text-[#f5eee2] transition-colors hover:text-[#f2b46d]">
-          <span>{t('addOrder')}</span><Plus size={16} strokeWidth={1.5} />
+          <span>{t('addOrder')}</span><Plus size={14} strokeWidth={1.5} />
         </button>
       </div>
     </motion.article>
@@ -498,7 +499,7 @@ function Home() {
   const [locale, setLocale] = useState<Locale>(() => new URLSearchParams(window.location.search).get('lang') === 'ar' || window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [menuOpen, setMenuOpen] = useState(false);
   const [reservationOpen, setReservationOpen] = useState(false);
-  const [cartOpen, setCartOpen] = useState(false);
+  const [trayOpen, setTrayOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [menuEntered, setMenuEntered] = useState(false);
@@ -550,7 +551,10 @@ function Home() {
     const menuSection = document.getElementById('order');
     if (!menuSection) return;
     const observer = new IntersectionObserver(
-      ([entry]) => setMenuEntered(entry.isIntersecting),
+      ([entry]) => {
+        setMenuEntered(entry.isIntersecting);
+        if (!entry.isIntersecting) setTrayOpen(false);
+      },
       { rootMargin: '-18% 0px -42% 0px' },
     );
     observer.observe(menuSection);
@@ -558,14 +562,14 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isLoading || cartOpen || Boolean(selectedProduct) ? 'hidden' : '';
+    document.body.style.overflow = isLoading || (trayOpen && menuEntered) || Boolean(selectedProduct) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [isLoading, cartOpen, selectedProduct]);
+  }, [isLoading, trayOpen, menuEntered, selectedProduct]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === 'Escape') {
-        setCartOpen(false);
+        setTrayOpen(false);
         setSelectedProduct(null);
       }
     };
@@ -576,6 +580,10 @@ function Home() {
   const filteredProducts = useMemo(() => selectedCategory === 'All' ? products : products.filter((product) => product.category === selectedCategory), [selectedCategory]);
   const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
   const subtotal = cart.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
+  const orderMessage = cart.length
+    ? `${t('pickupMessage')}\n${cart.map(({ product, quantity }) => `${quantity} × ${productText(product, locale).name}`).join('\n')}\n${t('estimatedTotal')}: ${formatPrice(subtotal, locale)}`
+    : t('emptyOrderMessage');
+  const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
 
   const addToCart = (product: Product) => {
     setCart((current) => {
@@ -584,7 +592,7 @@ function Home() {
       return [...current, { product, quantity: 1 }];
     });
     trackEvent('product_added_to_bag', { product_id: product.id, product_name: product.name, category: product.category, price: product.price });
-    setCartOpen(true);
+    setTrayOpen(true);
   };
 
   const updateQuantity = (id: string, delta: number) => {
@@ -614,7 +622,7 @@ function Home() {
           <div className="flex items-center gap-2 md:gap-3">
             <button type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')} data-testid="button-language" aria-label={isArabic ? 'Switch to English' : 'التبديل إلى العربية'} className="focus-ring min-w-10 border border-white/35 px-2.5 py-2.5 text-center text-[.7rem] font-semibold text-white transition hover:border-white hover:bg-white/10">{isArabic ? 'EN' : 'عر'}</button>
             <button type="button" onClick={() => openReservation('nav')} data-testid="button-nav-reserve" className="quiet-hero-cta focus-ring hidden border border-white px-4 py-2.5 text-[.64rem] uppercase tracking-[.24em] text-white md:inline-flex">{t('reserve')}</button>
-            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setCartOpen(true); }} aria-label={t('openCart').replace('{count}', String(cartCount))} data-testid="button-open-cart" className="quiet-hero-bag focus-ring relative flex items-center gap-2 border border-white/40 px-3.5 py-2.5 text-[.64rem] uppercase tracking-[.2em] text-white"><ShoppingBag size={14} strokeWidth={1.6} /><span className="hidden sm:inline">{t('bag')}</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 5 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
+            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setTrayOpen(true); document.getElementById('order')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} aria-label={t('openCart').replace('{count}', String(cartCount))} data-testid="button-open-cart" className="quiet-hero-bag focus-ring relative flex items-center gap-2 border border-white/40 px-3.5 py-2.5 text-[.64rem] uppercase tracking-[.2em] text-white"><ShoppingBag size={14} strokeWidth={1.6} /><span className="hidden sm:inline">{t('bag')}</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 1, y: 0 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
             <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('closeMenu') : t('openMenu')} data-testid="button-mobile-menu" className="focus-ring rounded-full p-2 text-white md:hidden">{menuOpen ? <X size={21} strokeWidth={1.5} /> : <Menu size={21} strokeWidth={1.5} />}</button>
           </div>
         </div>
@@ -672,9 +680,9 @@ function Home() {
           </motion.div>
           <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#f4c6ae] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>)}</div>
           <div className="mt-8">
-            <motion.div layout className="grid gap-4 sm:grid-cols-2">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
+            <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
           </div>
-          <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#d49d8a] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setCartOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
+          <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#d49d8a] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
         </div>
       </section>
 
@@ -702,18 +710,40 @@ function Home() {
       </footer>
 
       {menuEntered && <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(620px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
-        <div className="flex items-center gap-3 border border-[#dba16f]/60 bg-[#dba16f] p-2 ps-4 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir="ltr">
-          <ShoppingBag size={17} />
-          <div className="min-w-0 flex-1">
-            <p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.16em]">{cartCount ? `${cartCount} ${cartCount === 1 ? 'PLATE' : 'PLATES'} SELECTED` : 'YOUR TABLE IS OPEN'}</p>
-            <p className="font-mono-ui text-[9px] text-[#663528]">{cartCount ? `Subtotal · ${formatPrice(subtotal, locale)}` : 'Gather something good'}</p>
+        {trayOpen && <div className="mb-3 max-h-[58vh] overflow-y-auto border border-[#dba16f]/35 bg-[#271715] p-4 text-left shadow-2xl" dir="ltr" data-testid="tray-panel">
+          <div className="mb-3 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3">
+            <p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">YOUR TABLE · {cartCount} PLATES</p>
+            <button type="button" aria-label="Close tray" onClick={() => setTrayOpen(false)} className="text-[#dba16f]"><ChevronDown size={16} /></button>
           </div>
-          <button type="button" onClick={() => setCartOpen(true)} data-testid="button-open-tray" className="focus-ring flex items-center gap-2 border border-[#5c281d]/35 px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.14em]">OPEN TRAY <ChevronRight size={14} className="rotate-[-90deg]" /></button>
-          <button type="button" disabled={!cartCount} onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'tray' }); setCartOpen(true); }} data-testid="button-tray-checkout" className="hidden bg-[#5d1d18] px-3 py-2 font-mono-ui text-[9px] font-bold uppercase text-[#f8e4cc] disabled:opacity-35 sm:flex sm:items-center sm:gap-2">CHECKOUT <ArrowUpRight size={14} /></button>
+          {cart.length ? cart.map(({ product, quantity }) => {
+            const text = productText(product, locale);
+            return <div key={product.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3">
+              <img src={product.image} alt="" className="h-11 w-11 object-cover opacity-80" style={{ objectPosition: product.imagePosition }} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="truncate font-display text-xl text-[#f3dfca]">{text.name}</p>
+                  <span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(product.price * quantity, locale)}</span>
+                </div>
+                <div className="mt-2 flex items-center gap-2">
+                  <button type="button" aria-label={`Decrease ${text.name}`} onClick={() => updateQuantity(product.id, -1)} className="border border-[#edc9aa]/25 p-1 text-[#dba16f]"><Minus size={11} /></button>
+                  <span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]">{quantity}</span>
+                  <button type="button" aria-label={`Increase ${text.name}`} onClick={() => updateQuantity(product.id, 1)} className="border border-[#edc9aa]/25 p-1 text-[#dba16f]"><Plus size={11} /></button>
+                </div>
+              </div>
+            </div>;
+          }) : <p className="py-7 text-sm text-[#a98575]">Keep the route. Add a plate and it will stay with you while you browse.</p>}
+          {cartCount > 0 && <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase text-[#f8e4cc]" data-testid="tray-checkout-link">CHECKOUT <ArrowUpRight size={13} /></a>}
+        </div>}
+        <div className="flex items-center gap-2 border border-[#dba16f]/60 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir="ltr">
+          <ShoppingBag size={14} />
+          <div className="min-w-0 flex-1">
+            <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} ${cartCount === 1 ? 'PLATE' : 'PLATES'} SELECTED` : 'YOUR TABLE IS OPEN'}</p>
+            <p className="font-mono-ui text-[8px] text-[#663528]">{cartCount ? `Subtotal · ${formatPrice(subtotal, locale)}` : 'Gather something good'}</p>
+          </div>
+          <button type="button" onClick={() => setTrayOpen((open) => !open)} data-testid="button-open-tray" className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? 'CLOSE' : 'OPEN TRAY'} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button>
+          <a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase text-[#f8e4cc] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}>CHECKOUT <ArrowUpRight size={12} /></a>
         </div>
       </div>}
-
-      <AnimatePresence>{cartOpen && <CartDrawer cart={cart} subtotal={subtotal} onClose={() => setCartOpen(false)} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} locale={locale} t={t} />}</AnimatePresence>
       <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
        <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
      </main>
