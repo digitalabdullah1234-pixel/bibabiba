@@ -494,12 +494,6 @@ function Home() {
             <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -left-[5px]" />
             <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
 
-            <div className="quiet-hero-serif flex items-center justify-between gap-4 px-5 pt-5 text-[.62rem] uppercase tracking-[.26em] text-white/70 sm:tracking-[.32em] md:px-8 md:pt-7 md:text-[.68rem]">
-              <span data-testid="text-hero-meta-place" className="whitespace-nowrap">{t('location')}</span>
-              <span className="hidden whitespace-nowrap md:block">{t('terrace')}</span>
-              <span data-testid="text-hero-meta-hours" className="whitespace-nowrap">{t('dailyHours')}</span>
-            </div>
-
             <div className="flex flex-1 flex-col items-center justify-center px-5 py-12 text-center md:py-16">
               <p data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.7rem] uppercase tracking-[.44em] text-white/85 md:text-[.78rem]">{t('cuisine')}</p>
               <h1 data-testid="text-hero-heading" className="quiet-hero-serif quiet-hero-headline mt-6 text-[clamp(3.1rem,10vw,7.6rem)] font-normal leading-[.98] tracking-[-.012em] text-white md:mt-8">
