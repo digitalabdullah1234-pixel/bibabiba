@@ -1,0 +1,1 @@
+- [PDF menu photo extraction](pdf-menu-photo-extraction.md) — visually verify embedded dish assets because decorative PDF elements can be mistaken for food photos.

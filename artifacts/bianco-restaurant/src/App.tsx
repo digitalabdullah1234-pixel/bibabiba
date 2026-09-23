@@ -46,6 +46,15 @@ type Product = {
   note: string;
 };
 
+type MenuHighlight = {
+  id: string;
+  name: string;
+  arabicName: string;
+  category: string;
+  arabicCategory: string;
+  image: string;
+};
+
 type CartLine = {
   product: Product;
   quantity: number;
@@ -63,6 +72,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
     heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
+    menuGalleryLabel: '01 — From the menu', menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.',
     cartEyebrow: 'Your table, to go', cartTitle: 'Your order', closeCart: 'Close cart',
     emptyTitle: 'Nothing on the table yet.', emptyText: 'Add a signature, a little something to share, and we will get it moving.',
     browseMenu: 'Browse the menu', itemsDelivery: 'items · for pickup or delivery', estimatedSubtotal: 'Estimated subtotal',
@@ -98,6 +108,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
     heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
+    menuGalleryLabel: '01 — من القائمة', menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.',
     cartEyebrow: 'مائدتك، أينما كنت', cartTitle: 'طلبك', closeCart: 'إغلاق السلة',
     emptyTitle: 'مائدتك فارغة حتى الآن.', emptyText: 'أضف طبقاً مميزاً أو شيئاً للمشاركة وسنتولى الباقي.',
     browseMenu: 'تصفح القائمة', itemsDelivery: 'عناصر · للاستلام أو التوصيل', estimatedSubtotal: 'المجموع التقديري',
@@ -203,6 +214,28 @@ const products: Product[] = [
   },
 ];
 
+const menuHighlights: MenuHighlight[] = [
+  { id: 'mushroom-soup', name: 'Mushroom soup', arabicName: 'شوربة الفطر', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/mushroom-soup.png` },
+  { id: 'arancini', name: 'Arancini', arabicName: 'أرانشيني', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/arancini.png` },
+  { id: 'chili-shrimp', name: 'Chili shrimp', arabicName: 'تشيلي شرمب', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/chili-shrimp.png` },
+  { id: 'french-fries', name: 'French fries', arabicName: 'بطاطس مقلية', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/french-fries.png` },
+  { id: 'burrata-salad', name: 'Burrata Salad', arabicName: 'سلطة البوراتا', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/burrata-salad.png` },
+  { id: 'bianco-salad', name: 'Bianco Salad', arabicName: 'سلطة بيانكو', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/bianco-salad.png` },
+  { id: 'portobello-shrimp-salad', name: 'Portobello Shrimp Salad', arabicName: 'سلطة البورتوبيلو شرمب', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/portobello-shrimp-salad.jpg` },
+  { id: 'margherita-pizza', name: 'Margherita Pizza', arabicName: 'بيتزا مارجريتا', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/margherita-pizza.png` },
+  { id: 'diavola-pizza', name: 'Diavola Pizza', arabicName: 'بيتزا ديافولا', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/diavola-pizza.png` },
+  { id: 'beef-bianco-pizza', name: 'Beef Bianco Pizza', arabicName: 'بيتزا بيف بيانكو', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/beef-bianco-pizza.png` },
+  { id: 'chicken-polo-pizza', name: 'Chicken Polo Pizza', arabicName: 'بيتزا تشكن بولو', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/chicken-polo-pizza.png` },
+  { id: 'truffle-pizza', name: 'Truffle Pizza', arabicName: 'بيتزا ترافل', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/truffle-pizza.png` },
+  { id: 'seafood-spaghetti', name: 'Seafood Spaghetti', arabicName: 'اسباغيتي سي فود', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/seafood-spaghetti.png` },
+  { id: 'penne-rose', name: 'Penne Rosé', arabicName: 'بيني روز', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/penne-rose.png` },
+  { id: 'rigatoni-pesto', name: 'Rigatoni Pesto', arabicName: 'ريجاتوني بيستو', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/rigatoni-pesto.png` },
+  { id: 'funghi-risotto', name: 'Funghi Risotto', arabicName: 'ريزوتو فونجي', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/funghi-risotto.png` },
+  { id: 'truffle-fettuccine', name: 'Truffle Fettuccine', arabicName: 'فيتوتشيني ترافل', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/truffle-fettuccine.png` },
+  { id: 'beef-bianco', name: 'Beef Bianco', arabicName: 'بيف بيانكو', category: 'Main Courses', arabicCategory: 'الأطباق الرئيسية', image: `${import.meta.env.BASE_URL}menu-dishes/beef-bianco.png` },
+  { id: 'grilled-salmon', name: 'Grilled Salmon', arabicName: 'جرلد سالمون', category: 'Main Courses', arabicCategory: 'الأطباق الرئيسية', image: `${import.meta.env.BASE_URL}menu-dishes/grilled-salmon.png` },
+];
+
 const gallery = [
   { src: mapsPhoto, altKey: 'gallery0', className: 'md:col-span-2 md:row-span-2' },
   { src: mapsPhotoPortrait, altKey: 'gallery1', className: '' },
@@ -270,6 +303,46 @@ function ProductCard({
         </button>
       </div>
     </motion.article>
+  );
+}
+
+function MenuHighlights({ locale, t }: { locale: Locale; t: Translate }) {
+  const isArabic = locale === 'ar';
+  const repeatedDishes = [...menuHighlights, ...menuHighlights];
+
+  return (
+    <section aria-labelledby="menu-highlights-heading" className="menu-highlights overflow-hidden border-y border-[#f5eee2]/15 bg-[#530F0C]">
+      <div className="mx-auto max-w-[1440px] px-5 py-14 md:px-10 md:py-16">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('menuGalleryLabel')}</p>
+            <h2 id="menu-highlights-heading" className="mt-4 max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
+          </div>
+          <p className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
+        </div>
+      </div>
+
+      <div className="menu-highlights-window border-y border-[#f5eee2]/15 py-5" aria-label={t('menuGalleryTitle')}>
+        <div className="menu-highlights-track flex w-max gap-4 px-5">
+          {repeatedDishes.map((dish, index) => {
+            const dishName = isArabic ? dish.arabicName : dish.name;
+            const category = isArabic ? dish.arabicCategory : dish.category;
+            return (
+              <figure key={`${dish.id}-${index}`} className="menu-highlight-card group relative w-[230px] shrink-0 overflow-hidden border border-[#f5eee2]/20 bg-[#420b09] md:w-[280px]">
+                <div className="aspect-[1.18] overflow-hidden">
+                  <img src={dish.image} alt={dishName} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#210604]/85 via-transparent to-transparent" />
+                </div>
+                <figcaption className="absolute inset-x-0 bottom-0 p-4 text-[#fff2df]">
+                  <p className="font-mono-ui text-[8px] uppercase tracking-[.17em] text-[#f2b46d]">{category}</p>
+                  <p className="mt-1 font-display text-[1.65rem] leading-none">{dishName}</p>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
 
@@ -522,23 +595,27 @@ function Home() {
         <div className="marquee-track flex w-max items-center gap-10 whitespace-nowrap font-mono-ui text-[10px] font-bold uppercase tracking-[.2em]">{Array.from({ length: 2 }).flatMap((_, i) => [productText(products[0], locale).name, productText(products[1], locale).name, t('marqueeCity'), t('marqueeBag'), t('dailyHours')].map((item, j) => <span key={`${i}-${j}`} className="flex items-center gap-10">{item}<span className="text-lg">✳</span></span>))}</div>
       </div>
 
-      <section id="order" className="mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-28">
-        <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="flex flex-col justify-between gap-8 border-b border-[#f5eee2]/15 pb-8 md:flex-row md:items-end">
-          <motion.div variants={reveal}><p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('shopMenu')}</p><h2 data-testid="text-menu-heading" className="mt-4 max-w-[620px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('chooseYour')}<br /><em className="text-[#e85d43]">{t('damage')}</em></h2></motion.div>
-          <motion.p variants={reveal} className="max-w-[330px] text-sm leading-relaxed text-[#9c8f84] md:pb-1">{t('menuIntro')}</motion.p>
-        </motion.div>
-        <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#9c8f84] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>)}</div>
-        <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
-          <motion.div layout className="grid gap-4 sm:grid-cols-2">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
-          <aside className="order-first border border-[#f5eee2]/15 bg-[#1a1210] p-5 lg:order-last lg:sticky lg:top-24" data-testid="summary-order">
-            <div className="flex items-center justify-between"><p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-[#f2b46d]">{t('bag')}</p><ShoppingBag size={17} className="text-[#f2b46d]" /></div>
-            {cart.length === 0 ? <div className="border-t border-[#f5eee2]/10 pt-8"><p className="font-display text-3xl">{t('emptyNow')}</p><p className="mt-3 text-sm leading-relaxed text-[#9c8f84]">{t('emptySummary')}</p></div> : <div className="mt-6 space-y-3 border-t border-[#f5eee2]/10 pt-4">{cart.slice(0, 3).map(({ product, quantity }) => <div key={product.id} className="flex items-center justify-between gap-3 text-sm"><span className="truncate text-[#c4b7a9]"><b className="me-2 text-[#f2b46d]">{quantity}×</b>{productText(product, locale).name}</span><span className="font-mono-ui text-[10px] text-[#f5eee2]">{formatPrice(product.price * quantity, locale)}</span></div>)}{cart.length > 3 && <p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#9c8f84]">+ {cart.length - 3} {t('more')}</p>}</div>}
-            <div className="mt-7 flex items-end justify-between border-t border-[#f5eee2]/10 pt-4"><span className="font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#9c8f84]">{t('subtotal')}</span><span className="font-display text-3xl text-[#f2b46d]">{formatPrice(subtotal, locale)}</span></div>
-            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'summary' }); setCartOpen(true); }} data-testid="button-summary-checkout" className="mt-5 flex w-full items-center justify-between bg-[#e85d43] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#f2765d]">{t('reviewCheckout')} <ArrowUpRight size={15} /></button>
-            <p className="mt-3 text-center font-mono-ui text-[8px] uppercase tracking-[.13em] text-[#716760]">{t('secureWhatsapp')}</p>
-          </aside>
+      <MenuHighlights locale={locale} t={t} />
+
+      <section id="order" className="bg-[#530F0C] px-5 py-20 md:px-10 md:py-28">
+        <div className="mx-auto max-w-[1440px]">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="flex flex-col justify-between gap-8 border-b border-[#f5eee2]/15 pb-8 md:flex-row md:items-end">
+            <motion.div variants={reveal}><p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('shopMenu')}</p><h2 data-testid="text-menu-heading" className="mt-4 max-w-[620px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('chooseYour')}<br /><em className="text-[#e85d43]">{t('damage')}</em></h2></motion.div>
+            <motion.p variants={reveal} className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae] md:pb-1">{t('menuIntro')}</motion.p>
+          </motion.div>
+          <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#f4c6ae] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>)}</div>
+          <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_300px] lg:items-start">
+            <motion.div layout className="grid gap-4 sm:grid-cols-2">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
+            <aside className="order-first border border-[#f5eee2]/15 bg-[#420b09] p-5 lg:order-last lg:sticky lg:top-24" data-testid="summary-order">
+              <div className="flex items-center justify-between"><p className="font-mono-ui text-[9px] font-bold uppercase tracking-[.2em] text-[#f2b46d]">{t('bag')}</p><ShoppingBag size={17} className="text-[#f2b46d]" /></div>
+              {cart.length === 0 ? <div className="border-t border-[#f5eee2]/10 pt-8"><p className="font-display text-3xl">{t('emptyNow')}</p><p className="mt-3 text-sm leading-relaxed text-[#f4c6ae]">{t('emptySummary')}</p></div> : <div className="mt-6 space-y-3 border-t border-[#f5eee2]/10 pt-4">{cart.slice(0, 3).map(({ product, quantity }) => <div key={product.id} className="flex items-center justify-between gap-3 text-sm"><span className="truncate text-[#f4c6ae]"><b className="me-2 text-[#f2b46d]">{quantity}×</b>{productText(product, locale).name}</span><span className="font-mono-ui text-[10px] text-[#f5eee2]">{formatPrice(product.price * quantity, locale)}</span></div>)}{cart.length > 3 && <p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#f4c6ae]">+ {cart.length - 3} {t('more')}</p>}</div>}
+              <div className="mt-7 flex items-end justify-between border-t border-[#f5eee2]/10 pt-4"><span className="font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#f4c6ae]">{t('subtotal')}</span><span className="font-display text-3xl text-[#f2b46d]">{formatPrice(subtotal, locale)}</span></div>
+              <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount, source: 'summary' }); setCartOpen(true); }} data-testid="button-summary-checkout" className="mt-5 flex w-full items-center justify-between bg-[#e85d43] px-4 py-3.5 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#f2765d]">{t('reviewCheckout')} <ArrowUpRight size={15} /></button>
+              <p className="mt-3 text-center font-mono-ui text-[8px] uppercase tracking-[.13em] text-[#d49d8a]">{t('secureWhatsapp')}</p>
+            </aside>
+          </div>
+          <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#d49d8a] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setCartOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
         </div>
-        <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#716760] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setCartOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
       </section>
 
       <section id="story" className="border-y border-[#f5eee2]/10 bg-[#1a1210] px-5 py-20 md:px-10 md:py-28">

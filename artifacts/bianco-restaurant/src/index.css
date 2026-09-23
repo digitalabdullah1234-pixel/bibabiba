@@ -88,6 +88,10 @@ body { overflow-x: hidden; }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
 .marquee-track { animation: marquee 26s linear infinite; }
+.menu-highlights-track { animation: menu-slide 72s linear infinite; }
+.menu-highlights-window:hover .menu-highlights-track { animation-play-state: paused; }
+.menu-highlight-card { transition: border-color .45s ease, transform .45s cubic-bezier(.22,1,.36,1); }
+.menu-highlight-card:hover { border-color: rgba(242,180,109,.65); transform: translateY(-4px); }
 .hero-orbit { animation: orbit 22s linear infinite; }
 .line-link { position: relative; }
 .line-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
@@ -100,5 +104,6 @@ body { overflow-x: hidden; }
 .locale-ar [class*="tracking-"] { letter-spacing: 0; }
 .locale-ar .quiet-hero-headline { line-height: 1.08; }
 @keyframes marquee { to { transform: translateX(-50%); } }
+@keyframes menu-slide { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .marquee-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .marquee-track, .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
