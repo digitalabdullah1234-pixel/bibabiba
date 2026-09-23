@@ -32,7 +32,6 @@ const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatay
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
 const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
-const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
 
@@ -455,6 +454,8 @@ function ReservationDialog({ open, onOpenChange, t }: { open: boolean; onOpenCha
 }
 
 function LoadingScreen({ progress }: { progress: number }) {
+  const filledPetals = Math.ceil(progress / 25);
+
   return (
     <motion.div
       initial={{ opacity: 1 }}
@@ -463,37 +464,21 @@ function LoadingScreen({ progress }: { progress: number }) {
       role="status"
       aria-live="polite"
       aria-label={`Loading Bianco ${progress}%`}
-      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#530F0C] px-6 text-[#fff2df]"
+      className="loading-screen fixed inset-0 z-[100] flex items-center justify-center px-6 text-[#fff2df]"
     >
-      <div className="flex w-full max-w-[620px] flex-col items-center">
-        <motion.img
-          src={loadingHandImage}
-          alt=""
-          aria-hidden="true"
-          initial={{ opacity: 0, scale: 0.96, y: 18 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="w-[min(82vw,620px)] select-none"
-          draggable={false}
-        />
-        <div className="mt-2 w-full max-w-[340px]">
-          <div className="mb-3 flex items-end justify-between font-mono-ui text-[10px] uppercase tracking-[.2em] text-[#f4c6ae]">
-            <span>Bianco</span>
-            <span data-testid="text-loading-progress">{progress}%</span>
+      <div className="relative flex h-full w-full items-center justify-center">
+        <div className="loading-screen-corner loading-screen-corner-tl" aria-hidden="true" />
+        <div className="loading-screen-corner loading-screen-corner-tr" aria-hidden="true" />
+        <div className="loading-screen-corner loading-screen-corner-bl" aria-hidden="true" />
+        <div className="loading-screen-corner loading-screen-corner-br" aria-hidden="true" />
+        <div className="flex flex-col items-center">
+          <div className="loading-mark" aria-hidden="true">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <span key={index} className={`loading-petal loading-petal-${index + 1} ${index < filledPetals ? 'is-filled' : ''}`} />
+            ))}
           </div>
-          <div
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={100}
-            aria-valuenow={progress}
-            className="h-px w-full overflow-hidden bg-white/20"
-          >
-            <motion.div
-              className="h-full bg-[#f2b46d]"
-              animate={{ width: `${progress}%` }}
-              transition={{ duration: 0.2, ease: 'linear' }}
-            />
-          </div>
+          <span className="sr-only" data-testid="text-loading-progress">{progress}%</span>
+          <p className="mt-10 font-mono-ui text-[8px] uppercase tracking-[.3em] text-white/35">Bianco · Madinah</p>
         </div>
       </div>
     </motion.div>
