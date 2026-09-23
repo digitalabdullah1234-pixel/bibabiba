@@ -84,6 +84,19 @@ body { overflow-x: hidden; }
 .quiet-hero-link:hover::after { opacity: 1; }
 .quiet-hero-link:focus-visible, .quiet-hero-bag:focus-visible { outline-color: #FFFFFF; }
 .reserve-dialog:focus-visible { outline: none; }
+.loading-screen { background: radial-gradient(circle at center, rgba(255,255,255,.035), transparent 30%), #080808; }
+.loading-screen-corner { position: absolute; width: 4px; height: 4px; background: #f2b46d; box-shadow: 0 0 14px rgba(242,180,109,.65); }
+.loading-screen-corner-tl { left: 24px; top: 24px; }
+.loading-screen-corner-tr { right: 24px; top: 24px; }
+.loading-screen-corner-bl { bottom: 24px; left: 24px; }
+.loading-screen-corner-br { right: 24px; bottom: 24px; }
+.loading-mark { position: relative; width: 112px; height: 112px; }
+.loading-petal { position: absolute; width: 38px; height: 57px; border: 1px solid rgba(255,255,255,.22); border-radius: 12px 12px 11px 8px; background: transparent; transition: border-color .38s ease, background-color .38s ease, box-shadow .38s ease; }
+.loading-petal.is-filled { border-color: #fff; background: #fff; box-shadow: 0 0 24px rgba(255,255,255,.14); }
+.loading-petal-1 { left: 11px; top: 2px; transform: rotate(-45deg); }
+.loading-petal-2 { right: 11px; top: 2px; transform: rotate(45deg); }
+.loading-petal-3 { bottom: 2px; left: 11px; transform: rotate(45deg); }
+.loading-petal-4 { right: 11px; bottom: 2px; transform: rotate(-45deg); }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
