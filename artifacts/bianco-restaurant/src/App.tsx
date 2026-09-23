@@ -472,7 +472,7 @@ function LoadingScreen({ progress }: { progress: number }) {
             alt=""
             aria-hidden="true"
             className="loading-hand"
-            style={{ clipPath: `inset(${100 - progress}% 0 0 0)` }}
+            style={{ transform: `scaleY(${progress / 100})`, transformOrigin: 'bottom center' }}
             draggable={false}
           />
         </div>

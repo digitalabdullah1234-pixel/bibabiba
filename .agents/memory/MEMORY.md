@@ -1,1 +1,2 @@
 - [PDF menu photo extraction](pdf-menu-photo-extraction.md) — visually verify embedded dish assets because decorative PDF elements can be mistaken for food photos.
+- [Splash image reveal](splash-image-reveal.md) — use a direct image with a bottom-anchored transform for reliable preview rendering.

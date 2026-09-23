@@ -85,8 +85,8 @@ body { overflow-x: hidden; }
 .quiet-hero-link:focus-visible, .quiet-hero-bag:focus-visible { outline-color: #FFFFFF; }
 .reserve-dialog:focus-visible { outline: none; }
 .loading-screen { background: #530F0C; }
-.loading-hand-frame { position: relative; width: min(82vw, 680px); aspect-ratio: 947 / 864; overflow: hidden; background: #530F0C; }
-.loading-hand { display: block; width: 100%; height: 100%; object-fit: cover; object-position: center; transition: clip-path .18s linear; }
+.loading-hand-frame { position: relative; width: min(82vw, 680px); height: min(74vw, 620px); overflow: hidden; background: #530F0C; }
+.loading-hand { display: block; width: 100%; height: 100%; object-fit: fill; transition: transform .18s linear; }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
