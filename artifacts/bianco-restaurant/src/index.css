@@ -86,7 +86,10 @@ body { overflow-x: hidden; }
 .reserve-dialog:focus-visible { outline: none; }
 .loading-screen { background: #530F0C; }
 .loading-hand-frame { position: relative; width: min(82vw, 680px); height: min(74vw, 620px); overflow: hidden; background: #530F0C; }
-.loading-hand { display: block; width: 100%; height: 100%; object-fit: fill; transition: transform .18s linear; }
+.loading-hand-base, .loading-hand-active-image { display: block; width: 100%; height: 100%; object-fit: fill; }
+.loading-hand-base { opacity: .36; }
+.loading-hand-active { position: absolute; inset: 0; transition: clip-path .18s linear; }
+.loading-hand-active-image { filter: drop-shadow(0 0 5px rgba(255,255,255,.24)) drop-shadow(0 0 14px rgba(255,255,255,.12)); }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
