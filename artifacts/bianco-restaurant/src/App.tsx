@@ -36,7 +36,7 @@ const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
-const menuPath = `${import.meta.env.BASE_URL}menu`;
+const menuPath = '#menu-layout';
 
 type Product = {
   id: string;
@@ -653,6 +653,10 @@ function Home() {
 
       <MenuHighlights locale={locale} t={t} />
 
+      <section id="menu-layout" aria-label={t('menu')} className="border-b border-[#f5eee2]/10 bg-[#421713]">
+        <ProductionMenu embedded />
+      </section>
+
       <section id="order" className="bg-[#530F0C] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-[1440px]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="flex flex-col justify-between gap-8 border-b border-[#f5eee2]/15 pb-8 md:flex-row md:items-end">
@@ -710,7 +714,7 @@ function Router() {
     <RoutedErrorBoundary>
       <Switch>
         <Route path="/" component={Home} />
-        <Route path="/menu" component={ProductionMenu} />
+        <Route path="/menu" component={() => <ProductionMenu />} />
         <Route component={NotFound} />
       </Switch>
     </RoutedErrorBoundary>
