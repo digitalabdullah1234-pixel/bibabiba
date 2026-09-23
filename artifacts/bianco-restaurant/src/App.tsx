@@ -454,7 +454,55 @@ function ReservationDialog({ open, onOpenChange, t }: { open: boolean; onOpenCha
   );
 }
 
+function LoadingScreen({ progress }: { progress: number }) {
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1] }}
+      role="status"
+      aria-live="polite"
+      aria-label={`Loading Bianco ${progress}%`}
+      className="fixed inset-0 z-[100] flex items-center justify-center bg-[#530F0C] px-6 text-[#fff2df]"
+    >
+      <div className="flex w-full max-w-[620px] flex-col items-center">
+        <motion.img
+          src={loadingHandImage}
+          alt=""
+          aria-hidden="true"
+          initial={{ opacity: 0, scale: 0.96, y: 18 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="w-[min(82vw,620px)] select-none"
+          draggable={false}
+        />
+        <div className="mt-2 w-full max-w-[340px]">
+          <div className="mb-3 flex items-end justify-between font-mono-ui text-[10px] uppercase tracking-[.2em] text-[#f4c6ae]">
+            <span>Bianco</span>
+            <span data-testid="text-loading-progress">{progress}%</span>
+          </div>
+          <div
+            role="progressbar"
+            aria-valuemin={0}
+            aria-valuemax={100}
+            aria-valuenow={progress}
+            className="h-px w-full overflow-hidden bg-white/20"
+          >
+            <motion.div
+              className="h-full bg-[#f2b46d]"
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.2, ease: 'linear' }}
+            />
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
 function Home() {
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadProgress, setLoadProgress] = useState(0);
   const [locale, setLocale] = useState<Locale>(() => new URLSearchParams(window.location.search).get('lang') === 'ar' || window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [menuOpen, setMenuOpen] = useState(false);
   const [reservationOpen, setReservationOpen] = useState(false);
@@ -474,6 +522,24 @@ function Home() {
   const isArabic = locale === 'ar';
 
   useEffect(() => {
+    let progress = 0;
+    let finishTimer: number | undefined;
+    const progressTimer = window.setInterval(() => {
+      progress = Math.min(100, progress + 2);
+      setLoadProgress(progress);
+      if (progress >= 100) {
+        window.clearInterval(progressTimer);
+        finishTimer = window.setTimeout(() => setIsLoading(false), 500);
+      }
+    }, 36);
+
+    return () => {
+      window.clearInterval(progressTimer);
+      if (finishTimer) window.clearTimeout(finishTimer);
+    };
+  }, []);
+
+  useEffect(() => {
     window.localStorage.setItem('bianco-cart', JSON.stringify(cart));
   }, [cart]);
 
@@ -488,9 +554,9 @@ function Home() {
   }, [locale, isArabic]);
 
   useEffect(() => {
-    document.body.style.overflow = cartOpen || Boolean(selectedProduct) ? 'hidden' : '';
+    document.body.style.overflow = isLoading || cartOpen || Boolean(selectedProduct) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
-  }, [cartOpen, selectedProduct]);
+  }, [isLoading, cartOpen, selectedProduct]);
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
@@ -529,7 +595,9 @@ function Home() {
   };
 
   return (
-    <main dir={isArabic ? 'rtl' : 'ltr'} className={`grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2] ${isArabic ? 'locale-ar' : ''}`}>
+    <>
+      <AnimatePresence>{isLoading && <LoadingScreen progress={loadProgress} />}</AnimatePresence>
+      <main dir={isArabic ? 'rtl' : 'ltr'} className={`grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2] ${isArabic ? 'locale-ar' : ''}`}>
       <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[.14] bg-[#530F0C]/95 backdrop-blur-xl">
         <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
           <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-8 w-[112px] object-contain object-left" /></a>
@@ -590,10 +658,6 @@ function Home() {
         </div>
       </section>
 
-      <div className="overflow-hidden border-b border-[#210f0c] bg-[#e85d43] py-3 text-[#210f0c]">
-        <div className="marquee-track flex w-max items-center gap-10 whitespace-nowrap font-mono-ui text-[10px] font-bold uppercase tracking-[.2em]">{Array.from({ length: 2 }).flatMap((_, i) => [productText(products[0], locale).name, productText(products[1], locale).name, t('marqueeCity'), t('marqueeBag'), t('dailyHours')].map((item, j) => <span key={`${i}-${j}`} className="flex items-center gap-10">{item}<span className="text-lg">✳</span></span>))}</div>
-      </div>
-
       <MenuHighlights locale={locale} t={t} />
 
       <section id="order" className="bg-[#530F0C] px-5 py-20 md:px-10 md:py-28">
@@ -642,8 +706,9 @@ function Home() {
 
       <AnimatePresence>{cartOpen && <CartDrawer cart={cart} subtotal={subtotal} onClose={() => setCartOpen(false)} onUpdateQuantity={updateQuantity} onRemove={removeFromCart} locale={locale} t={t} />}</AnimatePresence>
       <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
-      <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
-    </main>
+       <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
+     </main>
+    </>
   );
 }
 
@@ -670,9 +735,9 @@ function App() {
         <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, '')}>
           <Router />
         </WouterRouter>
-        <Toaster />
-      </TooltipProvider>
-    </QueryClientProvider>
+       <Toaster />
+       </TooltipProvider>
+       </QueryClientProvider>
   );
 }
 
