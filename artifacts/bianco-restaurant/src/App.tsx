@@ -23,7 +23,6 @@ import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { trackEvent } from '@/lib/analytics';
 import NotFound from '@/pages/not-found';
-import { ProductionMenu } from '@/components/bianco-menu/ProductionMenu';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
@@ -36,7 +35,7 @@ const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
-const menuPath = '#menu-layout';
+const menuPath = '#order';
 
 type Product = {
   id: string;
@@ -502,6 +501,7 @@ function Home() {
   const [cartOpen, setCartOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [menuEntered, setMenuEntered] = useState(false);
   const [cart, setCart] = useState<CartLine[]>(() => {
     try {
       const saved = window.localStorage.getItem('bianco-cart');
@@ -545,6 +545,17 @@ function Home() {
       document.documentElement.dir = 'ltr';
     };
   }, [locale, isArabic]);
+
+  useEffect(() => {
+    const menuSection = document.getElementById('order');
+    if (!menuSection) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setMenuEntered(entry.isIntersecting),
+      { rootMargin: '-18% 0px -42% 0px' },
+    );
+    observer.observe(menuSection);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     document.body.style.overflow = isLoading || cartOpen || Boolean(selectedProduct) ? 'hidden' : '';
@@ -652,10 +663,6 @@ function Home() {
       </section>
 
       <MenuHighlights locale={locale} t={t} />
-
-      <section id="menu-layout" aria-label={t('menu')} className="border-b border-[#f5eee2]/10 bg-[#421713]">
-        <ProductionMenu embedded />
-      </section>
 
       <section id="order" className="bg-[#530F0C] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto max-w-[1440px]">
