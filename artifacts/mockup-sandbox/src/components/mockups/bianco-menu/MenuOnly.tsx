@@ -454,6 +454,7 @@ function MenuItemRow({
 export function MenuOnly() {
   const [language, setLanguage] = useState<Language>("en");
   const [activeSection, setActiveSection] = useState("all");
+  const [showAllOnAll, setShowAllOnAll] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [trayOpen, setTrayOpen] = useState(false);
@@ -463,12 +464,17 @@ export function MenuOnly() {
     () => activeSection === "all" ? sections : sections.filter((section) => section.id === activeSection),
     [activeSection],
   );
+  const hiddenOnAllCount = useMemo(
+    () => sections.reduce((total, section) => total + Math.max(section.products.length - 1, 0), 0),
+    [],
+  );
   const subtotal = cart.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
   const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
   const isArabic = language === "ar";
 
   const chooseSection = (sectionId: string) => {
     setActiveSection(sectionId);
+    setShowAllOnAll(false);
     requestAnimationFrame(() => document.getElementById(`menu-section-${sectionId}`)?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
@@ -540,7 +546,7 @@ export function MenuOnly() {
               </div>
               <span className="font-mono-ui text-[9px] text-[#e0a071]">{section.products.length}</span>
             </div>
-            {section.products.map((product) => (
+            {(activeSection === "all" && !showAllOnAll ? section.products.slice(0, 1) : section.products).map((product) => (
               <MenuItemRow
                 key={product.id}
                 product={product}
@@ -553,6 +559,20 @@ export function MenuOnly() {
             ))}
           </section>
         ))}
+        {activeSection === "all" && hiddenOnAllCount > 0 && (
+          <div className="flex justify-center py-8 sm:py-10">
+            <button
+              type="button"
+              onClick={() => setShowAllOnAll((expanded) => !expanded)}
+              className="focus-ring inline-flex items-center gap-3 border border-[#dba16f]/70 px-5 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.16em] text-[#f0bc8d] transition hover:bg-[#dba16f] hover:text-[#2a1411]"
+            >
+              {showAllOnAll
+                ? (isArabic ? "عرض أقل" : "Show less")
+                : (isArabic ? `عرض المزيد · ${hiddenOnAllCount}` : `Show more · ${hiddenOnAllCount} dishes`)}
+              {showAllOnAll ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+            </button>
+          </div>
+        )}
       </main>
 
       <div id="menu-only-tray" className={`fixed inset-x-3 bottom-3 z-40 transition-transform duration-500 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(620px,calc(100vw-80px))] lg:-translate-x-1/2 ${trayOpen ? "translate-y-0" : "translate-y-[calc(100%-62px)]"}`}>
