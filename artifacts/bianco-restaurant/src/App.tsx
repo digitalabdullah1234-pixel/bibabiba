@@ -32,6 +32,7 @@ const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatay
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
 const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
+const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
 
@@ -96,7 +97,6 @@ const ui: Record<Locale, Record<string, string>> = {
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
     remove: 'Remove', decrease: 'Decrease', increase: 'Increase',
-    marqueeCity: 'Madinah after dark', marqueeBag: 'Build your bag',
     gallery0: 'Bianco dining room from the Google Maps listing', gallery1: 'A closer look inside Bianco',
     gallery2: 'The Bianco room after dark', gallery3: 'Warm details from the restaurant',
   },
@@ -132,7 +132,6 @@ const ui: Record<Locale, Record<string, string>> = {
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
     remove: 'حذف', decrease: 'تقليل', increase: 'زيادة',
-    marqueeCity: 'ليالي المدينة', marqueeBag: 'كوّن طلبك',
     gallery0: 'صالة بيانكو من صور خرائط جوجل', gallery1: 'نظرة أقرب داخل بيانكو',
     gallery2: 'صالة بيانكو في المساء', gallery3: 'تفاصيل دافئة من المطعم',
   },

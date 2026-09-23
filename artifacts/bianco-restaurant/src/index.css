@@ -84,10 +84,8 @@ body { overflow-x: hidden; }
 .quiet-hero-link:hover::after { opacity: 1; }
 .quiet-hero-link:focus-visible, .quiet-hero-bag:focus-visible { outline-color: #FFFFFF; }
 .reserve-dialog:focus-visible { outline: none; }
-.marquee-track { animation: marquee 26s linear infinite; }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
-.marquee-track { animation: marquee 26s linear infinite; }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
 .menu-highlights-window:hover .menu-highlights-track { animation-play-state: paused; }
 .menu-highlight-card { transition: border-color .45s ease, transform .45s cubic-bezier(.22,1,.36,1); }
@@ -103,7 +101,6 @@ body { overflow-x: hidden; }
 .locale-ar .font-mono-ui { font-family: 'Noto Kufi Arabic', sans-serif; }
 .locale-ar [class*="tracking-"] { letter-spacing: 0; }
 .locale-ar .quiet-hero-headline { line-height: 1.08; }
-@keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes menu-slide { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
-@media (prefers-reduced-motion: reduce) { .marquee-track, .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
