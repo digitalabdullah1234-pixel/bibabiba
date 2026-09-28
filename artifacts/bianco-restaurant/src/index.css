@@ -116,7 +116,7 @@ body { overflow-x: hidden; }
 .line-link:hover::after { transform: scaleX(1); transform-origin: left; }
 .focus-ring:focus-visible { outline: 2px solid hsl(var(--accent)); outline-offset: 4px; }
 
-/* Softer silhouettes: architectural arches, pill controls, and rounded photo edges. */
+/* Keep the reference treatment on the header, hero, and featured-dish cards only. */
 .quiet-hero-frame { border-radius: 2.25rem 7rem 2.25rem 7rem; }
 .quiet-hero-frame::before { inset: 7px; border-radius: 1.9rem 6.5rem 1.9rem 6.5rem; }
 .quiet-hero-corner { display: none; }
@@ -125,28 +125,8 @@ body { overflow-x: hidden; }
 header [data-testid="button-language"],
 header [data-testid="button-nav-reserve"],
 header [data-testid="button-nav-reserve-mobile"],
-header [data-testid="button-open-cart"],
-#visit [data-testid="link-google-maps"] { border-radius: 9999px; }
-.product-card { border-radius: 1.5rem 1.5rem 4rem 1.5rem; }
-.menu-highlight-card { border-radius: 999px 999px 1.5rem 1.5rem; }
-#order [role="tab"] { border-radius: 9999px; }
-#order [data-testid^="button-menu-details-"] { border-radius: 1.1rem 1.1rem 3rem 1.1rem; }
-#order [data-testid^="button-menu-add-"] { border-radius: 9999px; }
-[data-testid^="modal-menu-item-"] { border-radius: 2rem; }
-#gallery figure { border-radius: 1.75rem; }
-#gallery figure:nth-of-type(4n + 1) { border-radius: 8rem 8rem 1.75rem 1.75rem; }
-#gallery figure:nth-of-type(4n + 2) { border-radius: 1.75rem 5.5rem 1.75rem 5.5rem; }
-#visit .relative { border-radius: 2.5rem 1.5rem 2.5rem 1.5rem; }
-#visit .absolute.top-5 { border-radius: 9999px; }
-[data-testid="dialog-reservation"] { border-radius: 2rem; }
-[data-testid="dialog-reservation"] > div { border-radius: 1.5rem; }
-[data-testid="tray-panel"] { border-radius: 1.5rem; }
-[data-testid="menu-tray"] > div:not(.tray-panel) { border-radius: 9999px; }
-[data-testid="button-open-tray"],
-[data-testid="button-tray-checkout"],
-[data-testid="tray-checkout-link"] { border-radius: 9999px; }
-[data-testid^="button-tray-decrease-"],
-[data-testid^="button-tray-increase-"] { border-radius: 50%; }
+header [data-testid="button-open-cart"] { border-radius: 9999px; }
+.menu-highlight-card { border-radius: 999px 999px .45rem .45rem; }
 
 @media (max-width: 1023px) {
   #order [data-testid="button-menu-your-cart"] { bottom: calc(5.5rem + env(safe-area-inset-bottom)); }
@@ -155,10 +135,7 @@ header [data-testid="button-open-cart"],
 @media (max-width: 767px) {
   .quiet-hero-frame { border-radius: 1.5rem 4rem 1.5rem 4rem; }
   .quiet-hero-frame::before { border-radius: 1.15rem 3.5rem 1.15rem 3.5rem; }
-  .menu-highlight-card { border-radius: 999px 999px 1.15rem 1.15rem; }
-  #gallery figure:nth-of-type(4n + 1) { border-radius: 6rem 6rem 1.25rem 1.25rem; }
-  #gallery figure:nth-of-type(4n + 2) { border-radius: 1.25rem 3.5rem 1.25rem 3.5rem; }
-  #visit .relative { border-radius: 2rem 1.25rem 2rem 1.25rem; }
+  .menu-highlight-card { border-radius: 999px 999px .3rem .3rem; }
 }
 
 .locale-ar { font-family: 'Noto Kufi Arabic', 'DM Sans', sans-serif; }
