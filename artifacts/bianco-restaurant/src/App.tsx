@@ -573,7 +573,7 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = isLoading || (trayOpen && menuEntered) || Boolean(selectedProduct) ? 'hidden' : '';
+    document.body.style.overflow = isLoading || Boolean(selectedProduct) ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [isLoading, trayOpen, menuEntered, selectedProduct]);
 
