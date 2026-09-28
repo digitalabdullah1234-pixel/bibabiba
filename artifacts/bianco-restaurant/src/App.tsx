@@ -81,8 +81,8 @@ const ui: Record<Locale, Record<string, string>> = {
     browseMenu: 'Browse the menu', itemsDelivery: 'items · for pickup or delivery', estimatedSubtotal: 'Estimated subtotal',
     whatsappOrder: 'Order via WhatsApp', preferCall: 'Prefer to call?', kitchen: 'From the Bianco kitchen',
     closeDetails: 'Close product details', reservationText: 'Call with your party size and preferred time to check availability and confirm your reservation with our team.',
-    call: 'Call', openDaily: 'Open daily · 12 PM — 2 AM', shopMenu: '02 — Shop the menu',
-    chooseYour: 'Choose your', damage: 'damage.', menuIntro: 'Tap a plate to see the details. Hit add and your bag is ready for the kitchen.',
+    call: 'Call', openDaily: 'Open daily · 12 PM — 2 AM', shopMenu: '02 — The Bianco menu',
+    chooseYour: 'Made for', damage: 'long evenings.', menuIntro: 'A few favourites from the Bianco table. Find your dish, then add it to your order.',
     emptyNow: 'Empty for now.', emptySummary: 'Add a plate and we’ll keep your order here while you browse.',
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
     prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag', energyLabel: '03 — The Bianco energy',
@@ -117,8 +117,8 @@ const ui: Record<Locale, Record<string, string>> = {
     browseMenu: 'تصفح القائمة', itemsDelivery: 'عناصر · للاستلام أو التوصيل', estimatedSubtotal: 'المجموع التقديري',
     whatsappOrder: 'اطلب عبر واتساب', preferCall: 'تفضل الاتصال؟', kitchen: 'من مطبخ بيانكو',
     closeDetails: 'إغلاق تفاصيل الطبق', reservationText: 'اتصل بنا مع عدد الضيوف والوقت المفضل للتحقق من التوفر وتأكيد حجزك مع فريقنا.',
-    call: 'اتصل', openDaily: 'مفتوح يومياً · 12 ظهراً — 2 صباحاً', shopMenu: '02 — اختر من القائمة',
-    chooseYour: 'اختر', damage: 'مزاجك.', menuIntro: 'اضغط على الطبق لمعرفة التفاصيل، ثم أضفه وسيصل طلبك إلى المطبخ.',
+    call: 'اتصل', openDaily: 'مفتوح يومياً · 12 ظهراً — 2 صباحاً', shopMenu: '02 — قائمة بيانكو',
+    chooseYour: 'نكهاتٌ تُحكى', damage: 'على مهل.', menuIntro: 'أطباق مختارة من مائدة بيانكو. اختر طبقك وأضفه إلى طلبك.',
     emptyNow: 'فارغة الآن.', emptySummary: 'أضف طبقاً وسنحتفظ بطلبك هنا أثناء التصفح.',
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
     prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة', energyLabel: '03 — أجواء بيانكو',
@@ -292,14 +292,13 @@ function ProductCard({
           <img src={product.image} alt={text.name} loading="lazy" style={{ objectPosition: product.imagePosition }} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
         ) : (
           <div className="menu-card-placeholder h-full w-full px-6 py-5" aria-hidden="true">
-            <span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / in the room</span>
+            <span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / Madinah</span>
             <span className="mt-10 block max-w-[11rem] font-display text-[2.15rem] leading-[.85] text-[#491d17]">{text.name}</span>
-            <span className="absolute bottom-5 start-6 font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#9b6b54]">House note · {text.note}</span>
           </div>
         )}
         <div className={`absolute inset-0 ${isDishPhoto ? 'bg-[linear-gradient(180deg,rgba(15,14,13,0),rgba(15,14,13,.68))]' : 'bg-[linear-gradient(180deg,rgba(255,247,229,0),rgba(66,28,20,.08))]'}`} />
         <span className={`absolute start-4 top-4 border px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] backdrop-blur-sm ${isDishPhoto ? 'border-[#f7dfb2]/60 bg-[#241310]/70 text-[#f7dfb2]' : 'border-[#6c3b2d]/25 bg-[#fff3de]/75 text-[#6c3b2d]'}`}>{text.category}</span>
-        <span className={`absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] ${isDishPhoto ? 'text-[#fff2df]/80' : 'text-[#765044]'}`}>{isDishPhoto ? text.note : 'Bianco house note'}</span>
+        {isDishPhoto && <span className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] text-[#fff2df]/80">{text.note}</span>}
         <span className={`absolute bottom-4 end-4 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full border opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${isDishPhoto ? 'border-white/40 bg-[#fbf1df] text-[#271510]' : 'border-[#6c3b2d]/25 bg-[#fff3de] text-[#491d17]'}`}><ArrowUpRight size={13} /></span>
       </button>
       <div className="flex flex-1 flex-col justify-between p-5 md:p-5">
@@ -685,7 +684,7 @@ function Home() {
       <MenuHighlights locale={locale} t={t} />
 
       <section id="order" className="menu-section relative overflow-hidden bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
-        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />Madinah<br />Since late</div>
+        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
             <motion.div variants={reveal}>
@@ -694,10 +693,9 @@ function Home() {
             </motion.div>
             <motion.div variants={reveal} className="md:pb-1">
               <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#67473c]">{t('menuIntro')}</p>
-              <div className="mt-6 flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9b4f2b]"><span className="h-px w-10 bg-[#9b4f2b]/45" />{t('prices')}</div>
             </motion.div>
           </motion.div>
-          <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>
+          <div className="menu-category-scroll mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>
             {categories.map((category) => (
               <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/25 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>
             ))}
@@ -767,7 +765,7 @@ function Home() {
           <ShoppingBag size={15} strokeWidth={1.7} />
           <div className="min-w-0 flex-1">
             <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>
-            <p className="font-mono-ui text-[8px] text-[#663528]">{cartCount ? `${t('estimatedSubtotal')} · ${formatPrice(subtotal, locale)}` : t('addToTable')}</p>
+            {cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}
           </div>
           <button type="button" onClick={() => setTrayOpen((open) => !open)} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button>
           <a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a>

@@ -1,2 +1,2 @@
-- [PDF menu photo extraction](pdf-menu-photo-extraction.md) — visually verify embedded dish assets because decorative PDF elements can be mistaken for food photos.
+- [Menu photo accuracy](pdf-menu-photo-extraction.md) — match images to the actual dish; use an honest placeholder rather than unrelated food or restaurant photos.
 - [Splash image reveal](splash-image-reveal.md) — use a direct image with a bottom-anchored transform for reliable preview rendering.
