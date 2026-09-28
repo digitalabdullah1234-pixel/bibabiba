@@ -78,7 +78,7 @@ type Translate = (key: string) => string;
 
 const ui: Record<Locale, Record<string, string>> = {
   en: {
-    madinah: 'Madinah', menu: 'Menu', energy: 'The Bianco energy', findUs: 'Find us', maps: 'Maps',
+    madinah: 'Madinah', menu: 'Menu', energy: 'The room', findUs: 'Find us', maps: 'Maps',
     reserve: 'Reserve a table', callForTable: 'Call for a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
     dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
@@ -96,7 +96,7 @@ const ui: Record<Locale, Record<string, string>> = {
     chooseYour: 'Made for', damage: 'long evenings.', menuIntro: 'A few favourites from the Bianco table. Find your dish, then add it to your order.',
     emptyNow: 'Empty for now.', emptySummary: 'Add a plate and we’ll keep your order here while you browse.',
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
-    prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag', energyLabel: '03 — The Bianco energy',
+    prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag', energyLabel: '03 — The room',
     trayOpen: 'Open tray', trayClose: 'Close tray', checkout: 'Checkout', selected: 'selected', tableOpen: 'Your table is open', addToTable: 'Add a plate and your table will hold it here.',
     storyHeadingA: 'Not a', storyHeadingB: 'quiet', storyHeadingC: 'room.',
     storyLead: 'Bianco means white. The evening is anything but.',
@@ -115,7 +115,7 @@ const ui: Record<Locale, Record<string, string>> = {
     gallery2: 'The Bianco room after dark', gallery3: 'Warm details from the restaurant',
   },
   ar: {
-    madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء بيانكو', findUs: 'موقعنا', maps: 'الخرائط',
+    madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء المكان', findUs: 'موقعنا', maps: 'الخرائط',
     reserve: 'احجز طاولة', callForTable: 'اتصل لحجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
     dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
@@ -133,7 +133,7 @@ const ui: Record<Locale, Record<string, string>> = {
     chooseYour: 'نكهاتٌ تُحكى', damage: 'على مهل.', menuIntro: 'أطباق مختارة من مائدة بيانكو. اختر طبقك وأضفه إلى طلبك.',
     emptyNow: 'فارغة الآن.', emptySummary: 'أضف طبقاً وسنحتفظ بطلبك هنا أثناء التصفح.',
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
-    prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة', energyLabel: '03 — أجواء بيانكو',
+    prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة', energyLabel: '03 — أجواء المكان',
     trayOpen: 'افتح مائدتك', trayClose: 'أغلق مائدتك', checkout: 'إتمام الطلب', selected: 'مختارة', tableOpen: 'مائدتك مفتوحة', addToTable: 'أضف طبقاً وسنحتفظ به هنا أثناء التصفح.',
     storyHeadingA: 'ليست', storyHeadingB: 'هادئة', storyHeadingC: 'هذه الصالة.',
     storyLead: 'بيانكو تعني الأبيض، لكن المساء هنا مليء بالألوان.',
