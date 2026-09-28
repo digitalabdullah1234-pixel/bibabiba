@@ -86,6 +86,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
     menuGalleryLabel: '01 — From the menu', menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.',
+    allCategories: 'All', showMore: 'Show more', showLess: 'Show less', yourCart: 'Your Cart',
     cartEyebrow: 'Your table, to go', cartTitle: 'Your order', closeCart: 'Close cart',
     emptyTitle: 'Nothing on the table yet.', emptyText: 'Add a signature, a little something to share, and we will get it moving.',
     browseMenu: 'Browse the menu', itemsDelivery: 'items · for pickup or delivery', estimatedSubtotal: 'Estimated subtotal',
@@ -122,6 +123,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
     menuGalleryLabel: '01 — من القائمة', menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.',
+    allCategories: 'الكل', showMore: 'عرض المزيد', showLess: 'عرض أقل', yourCart: 'سلتك',
     cartEyebrow: 'مائدتك، أينما كنت', cartTitle: 'طلبك', closeCart: 'إغلاق السلة',
     emptyTitle: 'مائدتك فارغة حتى الآن.', emptyText: 'أضف طبقاً مميزاً أو شيئاً للمشاركة وسنتولى الباقي.',
     browseMenu: 'تصفح القائمة', itemsDelivery: 'عناصر · للاستلام أو التوصيل', estimatedSubtotal: 'المجموع التقديري',
@@ -397,6 +399,7 @@ function ApiMenuHighlights({
   onSelect: (item: MenuItem) => void;
 }) {
   const items = orderedCategories(categories).flatMap((category) => orderedItems(category).filter((item) => item.featured).map((item) => ({ item, category }))).slice(0, 6);
+  const repeatedItems = [...items, ...items];
   if (!items.length) return null;
   return (
     <section aria-labelledby="menu-highlights-heading" className="overflow-hidden border-y border-[#f5eee2]/15 bg-[#530f0c]">
@@ -409,16 +412,17 @@ function ApiMenuHighlights({
           <p className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
         </div>
       </div>
-      <div className="border-y border-[#f5eee2]/15">
-        <div className="mx-auto grid max-w-[1440px] gap-px bg-[#f5eee2]/15 md:grid-cols-3">
-          {items.map(({ item, category }, index) => {
+      <div className="menu-highlights-window border-y border-[#f5eee2]/15 py-5" aria-label={t('menuGalleryTitle')}>
+        <div className="menu-highlights-track flex w-max gap-4 px-5">
+          {repeatedItems.map(({ item, category }, index) => {
+            const isDuplicate = index >= items.length;
             const image = menuImage(item.imagePath);
             return (
-              <button type="button" key={item.id} onClick={() => onSelect(item)} data-testid={`button-featured-${item.id}`} className="group relative min-h-[230px] overflow-hidden bg-[#420b09] text-start">
+              <button type="button" key={`${item.id}-${index}`} onClick={() => onSelect(item)} aria-hidden={isDuplicate} tabIndex={isDuplicate ? -1 : undefined} data-testid={`button-featured-${item.id}${isDuplicate ? '-duplicate' : ''}`} className="menu-highlight-card group relative h-[230px] w-[230px] shrink-0 overflow-hidden border border-[#f5eee2]/20 bg-[#420b09] text-start md:h-[280px] md:w-[280px]">
                 {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-85" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
                 <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />
-                <div className="relative flex min-h-[230px] flex-col justify-between p-5 text-[#fff2df]">
-                  <span className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8bd82]">{String(index + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
+                <div className="relative flex h-full flex-col justify-between p-5 text-[#fff2df]">
+                  <span className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8bd82]">{String((index % items.length) + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
                   <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className="mt-2 block font-mono-ui text-[10px] text-[#f7d8be]">{formatPrice(item.price, locale)}</span></span>
                 </div>
               </button>
@@ -582,7 +586,8 @@ function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [reservationOpen, setReservationOpen] = useState(false);
   const [trayOpen, setTrayOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [allMenuExpanded, setAllMenuExpanded] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<MenuItem | null>(null);
   const [menuEntered, setMenuEntered] = useState(false);
   const [cartId] = useState(readBiancoCartId);
@@ -593,8 +598,10 @@ function Home() {
   const cartQuery = useGetCart(cartId, { query: { queryKey: getGetCartQueryKey(cartId) } });
   const putCart = usePutCart();
   const menuCategories = useMemo(() => orderedCategories(menuQuery.data?.categories ?? []).filter((category) => orderedItems(category).length > 0), [menuQuery.data]);
-  const activeCategory = menuCategories.find((category) => category.id === selectedCategory) ?? menuCategories[0];
+  const activeCategory = selectedCategory === 'all' ? undefined : menuCategories.find((category) => category.id === selectedCategory);
+  const isAllMenu = selectedCategory === 'all' || !activeCategory;
   const visibleItems = activeCategory ? orderedItems(activeCategory) : [];
+  const hiddenAllMenuItems = menuCategories.reduce((count, category) => count + Math.max(0, orderedItems(category).length - 1), 0);
 
   useEffect(() => {
     let progress = 0;
@@ -615,7 +622,10 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    if (menuCategories.length && !menuCategories.some((category) => category.id === selectedCategory)) setSelectedCategory(menuCategories[0].id);
+    if (menuCategories.length && selectedCategory !== 'all' && !menuCategories.some((category) => category.id === selectedCategory)) {
+      setSelectedCategory('all');
+      setAllMenuExpanded(false);
+    }
   }, [menuCategories, selectedCategory]);
 
   useEffect(() => {
@@ -761,7 +771,7 @@ function Home() {
 
       <ApiMenuHighlights categories={menuCategories} locale={locale} t={t} onSelect={setSelectedProduct} />
 
-      <section id="order" className="menu-section relative overflow-hidden bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
+      <section id="order" className="menu-section relative overflow-clip bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
         <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
@@ -775,13 +785,66 @@ function Home() {
             </motion.div>
           </motion.div>
           <div className="mt-8 grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-14">
-            <nav className="menu-category-scroll flex gap-2 overflow-x-auto pb-2 lg:block lg:overflow-visible" role="tablist" aria-label={t('menu')}>
-              {menuCategories.map((category, index) => (
-                <button type="button" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); }} aria-selected={activeCategory?.id === category.id} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${activeCategory?.id === category.id ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
-              ))}
-            </nav>
+            <div className="lg:sticky lg:top-24 lg:self-start">
+              <nav className="menu-category-scroll flex gap-2 overflow-x-auto pb-2 lg:block lg:overflow-visible" role="tablist" aria-label={t('menu')}>
+                <button type="button" role="tab" onClick={() => { trackEvent('menu_category_selected', { category: 'all' }); setSelectedCategory('all'); setAllMenuExpanded(false); }} aria-selected={isAllMenu} data-testid="button-category-all" className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isAllMenu ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">00</span>{t('allCategories')}</button>
+                {menuCategories.map((category, index) => {
+                  const isActive = selectedCategory === category.id;
+                  return (
+                    <button type="button" role="tab" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); setAllMenuExpanded(false); }} aria-selected={isActive} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isActive ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
+                  );
+                })}
+              </nav>
+              {menuEntered && !trayOpen && (
+                <button
+                  type="button"
+                  onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setTrayOpen(true); }}
+                  aria-label={t('openCart').replace('{count}', String(cartCount))}
+                  data-testid="button-menu-your-cart"
+                  className="focus-ring fixed inset-x-5 bottom-5 z-30 mx-auto flex w-auto max-w-[420px] items-center justify-between gap-4 rounded-full border border-[#7a4a39]/35 bg-[#612c21] px-4 py-2.5 text-start text-[#f8ead6] shadow-lg transition hover:bg-[#74372a] lg:static lg:mt-4 lg:w-full lg:max-w-none"
+                >
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#f4e7d4] text-[#612c21]">
+                      <ShoppingBag size={16} strokeWidth={1.7} />
+                      <span className="absolute -end-1 -top-1 min-w-4 rounded-full bg-[#f2b46d] px-1 text-center font-mono-ui text-[8px] font-bold text-[#351e19]">{cartCount}</span>
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-mono-ui text-[9px] font-bold uppercase tracking-[.15em]">{t('yourCart')}</span>
+                      <span className="mt-1 block truncate text-[10px] text-[#f8ead6]/70">{cartCount ? formatPrice(subtotal, locale) : t('emptyNow')}</span>
+                    </span>
+                  </span>
+                  <ChevronRight size={15} className="shrink-0" />
+                </button>
+              )}
+            </div>
             <div className="min-w-0">
-              {menuQuery.isLoading ? <MenuNotice kind="loading" t={t} /> : menuQuery.isError ? <MenuNotice kind="error" t={t} onRetry={() => menuQuery.refetch()} /> : !menuCategories.length ? <MenuNotice kind="empty" t={t} /> : activeCategory && visibleItems.length ? <motion.div layout className="border-t border-[#63372b]/20">{visibleItems.map((item) => <ApiMenuItem key={item.id} item={item} category={activeCategory} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div> : <MenuNotice kind="empty" t={t} />}
+              {menuQuery.isLoading ? <MenuNotice kind="loading" t={t} /> : menuQuery.isError ? <MenuNotice kind="error" t={t} onRetry={() => menuQuery.refetch()} /> : !menuCategories.length ? <MenuNotice kind="empty" t={t} /> : isAllMenu ? (
+                <div>
+                  {menuCategories.map((category) => {
+                    const categoryItems = orderedItems(category);
+                    const shownItems = allMenuExpanded ? categoryItems : categoryItems.slice(0, 1);
+                    return (
+                      <section key={category.id} className="mb-8 last:mb-0">
+                        <div className="flex items-end justify-between border-b border-[#63372b]/20 pb-3">
+                          <h3 className="font-display text-3xl leading-none tracking-[-.04em] text-[#351e19]">{locale === 'ar' ? category.titleAr : category.titleEn}</h3>
+                          <span className="font-mono-ui text-[9px] text-[#9b4f2b]">{String(categoryItems.length).padStart(2, '0')}</span>
+                        </div>
+                        <motion.div layout className="border-t border-[#63372b]/20">
+                          {shownItems.map((item) => <ApiMenuItem key={item.id} item={item} category={category} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}
+                        </motion.div>
+                      </section>
+                    );
+                  })}
+                  {hiddenAllMenuItems > 0 && (
+                    <div className="flex justify-center border-t border-[#63372b]/20 py-6">
+                      <button type="button" onClick={() => setAllMenuExpanded((expanded) => !expanded)} data-testid="button-menu-show-more" aria-expanded={allMenuExpanded} className="focus-ring inline-flex items-center gap-3 rounded-full border border-[#8d4027]/50 px-6 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.15em] text-[#612c21] transition hover:bg-[#612c21] hover:text-[#f8ead6]">
+                        {allMenuExpanded ? t('showLess') : t('showMore')}
+                        <ChevronDown size={14} className={`transition-transform ${allMenuExpanded ? 'rotate-180' : ''}`} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ) : activeCategory && visibleItems.length ? <motion.div layout className="border-t border-[#63372b]/20">{visibleItems.map((item) => <ApiMenuItem key={item.id} item={item} category={activeCategory} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div> : <MenuNotice kind="empty" t={t} />}
             </div>
           </div>
           <div className="mt-9 flex flex-col gap-3 border-t border-[#63372b]/20 pt-5 text-[10px] uppercase tracking-[.14em] text-[#875546] sm:flex-row sm:items-center sm:justify-between">
