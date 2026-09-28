@@ -584,6 +584,7 @@ function Home() {
   const [loadProgress, setLoadProgress] = useState(0);
   const [locale, setLocale] = useState<Locale>(() => new URLSearchParams(window.location.search).get('lang') === 'ar' || window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [menuOpen, setMenuOpen] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(() => window.scrollY > 12);
   const [reservationOpen, setReservationOpen] = useState(false);
   const [trayOpen, setTrayOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
@@ -619,6 +620,12 @@ function Home() {
       window.clearInterval(progressTimer);
       if (finishTimer) window.clearTimeout(finishTimer);
     };
+  }, []);
+
+  useEffect(() => {
+    const updateScrollState = () => setHasScrolled(window.scrollY > 12);
+    window.addEventListener('scroll', updateScrollState, { passive: true });
+    return () => window.removeEventListener('scroll', updateScrollState);
   }, []);
 
   useEffect(() => {
@@ -709,20 +716,19 @@ function Home() {
     <>
       <AnimatePresence>{isLoading && <LoadingScreen progress={loadProgress} />}</AnimatePresence>
       <main dir={isArabic ? 'rtl' : 'ltr'} className={`grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2] ${isArabic ? 'locale-ar' : ''}`}>
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-white/[.14] bg-[#530F0C]/95 backdrop-blur-xl">
-        <div className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
-          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="h-8 w-[112px] object-contain object-left" /></a>
-          <nav className={`${menuOpen ? 'absolute left-0 right-0 top-[74px] flex flex-col border-b border-white/[.14] bg-[#530F0C] px-6 pb-7 pt-6' : 'hidden'} gap-6 text-[11px] uppercase tracking-[.2em] text-white/75 md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0`} aria-label={t('menu')}>
-            <a href={menuPath} onClick={closeMenu} data-testid="link-nav-order" className="line-link transition hover:text-white">{t('menu')}</a>
-            <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link transition hover:text-white">{t('energy')}</a>
-            <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link transition hover:text-white">{t('maps')} <ArrowUpRight className="ms-1 inline" size={12} /></a>
-            <button type="button" onClick={() => { closeMenu(); openReservation('nav_mobile'); }} data-testid="button-nav-reserve-mobile" className="quiet-hero-cta focus-ring mt-2 flex items-center justify-between border border-white px-5 py-3.5 text-[.68rem] uppercase tracking-[.26em] text-white md:hidden"><span>{t('callForTable')}</span><Phone size={13} strokeWidth={1.6} /></button>
-          </nav>
-          <div className="flex items-center gap-2 md:gap-3">
-            <button type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')} data-testid="button-language" aria-label={isArabic ? 'Switch to English' : 'التبديل إلى العربية'} className="focus-ring min-w-10 border border-white/35 px-2.5 py-2.5 text-center text-[.7rem] font-semibold text-white transition hover:border-white hover:bg-white/10">{isArabic ? 'EN' : 'عر'}</button>
-            <button type="button" onClick={() => openReservation('nav')} data-testid="button-nav-reserve" className="quiet-hero-cta focus-ring hidden border border-white px-4 py-2.5 text-[.64rem] uppercase tracking-[.24em] text-white md:inline-flex">{t('reserve')}</button>
-            <button type="button" onClick={() => { trackEvent('bag_opened', { item_count: cartCount }); setTrayOpen(true); document.getElementById('order')?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }} aria-label={t('openCart').replace('{count}', String(cartCount))} data-testid="button-open-cart" className="quiet-hero-bag focus-ring relative flex items-center gap-2 border border-white/40 px-3.5 py-2.5 text-[.64rem] uppercase tracking-[.2em] text-white"><ShoppingBag size={14} strokeWidth={1.6} /><span className="hidden sm:inline">{t('bag')}</span><AnimatePresence mode="popLayout"><motion.span key={cartCount} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 1, y: 0 }} data-testid="text-header-cart-count" className="min-w-4 text-center">{cartCount}</motion.span></AnimatePresence></button>
-            <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('closeMenu') : t('openMenu')} data-testid="button-mobile-menu" className="focus-ring rounded-full p-2 text-white md:hidden">{menuOpen ? <X size={21} strokeWidth={1.5} /> : <Menu size={21} strokeWidth={1.5} />}</button>
+      <header data-scrolled={hasScrolled ? 'true' : 'false'} className="site-header fixed inset-x-0 top-0 z-40 border-b backdrop-blur-xl">
+        <div dir="ltr" className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
+          <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="site-header-logo h-8 w-[112px] object-contain object-left" /></a>
+          <div dir="ltr" className="ml-auto flex items-center gap-3 md:gap-6">
+            <button type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')} data-testid="button-language" aria-label={isArabic ? 'Switch to English' : 'التبديل إلى العربية'} className="site-header-language focus-ring min-w-10 border px-2.5 py-2.5 text-center text-[.7rem] font-semibold transition">{isArabic ? 'EN' : 'عر'}</button>
+            <nav dir="ltr" className={`${menuOpen ? 'site-header-mobile-open absolute left-0 right-0 top-[74px] flex flex-col border-b px-6 pb-7 pt-6 shadow-xl' : 'site-header-mobile-closed hidden'} site-header-nav gap-6 text-[11px] uppercase tracking-[.2em] ${isArabic ? 'text-right' : 'text-left'} md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none`} aria-label={t('menu')}>
+              <a href={menuPath} onClick={closeMenu} data-testid="link-nav-order" className="line-link site-header-link transition">{t('menu')}</a>
+              <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link site-header-link transition">{t('energy')}</a>
+              <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link site-header-link transition">{t('maps')} <ArrowUpRight className="ms-1 inline" size={12} /></a>
+              <button type="button" onClick={() => { closeMenu(); openReservation('nav_mobile'); }} data-testid="button-nav-reserve-mobile" className="site-header-reserve mt-2 flex items-center justify-between border px-5 py-3.5 text-[.68rem] uppercase tracking-[.26em] md:hidden"><span>{t('callForTable')}</span><Phone size={13} strokeWidth={1.6} /></button>
+            </nav>
+            <button type="button" onClick={() => openReservation('nav')} data-testid="button-nav-reserve" className="site-header-reserve focus-ring hidden border px-4 py-2.5 text-[.64rem] uppercase tracking-[.24em] md:inline-flex">{t('reserve')}</button>
+            <button type="button" onClick={() => setMenuOpen(!menuOpen)} aria-label={menuOpen ? t('closeMenu') : t('openMenu')} aria-expanded={menuOpen} data-testid="button-mobile-menu" className="site-header-toggle focus-ring border p-2 md:hidden">{menuOpen ? <X size={21} strokeWidth={1.5} /> : <Menu size={21} strokeWidth={1.5} />}</button>
           </div>
         </div>
       </header>
