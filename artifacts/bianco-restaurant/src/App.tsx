@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { trackEvent } from '@/lib/analytics';
+import { isMenuCutoutImage, resolveMenuImage } from '@/lib/menu-images';
 import {
   getGetCartQueryKey,
   getGetMenuQueryKey,
@@ -198,6 +199,7 @@ function ProductCard({
 }) {
   const text = productText(product, locale);
   const isDishPhoto = product.image.includes('/menu-dishes/');
+  const isCutoutPhoto = isMenuCutoutImage(product.image);
   return (
     <motion.article
       layout
@@ -209,19 +211,19 @@ function ProductCard({
       data-testid={`card-product-${product.id}`}
       className="product-card group relative flex min-w-0 flex-col overflow-hidden border border-[#2e2924]/15 bg-[#fbf1df] text-[#241b17] shadow-[0_16px_36px_rgba(38,18,12,.12)]"
     >
-      <button type="button" onClick={() => { trackEvent('product_viewed', { product_id: product.id, product_name: product.name, category: product.category }); onDetails(product); }} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-[1.42] w-full overflow-hidden text-start">
+      <button type="button" onClick={() => { trackEvent('product_viewed', { product_id: product.id, product_name: product.name, category: product.category }); onDetails(product); }} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-square w-full overflow-hidden bg-[#fbf1df] text-start">
         {isDishPhoto ? (
-          <img src={product.image} alt={text.name} loading="lazy" style={{ objectPosition: product.imagePosition }} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+          <img src={product.image} alt={text.name} loading="lazy" style={{ objectPosition: product.imagePosition }} className={`h-full w-full transition duration-700 group-hover:scale-105 ${isCutoutPhoto ? 'object-contain p-4 drop-shadow-[0_16px_18px_rgba(59,27,19,.18)]' : 'object-cover'}`} />
         ) : (
           <div className="menu-card-placeholder h-full w-full px-6 py-5" aria-hidden="true">
             <span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / Madinah</span>
             <span className="mt-10 block max-w-[11rem] font-display text-[2.15rem] leading-[.85] text-[#491d17]">{text.name}</span>
           </div>
         )}
-        <div className={`absolute inset-0 ${isDishPhoto ? 'bg-[linear-gradient(180deg,rgba(15,14,13,0),rgba(15,14,13,.68))]' : 'bg-[linear-gradient(180deg,rgba(255,247,229,0),rgba(66,28,20,.08))]'}`} />
-        <span className={`absolute start-4 top-4 border px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] backdrop-blur-sm ${isDishPhoto ? 'border-[#f7dfb2]/60 bg-[#241310]/70 text-[#f7dfb2]' : 'border-[#6c3b2d]/25 bg-[#fff3de]/75 text-[#6c3b2d]'}`}>{text.category}</span>
-        {isDishPhoto && <span className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] text-[#fff2df]/80">{text.note}</span>}
-        <span className={`absolute bottom-4 end-4 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full border opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${isDishPhoto ? 'border-white/40 bg-[#fbf1df] text-[#271510]' : 'border-[#6c3b2d]/25 bg-[#fff3de] text-[#491d17]'}`}><ArrowUpRight size={13} /></span>
+        {!isCutoutPhoto && <div className={`absolute inset-0 ${isDishPhoto ? 'bg-[linear-gradient(180deg,rgba(15,14,13,0),rgba(15,14,13,.68))]' : 'bg-[linear-gradient(180deg,rgba(255,247,229,0),rgba(66,28,20,.08))]'}`} />}
+        <span className={`absolute start-4 top-4 border px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] backdrop-blur-sm ${isDishPhoto && !isCutoutPhoto ? 'border-[#f7dfb2]/60 bg-[#241310]/70 text-[#f7dfb2]' : 'border-[#6c3b2d]/25 bg-[#fff3de]/85 text-[#6c3b2d]'}`}>{text.category}</span>
+        {isDishPhoto && <span className={`absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] ${isCutoutPhoto ? 'text-[#765b4e]' : 'text-[#fff2df]/80'}`}>{text.note}</span>}
+        <span className={`absolute bottom-4 end-4 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full border opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${isDishPhoto && !isCutoutPhoto ? 'border-white/40 bg-[#fbf1df] text-[#271510]' : 'border-[#6c3b2d]/25 bg-[#fff3de] text-[#491d17]'}`}><ArrowUpRight size={13} /></span>
       </button>
       <div className="flex flex-1 flex-col justify-between p-5 md:p-5">
         <div>
@@ -262,7 +264,7 @@ function MenuHighlights({ locale, t }: { locale: Locale; t: Translate }) {
             const category = isArabic ? dish.arabicCategory : dish.category;
             return (
               <figure key={`${dish.id}-${index}`} className="menu-highlight-card group relative w-[230px] shrink-0 overflow-hidden border border-[#f5eee2]/20 bg-[#420b09] md:w-[280px]">
-                <div className="aspect-[1.18] overflow-hidden">
+                <div className="aspect-square overflow-hidden">
                   <img src={dish.image} alt={dishName} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#210604]/85 via-transparent to-transparent" />
                 </div>
@@ -323,7 +325,7 @@ function CartDrawer({
               <p data-testid="text-cart-count" className="mb-5 font-mono-ui text-[10px] uppercase tracking-[.16em] text-[#a9a097]">{cart.reduce((sum, line) => sum + line.quantity, 0)} {t('itemsDelivery')}</p>
               {cart.map(({ product, quantity }) => (
                 <motion.div layout key={product.id} data-testid={`row-cart-${product.id}`} className="flex gap-4 border-t border-white/[.11] py-5">
-                  {product.image.includes('/menu-dishes/') ? <img src={product.image} alt="" className="h-20 w-20 shrink-0 object-cover opacity-80" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder h-20 w-20 shrink-0" aria-hidden="true" />}
+                  {product.image.includes('/menu-dishes/') ? <img src={product.image} alt="" className={`h-20 w-20 shrink-0 ${isMenuCutoutImage(product.image) ? 'bg-[#fbf1df] object-contain p-1' : 'object-cover opacity-80'}`} style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder h-20 w-20 shrink-0" aria-hidden="true" />}
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between gap-3"><p className="font-display text-2xl leading-none">{productText(product, locale).name}</p><button type="button" onClick={() => onRemove(product.id)} aria-label={`${t('remove')} ${productText(product, locale).name}`} data-testid={`button-remove-${product.id}`} className="text-[#8f867c] transition hover:text-[#e8c78e]"><Trash2 size={15} /></button></div>
                     <p className="mt-2 font-mono-ui text-[10px] text-[#e8c78e]">{formatPrice(product.price, locale)}</p>
@@ -354,11 +356,12 @@ function CartDrawer({
 function ProductDetailModal({ product, onClose, onAdd, locale, t }: { product: Product; onClose: () => void; onAdd: (product: Product) => void; locale: Locale; t: Translate }) {
   const text = productText(product, locale);
   const isDishPhoto = product.image.includes('/menu-dishes/');
+  const isCutoutPhoto = isMenuCutoutImage(product.image);
   return (
     <AnimatePresence>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080706]/80 p-4 backdrop-blur-sm" data-testid="modal-product-backdrop">
         <motion.div initial={{ opacity: 0, y: 22, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .98 }} onClick={(event) => event.stopPropagation()} className="relative grid w-full max-w-[880px] overflow-hidden border border-white/[.14] bg-[#1a1816] md:grid-cols-[.9fr_1.1fr]" data-testid={`modal-product-${product.id}`}>
-          <div className="relative min-h-[290px] md:min-h-[520px]">{isDishPhoto ? <img src={product.image} alt={text.name} className="absolute inset-0 h-full w-full object-cover opacity-80" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / in the room</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{text.name}</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /><span className="absolute bottom-5 start-5 font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8c78e]">{text.category} · {text.note}</span></div>
+          <div className={`relative min-h-[290px] md:min-h-[520px] ${isCutoutPhoto ? 'bg-[#f1e5d2]' : ''}`}>{isDishPhoto ? <img src={product.image} alt={text.name} className={`absolute inset-0 h-full w-full ${isCutoutPhoto ? 'object-contain p-8' : 'object-cover opacity-80'}`} style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / in the room</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{text.name}</span></div>}{!isCutoutPhoto && <div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" />}<span className={`absolute bottom-5 start-5 font-mono-ui text-[9px] uppercase tracking-[.18em] ${isCutoutPhoto ? 'text-[#6c3b2d]' : 'text-[#e8c78e]'}`}>{text.category} · {text.note}</span></div>
           <div className="flex flex-col justify-between p-6 md:p-10"><button type="button" onClick={onClose} aria-label={t('closeDetails')} data-testid="button-close-product-modal" className="absolute end-4 top-4 rounded-full border border-white/15 p-2 text-[#c6bdb2] transition hover:border-[#e8c78e] hover:text-[#e8c78e]"><X size={17} /></button><div><p className="font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#e8c78e]">{t('kitchen')}</p><h2 data-testid={`text-modal-name-${product.id}`} className="mt-5 max-w-[380px] font-display text-6xl leading-[.88] tracking-[-.03em] text-[#efe8dc]">{text.name}</h2><p data-testid={`text-modal-description-${product.id}`} className="mt-7 max-w-[390px] text-base leading-relaxed text-[#b8afa5]">{text.description}</p></div><div className="mt-12"><p data-testid={`text-modal-price-${product.id}`} className="font-mono-ui text-xs text-[#e8c78e]">{formatPrice(product.price, locale)}</p><button type="button" onClick={() => { onAdd(product); onClose(); }} data-testid={`button-modal-add-${product.id}`} className="mt-5 flex w-full items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.16em] text-[#171513] transition hover:bg-[#f0d7a9]"><span>{t('addOrder')}</span><Plus size={16} /></button></div></div>
         </motion.div>
       </motion.div>
@@ -367,8 +370,7 @@ function ProductDetailModal({ product, onClose, onAdd, locale, t }: { product: P
 }
 
 function menuImage(path: string | null) {
-  if (!path) return null;
-  return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
+  return resolveMenuImage(path);
 }
 
 function itemName(item: MenuItem, locale: Locale) {
@@ -417,13 +419,14 @@ function ApiMenuHighlights({
           {repeatedItems.map(({ item, category }, index) => {
             const isDuplicate = index >= items.length;
             const image = menuImage(item.imagePath);
+            const isCutoutPhoto = isMenuCutoutImage(image);
             return (
-              <button type="button" key={`${item.id}-${index}`} onClick={() => onSelect(item)} aria-hidden={isDuplicate} tabIndex={isDuplicate ? -1 : undefined} data-testid={`button-featured-${item.id}${isDuplicate ? '-duplicate' : ''}`} className="menu-highlight-card group relative h-[230px] w-[230px] shrink-0 overflow-hidden border border-[#f5eee2]/20 bg-[#420b09] text-start md:h-[280px] md:w-[280px]">
-                {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-85" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />
-                <div className="relative flex h-full flex-col justify-between p-5 text-[#fff2df]">
-                  <span className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8bd82]">{String((index % items.length) + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
-                  <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className="mt-2 block font-mono-ui text-[10px] text-[#f7d8be]">{formatPrice(item.price, locale)}</span></span>
+              <button type="button" key={`${item.id}-${index}`} onClick={() => onSelect(item)} aria-hidden={isDuplicate} tabIndex={isDuplicate ? -1 : undefined} data-testid={`button-featured-${item.id}${isDuplicate ? '-duplicate' : ''}`} className={`menu-highlight-card group relative h-[230px] w-[230px] shrink-0 overflow-hidden border text-start md:h-[280px] md:w-[280px] ${isCutoutPhoto ? 'border-[#6c3b2d]/20 bg-[#f1e5d2]' : 'border-[#f5eee2]/20 bg-[#420b09]'}`}>
+                {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${isCutoutPhoto ? 'object-contain p-5 drop-shadow-[0_14px_18px_rgba(59,27,19,.18)]' : 'object-cover opacity-65 group-hover:opacity-85'}`} /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
+                {!isCutoutPhoto && <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />}
+                <div className={`relative flex h-full flex-col justify-between p-5 ${isCutoutPhoto ? 'text-[#3a211b]' : 'text-[#fff2df]'}`}>
+                  <span className={`font-mono-ui text-[9px] uppercase tracking-[.18em] ${isCutoutPhoto ? 'text-[#9b4f2b]' : 'text-[#e8bd82]'}`}>{String((index % items.length) + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
+                  <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className={`mt-2 block font-mono-ui text-[10px] ${isCutoutPhoto ? 'text-[#765b4e]' : 'text-[#f7d8be]'}`}>{formatPrice(item.price, locale)}</span></span>
                 </div>
               </button>
             );
@@ -450,10 +453,11 @@ function ApiMenuItem({
   onDetails: (item: MenuItem) => void;
 }) {
   const image = menuImage(item.imagePath);
+  const isCutoutPhoto = isMenuCutoutImage(image);
   return (
     <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} data-testid={`card-menu-item-${item.id}`} className="group grid gap-4 border-b border-[#63372b]/16 py-5 sm:grid-cols-[112px_1fr_auto] sm:items-center sm:gap-5">
-      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-details-${item.id}`} className="focus-ring relative aspect-[1.25] overflow-hidden bg-[#ead7bd] text-start sm:aspect-square">
-        {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="menu-image-empty h-full w-full p-3" aria-hidden="true"><span className="font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#814331]">Bianco</span><span className="mt-4 block font-display text-xl leading-none text-[#612c21]">{itemName(item, locale)}</span></div>}
+      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-details-${item.id}`} className={`focus-ring relative aspect-square overflow-hidden text-start ${isCutoutPhoto ? 'bg-transparent' : 'bg-[#ead7bd]'}`}>
+        {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className={`h-full w-full transition duration-700 group-hover:scale-105 ${isCutoutPhoto ? 'object-contain p-1.5 drop-shadow-[0_8px_10px_rgba(59,27,19,.16)]' : 'object-cover'}`} /> : <div className="menu-image-empty h-full w-full p-3" aria-hidden="true"><span className="font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#814331]">Bianco</span><span className="mt-4 block font-display text-xl leading-none text-[#612c21]">{itemName(item, locale)}</span></div>}
       </button>
       <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-copy-${item.id}`} className="focus-ring text-start">
         <p className="font-mono-ui text-[8px] uppercase tracking-[.16em] text-[#9b4f2b]">{locale === 'ar' ? category.titleAr : category.titleEn}{item.featured ? ` · ${t('featured')}` : ''}</p>
@@ -471,11 +475,12 @@ function ApiMenuItem({
 
 function ApiMenuDetailModal({ item, category, onClose, onAdd, locale, t }: { item: MenuItem; category?: MenuCategory; onClose: () => void; onAdd: (item: MenuItem) => void; locale: Locale; t: Translate }) {
   const image = menuImage(item.imagePath);
+  const isCutoutPhoto = isMenuCutoutImage(image);
   return (
     <AnimatePresence>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080706]/80 p-4 backdrop-blur-sm" data-testid="modal-menu-backdrop">
         <motion.div initial={{ opacity: 0, y: 22, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .98 }} onClick={(event) => event.stopPropagation()} className="relative grid max-h-[90vh] w-full max-w-[860px] overflow-y-auto border border-white/[.14] bg-[#1a1816] md:grid-cols-[.9fr_1.1fr]" data-testid={`modal-menu-item-${item.id}`}>
-          <div className="relative min-h-[270px] md:min-h-[480px]">{image ? <img src={image} alt={itemName(item, locale)} className="absolute inset-0 h-full w-full object-cover opacity-80" /> : <div className="menu-image-empty absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / {locale === 'ar' ? 'من المطبخ' : 'from the kitchen'}</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{itemName(item, locale)}</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /></div>
+          <div className={`relative min-h-[270px] md:min-h-[480px] ${isCutoutPhoto ? 'bg-[#f1e5d2]' : ''}`}>{image ? <img src={image} alt={itemName(item, locale)} className={`absolute inset-0 h-full w-full ${isCutoutPhoto ? 'object-contain p-8' : 'object-cover opacity-80'}`} /> : <div className="menu-image-empty absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / {locale === 'ar' ? 'من المطبخ' : 'from the kitchen'}</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{itemName(item, locale)}</span></div>}{!isCutoutPhoto && <div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" />}</div>
           <div className="flex flex-col justify-between p-6 md:p-10"><button type="button" onClick={onClose} aria-label={t('closeDetails')} data-testid="button-close-menu-modal" className="absolute end-4 top-4 rounded-full border border-white/15 p-2 text-[#c6bdb2] transition hover:border-[#e8c78e] hover:text-[#e8c78e]"><X size={17} /></button><div><p className="font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#e8c78e]">{category ? (locale === 'ar' ? category.titleAr : category.titleEn) : t('kitchen')}</p><h2 className="mt-5 max-w-[380px] font-display text-6xl leading-[.88] tracking-[-.03em] text-[#efe8dc]">{itemName(item, locale)}</h2><p className="mt-7 max-w-[390px] text-base leading-relaxed text-[#b8afa5]">{itemDescription(item, locale)}</p>{item.calories !== null && <p className="mt-4 font-mono-ui text-[10px] uppercase tracking-[.14em] text-[#9c8f84]">{item.calories} kcal</p>}</div><div className="mt-12"><p className="font-mono-ui text-xs text-[#e8c78e]">{formatPrice(item.price, locale)}</p><button type="button" onClick={() => { onAdd(item); onClose(); }} data-testid={`button-modal-menu-add-${item.id}`} className="mt-5 flex w-full items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.16em] text-[#171513] transition hover:bg-[#f0d7a9]"><span>{t('addOrder')}</span><Plus size={16} /></button></div></div>
         </motion.div>
       </motion.div>
@@ -717,7 +722,7 @@ function Home() {
       <AnimatePresence>{isLoading && <LoadingScreen progress={loadProgress} />}</AnimatePresence>
       <main dir={isArabic ? 'rtl' : 'ltr'} className={`grain min-h-[100dvh] bg-[#110d0c] text-[#f5eee2] ${isArabic ? 'locale-ar' : ''}`}>
       <header data-scrolled={hasScrolled ? 'true' : 'false'} className="site-header fixed inset-x-0 top-0 z-40 border-b backdrop-blur-xl">
-        <div dir="ltr" className="mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
+        <div dir="ltr" className="site-header-inner mx-auto flex h-[74px] max-w-[1440px] items-center justify-between px-5 md:px-10">
           <a href="#top" onClick={closeMenu} data-testid="link-logo" className="focus-ring flex items-center"><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-header" className="site-header-logo h-8 w-[112px] object-contain object-left" /></a>
           <div dir="ltr" className="ml-auto flex items-center gap-3 md:gap-6">
             <button type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')} data-testid="button-language" aria-label={isArabic ? 'Switch to English' : 'التبديل إلى العربية'} className="site-header-language focus-ring min-w-10 border px-2.5 py-2.5 text-center text-[.7rem] font-semibold transition">{isArabic ? 'EN' : 'عر'}</button>
@@ -751,16 +756,16 @@ function Home() {
             <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -left-[5px]" />
             <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
 
-            <div className="flex flex-1 flex-col items-center justify-center px-5 py-12 text-center md:py-16">
+            <div className="quiet-hero-content relative flex flex-1 flex-col justify-end px-6 pb-14 pt-24 text-start sm:px-10 md:max-w-[760px] md:px-16 md:pb-20">
               <p data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.7rem] uppercase tracking-[.44em] text-white/85 md:text-[.78rem]">{t('cuisine')}</p>
-              <h1 data-testid="text-hero-heading" className="quiet-hero-serif quiet-hero-headline mt-6 text-[clamp(3.1rem,10vw,7.6rem)] font-normal leading-[.98] tracking-[-.012em] text-white md:mt-8">
+              <h1 data-testid="text-hero-heading" className="quiet-hero-serif quiet-hero-headline mt-5 text-[clamp(3.7rem,10vw,8.8rem)] font-normal leading-[.84] tracking-[-.045em] text-white md:mt-7">
                 {t('heroHello')}<br /><em className="font-normal italic text-[#FBF3E8]">{t('heroCity')}</em>
               </h1>
-              <div aria-hidden="true" className="quiet-hero-diamonds mt-8 flex items-center justify-center gap-4 md:mt-10">
-                <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
+              <div aria-hidden="true" className="quiet-hero-diamonds mt-7 flex items-center justify-start gap-4 md:mt-9">
+                <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" />
               </div>
-              <p data-testid="text-hero-description" className="quiet-hero-serif mt-8 max-w-[33rem] text-[1.08rem] leading-[1.65] text-white/85 md:mt-10 md:text-[1.3rem]">{t('heroDescription')}</p>
-              <div className="mt-10 flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row sm:gap-7 md:mt-12">
+              <p data-testid="text-hero-description" className="quiet-hero-serif mt-6 max-w-[30rem] text-[1.05rem] leading-[1.55] text-white/85 md:mt-7 md:text-[1.22rem]">{t('heroDescription')}</p>
+              <div className="mt-8 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-7 md:mt-10">
                 <button type="button" onClick={() => openReservation('hero')} data-testid="button-hero-reserve" className="quiet-hero-cta focus-ring inline-flex w-full items-center justify-center gap-3 border border-white bg-black/20 px-10 py-4 text-[.7rem] uppercase tracking-[.28em] text-white backdrop-blur-[2px] sm:w-auto">{t('callForTable')}</button>
                 <a href={menuPath} onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-link focus-ring inline-flex items-center gap-2 py-2 text-[.7rem] uppercase tracking-[.28em] text-white/90">{t('viewMenu')} <ChevronRight size={13} strokeWidth={1.5} className="translate-y-px rotate-90" /></a>
               </div>
