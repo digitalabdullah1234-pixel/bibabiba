@@ -100,6 +100,11 @@ body { overflow-x: hidden; }
 .menu-card-placeholder { position: relative; overflow: hidden; background: radial-gradient(circle at 75% 28%, rgba(180,98,54,.22), transparent 34%), linear-gradient(135deg, #e6c9a9, #f8ecd8 56%, #dcb293); }
 .menu-card-placeholder::before { content: ''; position: absolute; inset: 15px; border: 1px solid rgba(93,44,31,.25); }
 .menu-card-placeholder::after { content: ''; position: absolute; bottom: 23px; inset-inline-end: 26px; width: 54px; height: 54px; border: 1px solid rgba(93,44,31,.34); border-radius: 50%; box-shadow: 0 0 0 7px rgba(93,44,31,.08), 0 0 0 15px rgba(93,44,31,.04); }
+.menu-image-empty { position: relative; overflow: hidden; background: radial-gradient(circle at 78% 22%, rgba(180,98,54,.24), transparent 35%), linear-gradient(135deg, #e6c9a9, #f8ecd8 56%, #dcb293); }
+.menu-image-empty::before { content: ''; position: absolute; inset: 12px; border: 1px solid rgba(93,44,31,.22); pointer-events: none; }
+.menu-image-empty::after { content: ''; position: absolute; bottom: 14px; inset-inline-end: 16px; width: 32px; height: 32px; border: 1px solid rgba(93,44,31,.3); border-radius: 50%; box-shadow: 0 0 0 5px rgba(93,44,31,.08), 0 0 0 10px rgba(93,44,31,.04); }
+.menu-skeleton { position: relative; overflow: hidden; background: rgba(141,74,50,.12); }
+.menu-skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,247,229,.4), transparent); animation: menu-skeleton 1.6s ease-in-out infinite; }
 .tray-panel { scrollbar-color: rgba(219,161,111,.55) transparent; }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
 .menu-highlights-window:hover .menu-highlights-track { animation-play-state: paused; }
@@ -118,4 +123,5 @@ body { overflow-x: hidden; }
 .locale-ar .quiet-hero-headline { line-height: 1.08; }
 @keyframes menu-slide { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
+@keyframes menu-skeleton { to { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }

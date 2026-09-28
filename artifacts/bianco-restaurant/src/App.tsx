@@ -1,5 +1,5 @@
 import { type ReactNode, useEffect, useMemo, useState } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import {
   ArrowUpRight,
@@ -23,6 +23,16 @@ import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/compone
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { trackEvent } from '@/lib/analytics';
+import {
+  getGetCartQueryKey,
+  getGetMenuQueryKey,
+  type CartResponse,
+  type MenuCategory,
+  type MenuItem,
+  useGetCart,
+  useGetMenu,
+  usePutCart,
+} from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
@@ -99,7 +109,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroAlt: "Bianco's dining room viewed from above, with tall columns and hanging lights",
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
-    remove: 'Remove', decrease: 'Decrease', increase: 'Increase',
+     remove: 'Remove', decrease: 'Decrease', increase: 'Increase', featured: 'Featured', loadingMenu: 'Loading menu', menuError: 'The menu is taking a moment.', menuErrorText: 'Please try again. The kitchen catalog could not be reached.', retry: 'Try again', menuEmpty: 'The menu is quiet.', menuEmptyText: 'There are no available dishes at the moment.', cartUpdateError: 'We could not update your basket. Please try again.', cartError: 'Your basket could not be loaded. Please try again.',
     gallery0: 'Bianco dining room from the Google Maps listing', gallery1: 'A closer look inside Bianco',
     gallery2: 'The Bianco room after dark', gallery3: 'Warm details from the restaurant',
   },
@@ -135,109 +145,19 @@ const ui: Record<Locale, Record<string, string>> = {
     heroAlt: 'صالة بيانكو من الأعلى بأعمدتها الطويلة وإضاءتها المعلقة',
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
-    remove: 'حذف', decrease: 'تقليل', increase: 'زيادة',
+     remove: 'حذف', decrease: 'تقليل', increase: 'زيادة', featured: 'مميز', loadingMenu: 'جارٍ تحميل القائمة', menuError: 'القائمة تحتاج لحظة.', menuErrorText: 'تعذر الوصول إلى قائمة المطبخ. حاول مرة أخرى.', retry: 'حاول مرة أخرى', menuEmpty: 'القائمة هادئة الآن.', menuEmptyText: 'لا توجد أطباق متاحة في الوقت الحالي.', cartUpdateError: 'تعذر تحديث طلبك. حاول مرة أخرى.', cartError: 'تعذر تحميل طلبك. حاول مرة أخرى.',
     gallery0: 'صالة بيانكو من صور خرائط جوجل', gallery1: 'نظرة أقرب داخل بيانكو',
     gallery2: 'صالة بيانكو في المساء', gallery3: 'تفاصيل دافئة من المطعم',
   },
 };
 
-const productArabic: Record<string, Pick<Product, 'name' | 'description' | 'category' | 'note'>> = {
-  'pizza-ajwa': { name: 'بيتزا عجوة', description: 'طماطم مشوية، فيور دي لاتيه، عجوة المدينة، ولمسة هادئة من الفلفل الحار.', category: 'الأطباق المميزة', note: 'طبقنا المميز' },
-  'rose-pasta': { name: 'باستا روزيه', description: 'صلصة روزيه ناعمة، زيت الريحان، بارميزان، ولمسة حرارة في النهاية.', category: 'باستا', note: 'الأكثر طلباً' },
-  margherita: { name: 'مارغريتا', description: 'طماطم سان مارزانو، موزاريلا، ريحان، وزيت زيتون على عجينة محمصة.', category: 'بيتزا', note: 'كلاسيكية بإتقان' },
-  'truffle-mushroom': { name: 'بيتزا الفطر والكمأة', description: 'فطر مشوي، فونتينا، كمأة سوداء، وزعتر على عجينة مقرمشة.', category: 'بيتزا', note: 'للسهرات الطويلة' },
-  'burrata-tomato': { name: 'بوراتا وطماطم', description: 'بوراتا كريمية، طماطم ناضجة، ريحان، وبلسميك معتق.', category: 'المقبلات', note: 'ابدأ من هنا' },
-  tiramisu: { name: 'تيراميسو', description: 'كريمة ماسكاربوني، بسكويت منقوع بالإسبريسو، وكاكاو.', category: 'الحلويات', note: 'الختام المثالي' },
-};
+const productArabic: Record<string, Pick<Product, 'name' | 'description' | 'category' | 'note'>> = {};
+const products: Product[] = [];
+const menuHighlights: MenuHighlight[] = [];
 
-function productText(product: Product, locale: Locale) {
-  return locale === 'ar' ? productArabic[product.id] ?? product : product;
+function productText(product: Product, _locale: Locale) {
+  return product;
 }
-
-const products: Product[] = [
-  {
-    id: 'pizza-ajwa',
-    name: 'Pizza Ajwa',
-    price: 54,
-    description: 'Charred tomato, fior di latte, Madinah ajwa, and a quiet hit of chili.',
-    category: 'Signature',
-    image: mapsPhoto,
-    imagePosition: 'center 52%',
-    note: 'The house signature',
-  },
-  {
-    id: 'rose-pasta',
-    name: 'Rose Pasta',
-    price: 48,
-    description: 'Silky rose sauce, basil oil, parmesan, and a little heat at the finish.',
-    category: 'Pasta',
-    image: `${import.meta.env.BASE_URL}menu-dishes/penne-rose.png`,
-    imagePosition: 'center center',
-    note: 'Best seller',
-  },
-  {
-    id: 'margherita',
-    name: 'Margherita',
-    price: 42,
-    description: 'San Marzano tomato, mozzarella, basil, and olive oil on a blistered base.',
-    category: 'Pizza',
-    image: `${import.meta.env.BASE_URL}menu-dishes/margherita-pizza.png`,
-    imagePosition: 'center center',
-    note: 'A classic, sharpened',
-  },
-  {
-    id: 'truffle-mushroom',
-    name: 'Truffle Mushroom',
-    price: 58,
-    description: 'Roasted mushrooms, fontina, black truffle, and thyme over crisp dough.',
-    category: 'Pizza',
-    image: `${import.meta.env.BASE_URL}menu-dishes/truffle-pizza.png`,
-    imagePosition: 'center center',
-    note: 'For late nights',
-  },
-  {
-    id: 'burrata-tomato',
-    name: 'Burrata & Tomato',
-    price: 36,
-    description: 'Creamy burrata, ripe tomato, basil, and aged balsamic.',
-    category: 'Starters',
-    image: `${import.meta.env.BASE_URL}menu-dishes/burrata-salad.png`,
-    imagePosition: 'center center',
-    note: 'Start here',
-  },
-  {
-    id: 'tiramisu',
-    name: 'Tiramisu',
-    price: 28,
-    description: 'Mascarpone cream, espresso-soaked ladyfingers, cocoa, no unnecessary drama.',
-    category: 'Dolci',
-    image: mapsPhotoPortrait,
-    imagePosition: 'center 78%',
-    note: 'The last word',
-  },
-];
-
-const menuHighlights: MenuHighlight[] = [
-  { id: 'mushroom-soup', name: 'Mushroom soup', arabicName: 'شوربة الفطر', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/mushroom-soup.png` },
-  { id: 'arancini', name: 'Arancini', arabicName: 'أرانشيني', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/arancini.png` },
-  { id: 'chili-shrimp', name: 'Chili shrimp', arabicName: 'تشيلي شرمب', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/chili-shrimp.png` },
-  { id: 'french-fries', name: 'French fries', arabicName: 'بطاطس مقلية', category: 'Entrée', arabicCategory: 'المقبلات', image: `${import.meta.env.BASE_URL}menu-dishes/french-fries.png` },
-  { id: 'burrata-salad', name: 'Burrata Salad', arabicName: 'سلطة البوراتا', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/burrata-salad.png` },
-  { id: 'bianco-salad', name: 'Bianco Salad', arabicName: 'سلطة بيانكو', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/bianco-salad.png` },
-  { id: 'portobello-shrimp-salad', name: 'Portobello Shrimp Salad', arabicName: 'سلطة البورتوبيلو شرمب', category: 'Insalate', arabicCategory: 'السلطات', image: `${import.meta.env.BASE_URL}menu-dishes/portobello-shrimp-salad.jpg` },
-  { id: 'margherita-pizza', name: 'Margherita Pizza', arabicName: 'بيتزا مارجريتا', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/margherita-pizza.png` },
-  { id: 'diavola-pizza', name: 'Diavola Pizza', arabicName: 'بيتزا ديافولا', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/diavola-pizza.png` },
-  { id: 'beef-bianco-pizza', name: 'Beef Bianco Pizza', arabicName: 'بيتزا بيف بيانكو', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/beef-bianco-pizza.png` },
-  { id: 'chicken-polo-pizza', name: 'Chicken Polo Pizza', arabicName: 'بيتزا تشكن بولو', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/chicken-polo-pizza.png` },
-  { id: 'truffle-pizza', name: 'Truffle Pizza', arabicName: 'بيتزا ترافل', category: 'Pizzeria', arabicCategory: 'بيتزا', image: `${import.meta.env.BASE_URL}menu-dishes/truffle-pizza.png` },
-  { id: 'seafood-spaghetti', name: 'Seafood Spaghetti', arabicName: 'اسباغيتي سي فود', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/seafood-spaghetti.png` },
-  { id: 'penne-rose', name: 'Penne Rosé', arabicName: 'بيني روز', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/penne-rose.png` },
-  { id: 'rigatoni-pesto', name: 'Rigatoni Pesto', arabicName: 'ريجاتوني بيستو', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/rigatoni-pesto.png` },
-  { id: 'funghi-risotto', name: 'Funghi Risotto', arabicName: 'ريزوتو فونجي', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/funghi-risotto.png` },
-  { id: 'truffle-fettuccine', name: 'Truffle Fettuccine', arabicName: 'فيتوتشيني ترافل', category: 'Pasta', arabicCategory: 'باستا', image: `${import.meta.env.BASE_URL}menu-dishes/truffle-fettuccine.png` },
-  { id: 'beef-bianco', name: 'Beef Bianco', arabicName: 'بيف بيانكو', category: 'Main Courses', arabicCategory: 'الأطباق الرئيسية', image: `${import.meta.env.BASE_URL}menu-dishes/beef-bianco.png` },
-  { id: 'grilled-salmon', name: 'Grilled Salmon', arabicName: 'جرلد سالمون', category: 'Main Courses', arabicCategory: 'الأطباق الرئيسية', image: `${import.meta.env.BASE_URL}menu-dishes/grilled-salmon.png` },
-];
 
 const gallery = [
   { src: mapsPhoto, altKey: 'gallery0', className: 'md:col-span-2 md:row-span-2' },
@@ -246,7 +166,7 @@ const gallery = [
   { src: mapsPhotoPortrait, altKey: 'gallery3', className: 'md:col-span-2' },
 ];
 
-const categories = ['All', 'Signature', 'Pizza', 'Pasta', 'Starters', 'Dolci'];
+const categories: string[] = [];
 
 const reveal: Variants = {
   hidden: { opacity: 0, y: 26 },
@@ -444,6 +364,143 @@ function ProductDetailModal({ product, onClose, onAdd, locale, t }: { product: P
   );
 }
 
+function menuImage(path: string | null) {
+  if (!path) return null;
+  return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
+}
+
+function itemName(item: MenuItem, locale: Locale) {
+  return locale === 'ar' ? item.nameAr : item.nameEn;
+}
+
+function itemDescription(item: MenuItem, locale: Locale) {
+  return locale === 'ar' ? item.descriptionAr : item.descriptionEn;
+}
+
+function orderedCategories(categories: MenuCategory[]) {
+  return [...categories].sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+function orderedItems(category: MenuCategory) {
+  return category.items.filter((item) => item.available).sort((a, b) => a.sortOrder - b.sortOrder);
+}
+
+function ApiMenuHighlights({
+  categories,
+  locale,
+  t,
+  onSelect,
+}: {
+  categories: MenuCategory[];
+  locale: Locale;
+  t: Translate;
+  onSelect: (item: MenuItem) => void;
+}) {
+  const items = orderedCategories(categories).flatMap((category) => orderedItems(category).filter((item) => item.featured).map((item) => ({ item, category }))).slice(0, 6);
+  if (!items.length) return null;
+  return (
+    <section aria-labelledby="menu-highlights-heading" className="overflow-hidden border-y border-[#f5eee2]/15 bg-[#530f0c]">
+      <div className="mx-auto max-w-[1440px] px-5 py-14 md:px-10 md:py-16">
+        <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
+          <div>
+            <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#e8bd82]">{t('menuGalleryLabel')}</p>
+            <h2 id="menu-highlights-heading" className="mt-4 max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
+          </div>
+          <p className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
+        </div>
+      </div>
+      <div className="border-y border-[#f5eee2]/15">
+        <div className="mx-auto grid max-w-[1440px] gap-px bg-[#f5eee2]/15 md:grid-cols-3">
+          {items.map(({ item, category }, index) => {
+            const image = menuImage(item.imagePath);
+            return (
+              <button type="button" key={item.id} onClick={() => onSelect(item)} data-testid={`button-featured-${item.id}`} className="group relative min-h-[230px] overflow-hidden bg-[#420b09] text-start">
+                {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-85" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />
+                <div className="relative flex min-h-[230px] flex-col justify-between p-5 text-[#fff2df]">
+                  <span className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8bd82]">{String(index + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
+                  <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className="mt-2 block font-mono-ui text-[10px] text-[#f7d8be]">{formatPrice(item.price, locale)}</span></span>
+                </div>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function ApiMenuItem({
+  item,
+  category,
+  locale,
+  t,
+  onAdd,
+  onDetails,
+}: {
+  item: MenuItem;
+  category: MenuCategory;
+  locale: Locale;
+  t: Translate;
+  onAdd: (item: MenuItem) => void;
+  onDetails: (item: MenuItem) => void;
+}) {
+  const image = menuImage(item.imagePath);
+  return (
+    <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} data-testid={`card-menu-item-${item.id}`} className="group grid gap-4 border-b border-[#63372b]/16 py-5 sm:grid-cols-[112px_1fr_auto] sm:items-center sm:gap-5">
+      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-details-${item.id}`} className="focus-ring relative aspect-[1.25] overflow-hidden bg-[#ead7bd] text-start sm:aspect-square">
+        {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="menu-image-empty h-full w-full p-3" aria-hidden="true"><span className="font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#814331]">Bianco</span><span className="mt-4 block font-display text-xl leading-none text-[#612c21]">{itemName(item, locale)}</span></div>}
+      </button>
+      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-copy-${item.id}`} className="focus-ring text-start">
+        <p className="font-mono-ui text-[8px] uppercase tracking-[.16em] text-[#9b4f2b]">{locale === 'ar' ? category.titleAr : category.titleEn}{item.featured ? ` · ${t('featured')}` : ''}</p>
+        <h3 className="mt-2 font-display text-[1.8rem] leading-[.9] tracking-[-.025em] text-[#351e19]">{itemName(item, locale)}</h3>
+        <p className="mt-2 max-w-[35rem] text-[13px] leading-[1.45] text-[#67473c]">{itemDescription(item, locale)}</p>
+        {item.calories !== null && <p className="mt-2 font-mono-ui text-[9px] uppercase tracking-[.1em] text-[#9b7869]">{item.calories} kcal</p>}
+      </button>
+      <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
+        <span className="font-mono-ui text-[11px] text-[#8c4028]">{formatPrice(item.price, locale)}</span>
+        <button type="button" onClick={() => onAdd(item)} data-testid={`button-menu-add-${item.id}`} className="focus-ring flex items-center gap-2 border border-[#8d4a32]/35 px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#612c21] transition hover:border-[#612c21] hover:bg-[#612c21] hover:text-[#f8ead6]"><Plus size={13} /> {t('addOrder')}</button>
+      </div>
+    </motion.article>
+  );
+}
+
+function ApiMenuDetailModal({ item, category, onClose, onAdd, locale, t }: { item: MenuItem; category?: MenuCategory; onClose: () => void; onAdd: (item: MenuItem) => void; locale: Locale; t: Translate }) {
+  const image = menuImage(item.imagePath);
+  return (
+    <AnimatePresence>
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080706]/80 p-4 backdrop-blur-sm" data-testid="modal-menu-backdrop">
+        <motion.div initial={{ opacity: 0, y: 22, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .98 }} onClick={(event) => event.stopPropagation()} className="relative grid max-h-[90vh] w-full max-w-[860px] overflow-y-auto border border-white/[.14] bg-[#1a1816] md:grid-cols-[.9fr_1.1fr]" data-testid={`modal-menu-item-${item.id}`}>
+          <div className="relative min-h-[270px] md:min-h-[480px]">{image ? <img src={image} alt={itemName(item, locale)} className="absolute inset-0 h-full w-full object-cover opacity-80" /> : <div className="menu-image-empty absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / {locale === 'ar' ? 'من المطبخ' : 'from the kitchen'}</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{itemName(item, locale)}</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /></div>
+          <div className="flex flex-col justify-between p-6 md:p-10"><button type="button" onClick={onClose} aria-label={t('closeDetails')} data-testid="button-close-menu-modal" className="absolute end-4 top-4 rounded-full border border-white/15 p-2 text-[#c6bdb2] transition hover:border-[#e8c78e] hover:text-[#e8c78e]"><X size={17} /></button><div><p className="font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#e8c78e]">{category ? (locale === 'ar' ? category.titleAr : category.titleEn) : t('kitchen')}</p><h2 className="mt-5 max-w-[380px] font-display text-6xl leading-[.88] tracking-[-.03em] text-[#efe8dc]">{itemName(item, locale)}</h2><p className="mt-7 max-w-[390px] text-base leading-relaxed text-[#b8afa5]">{itemDescription(item, locale)}</p>{item.calories !== null && <p className="mt-4 font-mono-ui text-[10px] uppercase tracking-[.14em] text-[#9c8f84]">{item.calories} kcal</p>}</div><div className="mt-12"><p className="font-mono-ui text-xs text-[#e8c78e]">{formatPrice(item.price, locale)}</p><button type="button" onClick={() => { onAdd(item); onClose(); }} data-testid={`button-modal-menu-add-${item.id}`} className="mt-5 flex w-full items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.16em] text-[#171513] transition hover:bg-[#f0d7a9]"><span>{t('addOrder')}</span><Plus size={16} /></button></div></div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+function MenuNotice({ kind, t, onRetry }: { kind: 'loading' | 'error' | 'empty'; t: Translate; onRetry?: () => void }) {
+  if (kind === 'loading') return <div className="grid gap-4 md:grid-cols-2" aria-label={t('loadingMenu')}><div className="menu-skeleton h-40" /><div className="menu-skeleton h-40" /><div className="menu-skeleton h-40" /></div>;
+  if (kind === 'error') return <div role="alert" data-testid="status-menu-error" className="border border-[#8d4a32]/25 bg-[#f6ead8] p-8 text-[#612c21]"><p className="font-display text-3xl">{t('menuError')}</p><p className="mt-2 text-sm text-[#765044]">{t('menuErrorText')}</p>{onRetry && <button type="button" onClick={onRetry} data-testid="button-menu-retry" className="mt-5 border-b border-[#612c21] pb-1 font-mono-ui text-[10px] uppercase tracking-[.15em]">{t('retry')}</button>}</div>;
+  return <div data-testid="status-menu-empty" className="border border-dashed border-[#8d4a32]/30 bg-[#f6ead8] p-10 text-center"><p className="font-display text-4xl text-[#612c21]">{t('menuEmpty')}</p><p className="mt-2 text-sm text-[#765044]">{t('menuEmptyText')}</p></div>;
+}
+
+function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutationError, cartError, whatsappUrl }: { cart: CartResponse | undefined; locale: Locale; t: Translate; trayOpen: boolean; onToggle: () => void; onUpdate: (itemId: string, delta: number) => void; mutationError: boolean; cartError: boolean; whatsappUrl: string }) {
+  const cartCount = cart?.items.reduce((sum, line) => sum + line.quantity, 0) ?? 0;
+  const subtotal = cart?.subtotal ?? 0;
+  return (
+    <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(680px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
+      {trayOpen && <div className="tray-panel mb-3 max-h-[58vh] overflow-y-auto border border-[#c98b5d]/40 bg-[#2a1714] p-4 text-left shadow-[0_18px_60px_rgba(38,14,10,.32)] sm:p-5" dir={locale === 'ar' ? 'rtl' : 'ltr'} data-testid="tray-panel">
+        <div className="mb-2 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3"><div><p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">{t('cartEyebrow')}</p><p className="mt-1 font-display text-2xl text-[#f3dfca]">{t('cartTitle')} <span className="font-mono-ui text-[10px] text-[#a98575]">· {cartCount}</span></p></div><button type="button" aria-label={t('trayClose')} onClick={onToggle} data-testid="button-tray-close" className="focus-ring text-[#dba16f]"><ChevronDown size={17} /></button></div>
+        {mutationError && <p role="alert" data-testid="status-cart-mutation-error" className="border border-[#e8bd82]/30 bg-[#491511] px-3 py-2 text-xs text-[#f5d3b5]">{t('cartUpdateError')}</p>}
+        {cartError ? <div role="alert" data-testid="status-cart-error" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('cartError')}</p></div> : !cart ? <div className="space-y-3 py-6"><div className="menu-skeleton h-14" /><div className="menu-skeleton h-14" /></div> : cart.items.length ? cart.items.map(({ item, quantity }) => <div key={item.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3"><div className="h-12 w-12 shrink-0 overflow-hidden bg-[#5b2921]">{menuImage(item.imagePath) ? <img src={menuImage(item.imagePath)!} alt="" className="h-full w-full object-cover opacity-90" /> : <span className="block p-2 font-display text-xs text-[#f3dfca]">{itemName(item, locale)}</span>}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><p className="truncate font-display text-xl text-[#f3dfca]">{itemName(item, locale)}</p><span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(item.price * quantity, locale)}</span></div><div className="mt-2 flex items-center gap-2"><button type="button" aria-label={`${t('decrease')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, -1)} data-testid={`button-tray-decrease-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button><span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${item.id}`}>{quantity}</span><button type="button" aria-label={`${t('increase')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, 1)} data-testid={`button-tray-increase-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button></div></div></div>) : <div data-testid="empty-cart" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('emptyNow')}</p><p className="mt-2 text-sm text-[#c39b83]">{t('emptySummary')}</p></div>}
+        {cartCount > 0 && <><div className="flex items-center justify-between border-t border-[#edc9aa]/15 pt-4 text-[#f3dfca]"><span className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#c39b83]">{t('subtotal')}</span><span className="font-display text-2xl">{formatPrice(subtotal, locale)}</span></div><a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a></>}
+      </div>}
+      <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={locale === 'ar' ? 'rtl' : 'ltr'}><ShoppingBag size={15} strokeWidth={1.7} /><div className="min-w-0 flex-1"><p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>{cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}</div><button type="button" onClick={onToggle} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button><a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a></div>
+    </div>
+  );
+}
+
 function ReservationDialog({ open, onOpenChange, t }: { open: boolean; onOpenChange: (open: boolean) => void; t: Translate }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -504,27 +561,40 @@ function LoadingScreen({ progress }: { progress: number }) {
   );
 }
 
+function readBiancoCartId() {
+  const stored = window.localStorage.getItem('bianco-cart-id');
+  if (stored) return stored;
+  const created = typeof window.crypto?.randomUUID === 'function'
+    ? window.crypto.randomUUID()
+    : 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (digit) => {
+      const random = Math.floor(Math.random() * 16);
+      return (digit === 'x' ? random : (random & 0x3) | 0x8).toString(16);
+    });
+  window.localStorage.setItem('bianco-cart-id', created);
+  return created;
+}
+
 function Home() {
+  const reactQueryClient = useQueryClient();
   const [isLoading, setIsLoading] = useState(true);
   const [loadProgress, setLoadProgress] = useState(0);
   const [locale, setLocale] = useState<Locale>(() => new URLSearchParams(window.location.search).get('lang') === 'ar' || window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [menuOpen, setMenuOpen] = useState(false);
   const [reservationOpen, setReservationOpen] = useState(false);
   const [trayOpen, setTrayOpen] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('All');
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<MenuItem | null>(null);
   const [menuEntered, setMenuEntered] = useState(false);
-  const [cart, setCart] = useState<CartLine[]>(() => {
-    try {
-      const saved = window.localStorage.getItem('bianco-cart');
-      if (!saved) return [];
-      return JSON.parse(saved) as CartLine[];
-    } catch {
-      return [];
-    }
-  });
+  const [cartId] = useState(readBiancoCartId);
+  const [cartMutationError, setCartMutationError] = useState(false);
   const t: Translate = (key) => ui[locale][key] ?? ui.en[key] ?? key;
   const isArabic = locale === 'ar';
+  const menuQuery = useGetMenu({ query: { queryKey: getGetMenuQueryKey() } });
+  const cartQuery = useGetCart(cartId, { query: { queryKey: getGetCartQueryKey(cartId) } });
+  const putCart = usePutCart();
+  const menuCategories = useMemo(() => orderedCategories(menuQuery.data?.categories ?? []).filter((category) => orderedItems(category).length > 0), [menuQuery.data]);
+  const activeCategory = menuCategories.find((category) => category.id === selectedCategory) ?? menuCategories[0];
+  const visibleItems = activeCategory ? orderedItems(activeCategory) : [];
 
   useEffect(() => {
     let progress = 0;
@@ -545,8 +615,8 @@ function Home() {
   }, []);
 
   useEffect(() => {
-    window.localStorage.setItem('bianco-cart', JSON.stringify(cart));
-  }, [cart]);
+    if (menuCategories.length && !menuCategories.some((category) => category.id === selectedCategory)) setSelectedCategory(menuCategories[0].id);
+  }, [menuCategories, selectedCategory]);
 
   useEffect(() => {
     window.localStorage.setItem('bianco-locale', locale);
@@ -588,29 +658,37 @@ function Home() {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  const filteredProducts = useMemo(() => selectedCategory === 'All' ? products : products.filter((product) => product.category === selectedCategory), [selectedCategory]);
-  const cartCount = cart.reduce((sum, line) => sum + line.quantity, 0);
-  const subtotal = cart.reduce((sum, line) => sum + line.product.price * line.quantity, 0);
-  const orderMessage = cart.length
-    ? `${t('pickupMessage')}\n${cart.map(({ product, quantity }) => `${quantity} × ${productText(product, locale).name}`).join('\n')}\n${t('estimatedTotal')}: ${formatPrice(subtotal, locale)}`
+  const cart = cartQuery.data;
+  const cartCount = cart?.items.reduce((sum, line) => sum + line.quantity, 0) ?? 0;
+  const subtotal = cart?.subtotal ?? 0;
+  const orderMessage = cart?.items.length
+    ? `${t('pickupMessage')}\n${cart.items.map(({ item, quantity }) => `${quantity} × ${itemName(item, locale)}`).join('\n')}\n${t('estimatedTotal')}: ${formatPrice(subtotal, locale)}`
     : t('emptyOrderMessage');
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(orderMessage)}`;
 
-  const addToCart = (product: Product) => {
-    setCart((current) => {
-      const existing = current.find((line) => line.product.id === product.id);
-      if (existing) return current.map((line) => line.product.id === product.id ? { ...line, quantity: line.quantity + 1 } : line);
-      return [...current, { product, quantity: 1 }];
+  const saveCart = (items: { itemId: string; quantity: number }[]) => {
+    setCartMutationError(false);
+    putCart.mutate({ cartId, data: { items } }, {
+      onSuccess: (nextCart) => reactQueryClient.setQueryData(getGetCartQueryKey(cartId), nextCart),
+      onError: () => setCartMutationError(true),
     });
-    trackEvent('product_added_to_bag', { product_id: product.id, product_name: product.name, category: product.category, price: product.price });
+  };
+
+  const addToCart = (item: MenuItem) => {
+    const items = cart?.items.map(({ item: cartItem, quantity }) => ({ itemId: cartItem.id, quantity })) ?? [];
+    const existing = items.find((line) => line.itemId === item.id);
+    const nextItems = existing ? items.map((line) => line.itemId === item.id ? { ...line, quantity: Math.min(99, line.quantity + 1) } : line) : [...items, { itemId: item.id, quantity: 1 }];
+    saveCart(nextItems);
+    trackEvent('product_added_to_bag', { product_id: item.id, product_name: item.nameEn, price: item.price });
     setTrayOpen(true);
   };
 
   const updateQuantity = (id: string, delta: number) => {
-    setCart((current) => current.flatMap((line) => line.product.id === id ? (line.quantity + delta > 0 ? [{ ...line, quantity: line.quantity + delta }] : []) : [line]));
+    if (!cart) return;
+    const nextItems = cart.items.flatMap(({ item, quantity }) => item.id === id ? (quantity + delta > 0 ? [{ itemId: item.id, quantity: Math.min(99, quantity + delta) }] : []) : [{ itemId: item.id, quantity }]);
+    saveCart(nextItems);
   };
 
-  const removeFromCart = (id: string) => setCart((current) => current.filter((line) => line.product.id !== id));
   const closeMenu = () => setMenuOpen(false);
   const openReservation = (location: string) => {
     trackEvent('reservation_started', { location });
@@ -681,27 +759,30 @@ function Home() {
         </div>
       </section>
 
-      <MenuHighlights locale={locale} t={t} />
+      <ApiMenuHighlights categories={menuCategories} locale={locale} t={t} onSelect={setSelectedProduct} />
 
       <section id="order" className="menu-section relative overflow-hidden bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
         <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
             <motion.div variants={reveal}>
               <div className="flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('shopMenu')}</div>
               <h2 data-testid="text-menu-heading" className="mt-5 max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#351e19] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#a64d2d]">{t('damage')}</em></h2>
             </motion.div>
             <motion.div variants={reveal} className="md:pb-1">
               <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#67473c]">{t('menuIntro')}</p>
+              <p className="mt-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9b7869]">{t('prices')}</p>
             </motion.div>
           </motion.div>
-          <div className="menu-category-scroll mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>
-            {categories.map((category) => (
-              <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/25 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>
-            ))}
-          </div>
-          <div className="mt-8">
-            <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
+          <div className="mt-8 grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-14">
+            <nav className="menu-category-scroll flex gap-2 overflow-x-auto pb-2 lg:block lg:overflow-visible" role="tablist" aria-label={t('menu')}>
+              {menuCategories.map((category, index) => (
+                <button type="button" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); }} aria-selected={activeCategory?.id === category.id} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${activeCategory?.id === category.id ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
+              ))}
+            </nav>
+            <div className="min-w-0">
+              {menuQuery.isLoading ? <MenuNotice kind="loading" t={t} /> : menuQuery.isError ? <MenuNotice kind="error" t={t} onRetry={() => menuQuery.refetch()} /> : !menuCategories.length ? <MenuNotice kind="empty" t={t} /> : activeCategory && visibleItems.length ? <motion.div layout className="border-t border-[#63372b]/20">{visibleItems.map((item) => <ApiMenuItem key={item.id} item={item} category={activeCategory} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div> : <MenuNotice kind="empty" t={t} />}
+            </div>
           </div>
           <div className="mt-9 flex flex-col gap-3 border-t border-[#63372b]/20 pt-5 text-[10px] uppercase tracking-[.14em] text-[#875546] sm:flex-row sm:items-center sm:justify-between">
             <span>{t('prices')}</span>
@@ -733,46 +814,9 @@ function Home() {
         <div className="mx-auto max-w-[1440px]"><div className="flex flex-col justify-between gap-12 border-b border-[#f5eee2]/12 pb-12 md:flex-row md:items-end"><div><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-[142px] object-contain object-start" /><p className="mt-6 max-w-[320px] font-display text-3xl leading-[.95] text-[#f2b46d]">{t('orderLoud')}<br />{t('eatWell')}</p></div><div className="flex flex-col items-start gap-4 text-[10px] uppercase tracking-[.15em] text-[#9c8f84] md:items-end"><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp" className="transition hover:text-[#f2b46d]">{t('whatsappKitchen')} <ArrowUpRight className="ms-1 inline" size={13} /></a><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-footer-phone" className="transition hover:text-[#f2b46d]">{t('call')} <span dir="ltr">{phoneNumber}</span></a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" data-testid="link-instagram" className="flex items-center gap-2 transition hover:text-[#f2b46d]"><Instagram size={14} /> {t('followRoom')}</a></div></div><div className="flex flex-col justify-between gap-3 pt-6 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#716760] md:flex-row"><span>بيانكو · Bianco · {t('madinah')}</span><span data-testid="text-footer-hours">{t('footerHours')}</span><span>© {new Date().getFullYear()} Bianco</span></div></div>
       </footer>
 
-      {menuEntered && <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(680px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
-        {trayOpen && <div className="tray-panel mb-3 max-h-[58vh] overflow-y-auto border border-[#c98b5d]/40 bg-[#2a1714] p-4 text-left shadow-[0_18px_60px_rgba(38,14,10,.32)] sm:p-5" dir={isArabic ? 'rtl' : 'ltr'} data-testid="tray-panel">
-          <div className="mb-2 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3">
-            <div>
-              <p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">{t('cartEyebrow')}</p>
-              <p className="mt-1 font-display text-2xl text-[#f3dfca]">{t('cartTitle')} <span className="font-mono-ui text-[10px] text-[#a98575]">· {cartCount}</span></p>
-            </div>
-            <button type="button" aria-label={t('trayClose')} onClick={() => setTrayOpen(false)} data-testid="button-tray-close" className="focus-ring text-[#dba16f]"><ChevronDown size={17} /></button>
-          </div>
-          {cart.length ? cart.map(({ product, quantity }) => {
-            const text = productText(product, locale);
-            return <div key={product.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3">
-              {product.image.includes('/menu-dishes/') ? <img src={product.image} alt="" className="h-12 w-12 shrink-0 object-cover opacity-90" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder h-12 w-12 shrink-0" aria-hidden="true" />}
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <p className="truncate font-display text-xl text-[#f3dfca]">{text.name}</p>
-                  <span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(product.price * quantity, locale)}</span>
-                </div>
-                <div className="mt-2 flex items-center gap-2">
-                  <button type="button" aria-label={`${t('decrease')} ${text.name}`} onClick={() => updateQuantity(product.id, -1)} data-testid={`button-tray-decrease-${product.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button>
-                  <span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${product.id}`}>{quantity}</span>
-                  <button type="button" aria-label={`${t('increase')} ${text.name}`} onClick={() => updateQuantity(product.id, 1)} data-testid={`button-tray-increase-${product.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button>
-                </div>
-              </div>
-            </div>;
-          }) : <p className="py-7 text-sm text-[#c39b83]">{t('addToTable')}</p>}
-          {cartCount > 0 && <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a>}
-        </div>}
-        <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={isArabic ? 'rtl' : 'ltr'}>
-          <ShoppingBag size={15} strokeWidth={1.7} />
-          <div className="min-w-0 flex-1">
-            <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>
-            {cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}
-          </div>
-          <button type="button" onClick={() => setTrayOpen((open) => !open)} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button>
-          <a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a>
-        </div>
-      </div>}
+       {menuEntered && <ApiBasketTray cart={cart} cartError={cartQuery.isError} locale={locale} t={t} trayOpen={trayOpen} onToggle={() => setTrayOpen((open) => !open)} onUpdate={updateQuantity} mutationError={cartMutationError || Boolean(putCart.error)} whatsappUrl={whatsappUrl} />}
       <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
-       <AnimatePresence>{selectedProduct && <ProductDetailModal product={selectedProduct} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
+        <AnimatePresence>{selectedProduct && <ApiMenuDetailModal item={selectedProduct} category={menuCategories.find((category) => category.items.some((item) => item.id === selectedProduct.id))} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
      </main>
     </>
   );
