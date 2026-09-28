@@ -92,6 +92,13 @@ body { overflow-x: hidden; }
 .loading-hand-active-image { filter: drop-shadow(0 0 5px rgba(255,255,255,.24)) drop-shadow(0 0 14px rgba(255,255,255,.12)); }
 .product-card { transition: transform .4s cubic-bezier(.22,1,.36,1), border-color .4s ease, box-shadow .4s ease; }
 .product-card:hover { border-color: rgba(242,180,109,.5); box-shadow: 0 24px 70px rgba(0,0,0,.34); }
+.menu-section { isolation: isolate; }
+.menu-section::before { content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none; opacity: .2; background-image: radial-gradient(circle at 12% 18%, rgba(126,65,40,.15) 0 1px, transparent 1.5px), radial-gradient(circle at 74% 62%, rgba(126,65,40,.1) 0 1px, transparent 1.5px); background-size: 17px 17px, 23px 23px; }
+.menu-section-stamp { transform: rotate(11deg); }
+.menu-card-placeholder { position: relative; overflow: hidden; background: radial-gradient(circle at 75% 28%, rgba(180,98,54,.22), transparent 34%), linear-gradient(135deg, #e6c9a9, #f8ecd8 56%, #dcb293); }
+.menu-card-placeholder::before { content: ''; position: absolute; inset: 15px; border: 1px solid rgba(93,44,31,.25); }
+.menu-card-placeholder::after { content: ''; position: absolute; bottom: 23px; end: 26px; width: 54px; height: 54px; border: 1px solid rgba(93,44,31,.34); border-radius: 50%; box-shadow: 0 0 0 7px rgba(93,44,31,.08), 0 0 0 15px rgba(93,44,31,.04); }
+.tray-panel { scrollbar-color: rgba(219,161,111,.55) transparent; }
 .menu-highlights-track { animation: menu-slide 72s linear infinite; }
 .menu-highlights-window:hover .menu-highlights-track { animation-play-state: paused; }
 .menu-highlight-card { transition: border-color .45s ease, transform .45s cubic-bezier(.22,1,.36,1); }

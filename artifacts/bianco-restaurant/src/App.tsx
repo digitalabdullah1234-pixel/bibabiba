@@ -86,6 +86,7 @@ const ui: Record<Locale, Record<string, string>> = {
     emptyNow: 'Empty for now.', emptySummary: 'Add a plate and we’ll keep your order here while you browse.',
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
     prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag', energyLabel: '03 — The Bianco energy',
+    trayOpen: 'Open tray', trayClose: 'Close tray', checkout: 'Checkout', selected: 'selected', tableOpen: 'Your table is open', addToTable: 'Add a plate and your table will hold it here.',
     storyHeadingA: 'Not a', storyHeadingB: 'quiet', storyHeadingC: 'room.',
     storyLead: 'Bianco means white. The evening is anything but.',
     storyBody: 'We built this Italian room for the in-between hours: the late dinner after a long day, the table that keeps ordering, the plate passed across the room without asking.',
@@ -121,6 +122,7 @@ const ui: Record<Locale, Record<string, string>> = {
     emptyNow: 'فارغة الآن.', emptySummary: 'أضف طبقاً وسنحتفظ بطلبك هنا أثناء التصفح.',
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
     prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة', energyLabel: '03 — أجواء بيانكو',
+    trayOpen: 'افتح مائدتك', trayClose: 'أغلق مائدتك', checkout: 'إتمام الطلب', selected: 'مختارة', tableOpen: 'مائدتك مفتوحة', addToTable: 'أضف طبقاً وسنحتفظ به هنا أثناء التصفح.',
     storyHeadingA: 'ليست', storyHeadingB: 'هادئة', storyHeadingC: 'هذه الصالة.',
     storyLead: 'بيانكو تعني الأبيض، لكن المساء هنا مليء بالألوان.',
     storyBody: 'صممنا هذه الصالة الإيطالية لساعات المساء: عشاء متأخر بعد يوم طويل، مائدة تستمر في الطلب، وطبق يمر بين الأصدقاء بلا تكلف.',
@@ -169,8 +171,8 @@ const products: Product[] = [
     price: 48,
     description: 'Silky rose sauce, basil oil, parmesan, and a little heat at the finish.',
     category: 'Pasta',
-    image: mapsPhotoPortrait,
-    imagePosition: 'center 35%',
+    image: `${import.meta.env.BASE_URL}menu-dishes/penne-rose.png`,
+    imagePosition: 'center center',
     note: 'Best seller',
   },
   {
@@ -179,8 +181,8 @@ const products: Product[] = [
     price: 42,
     description: 'San Marzano tomato, mozzarella, basil, and olive oil on a blistered base.',
     category: 'Pizza',
-    image: mapsPhoto,
-    imagePosition: 'center 70%',
+    image: `${import.meta.env.BASE_URL}menu-dishes/margherita-pizza.png`,
+    imagePosition: 'center center',
     note: 'A classic, sharpened',
   },
   {
@@ -189,8 +191,8 @@ const products: Product[] = [
     price: 58,
     description: 'Roasted mushrooms, fontina, black truffle, and thyme over crisp dough.',
     category: 'Pizza',
-    image: mapsPhotoPortrait,
-    imagePosition: 'center 64%',
+    image: `${import.meta.env.BASE_URL}menu-dishes/truffle-pizza.png`,
+    imagePosition: 'center center',
     note: 'For late nights',
   },
   {
@@ -199,8 +201,8 @@ const products: Product[] = [
     price: 36,
     description: 'Creamy burrata, ripe tomato, basil, and aged balsamic.',
     category: 'Starters',
-    image: mapsPhoto,
-    imagePosition: 'center 30%',
+    image: `${import.meta.env.BASE_URL}menu-dishes/burrata-salad.png`,
+    imagePosition: 'center center',
     note: 'Start here',
   },
   {
@@ -273,6 +275,7 @@ function ProductCard({
   t: Translate;
 }) {
   const text = productText(product, locale);
+  const isDishPhoto = product.image.includes('/menu-dishes/');
   return (
     <motion.article
       layout
@@ -282,25 +285,33 @@ function ProductCard({
       whileHover={{ y: -7 }}
       transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       data-testid={`card-product-${product.id}`}
-      className="product-card group relative flex flex-col overflow-hidden border border-white/[.12] bg-[#1a1210] shadow-[0_18px_55px_rgba(0,0,0,.18)]"
+      className="product-card group relative flex min-w-0 flex-col overflow-hidden border border-[#2e2924]/15 bg-[#fbf1df] text-[#241b17] shadow-[0_16px_36px_rgba(38,18,12,.12)]"
     >
-        <button type="button" onClick={() => { trackEvent('product_viewed', { product_id: product.id, product_name: product.name, category: product.category }); onDetails(product); }} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-[1.12] w-full overflow-hidden text-start">
-        <img src={product.image} alt={text.name} loading="lazy" style={{ objectPosition: product.imagePosition }} className="h-full w-full object-cover opacity-75 transition duration-700 group-hover:scale-105 group-hover:opacity-95" />
-        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(15,14,13,.08),rgba(15,14,13,.72))]" />
-        <span className="absolute start-4 top-4 border border-[#f2b46d]/45 bg-[#110d0c]/75 px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f2b46d] backdrop-blur-sm">{text.category}</span>
-        <span className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] text-[#efe8dc]/65">{text.note}</span>
-        <span className="absolute bottom-3 end-4 flex h-7 w-7 translate-y-2 items-center justify-center rounded-full border border-white/30 bg-[#f5eee2] text-[#210f0c] opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100"><ArrowUpRight size={12} /></span>
-      </button>
-      <div className="flex flex-1 flex-col justify-between p-5 md:p-6">
-        <div>
-          <div className="flex items-start justify-between gap-4">
-            <h3 data-testid={`text-product-name-${product.id}`} className="font-display text-[2rem] leading-none tracking-[-.025em] text-[#f5eee2]">{text.name}</h3>
-            <motion.span key={product.price} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} data-testid={`text-product-price-${product.id}`} className="whitespace-nowrap font-mono-ui text-[11px] text-[#f2b46d]">{formatPrice(product.price, locale)}</motion.span>
+      <button type="button" onClick={() => { trackEvent('product_viewed', { product_id: product.id, product_name: product.name, category: product.category }); onDetails(product); }} data-testid={`button-details-${product.id}`} className="focus-ring relative block aspect-[1.42] w-full overflow-hidden text-start">
+        {isDishPhoto ? (
+          <img src={product.image} alt={text.name} loading="lazy" style={{ objectPosition: product.imagePosition }} className="h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+        ) : (
+          <div className="menu-card-placeholder h-full w-full px-6 py-5" aria-hidden="true">
+            <span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / in the room</span>
+            <span className="mt-10 block max-w-[11rem] font-display text-[2.15rem] leading-[.85] text-[#491d17]">{text.name}</span>
+            <span className="absolute bottom-5 start-6 font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#9b6b54]">House note · {text.note}</span>
           </div>
-          <p data-testid={`text-product-description-${product.id}`} className="mt-4 max-w-[28rem] text-sm leading-relaxed text-[#9c8f84]">{text.description}</p>
+        )}
+        <div className={`absolute inset-0 ${isDishPhoto ? 'bg-[linear-gradient(180deg,rgba(15,14,13,0),rgba(15,14,13,.68))]' : 'bg-[linear-gradient(180deg,rgba(255,247,229,0),rgba(66,28,20,.08))]'}`} />
+        <span className={`absolute start-4 top-4 border px-2.5 py-1 font-mono-ui text-[9px] uppercase tracking-[.16em] backdrop-blur-sm ${isDishPhoto ? 'border-[#f7dfb2]/60 bg-[#241310]/70 text-[#f7dfb2]' : 'border-[#6c3b2d]/25 bg-[#fff3de]/75 text-[#6c3b2d]'}`}>{text.category}</span>
+        <span className={`absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.15em] ${isDishPhoto ? 'text-[#fff2df]/80' : 'text-[#765044]'}`}>{isDishPhoto ? text.note : 'Bianco house note'}</span>
+        <span className={`absolute bottom-4 end-4 flex h-8 w-8 translate-y-2 items-center justify-center rounded-full border opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 ${isDishPhoto ? 'border-white/40 bg-[#fbf1df] text-[#271510]' : 'border-[#6c3b2d]/25 bg-[#fff3de] text-[#491d17]'}`}><ArrowUpRight size={13} /></span>
+      </button>
+      <div className="flex flex-1 flex-col justify-between p-5 md:p-5">
+        <div>
+          <div className="flex items-start justify-between gap-3 border-b border-[#6c3b2d]/15 pb-3">
+            <h3 data-testid={`text-product-name-${product.id}`} className="max-w-[12rem] font-display text-[1.85rem] leading-[.88] tracking-[-.025em] text-[#3a211b]">{text.name}</h3>
+            <motion.span key={product.price} initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} data-testid={`text-product-price-${product.id}`} className="whitespace-nowrap pt-1 font-mono-ui text-[10px] text-[#9b4f2b]">{formatPrice(product.price, locale)}</motion.span>
+          </div>
+          <p data-testid={`text-product-description-${product.id}`} className="mt-4 max-w-[28rem] text-[13px] leading-[1.55] text-[#765b4e]">{text.description}</p>
         </div>
-        <button type="button" onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`} className="focus-ring mt-7 flex w-full items-center justify-between border-t border-white/[.13] pt-4 text-left text-[11px] font-semibold uppercase tracking-[.16em] text-[#f5eee2] transition-colors hover:text-[#f2b46d]">
-          <span>{t('addOrder')}</span><Plus size={14} strokeWidth={1.5} />
+        <button type="button" onClick={() => onAdd(product)} data-testid={`button-add-${product.id}`} className="focus-ring mt-6 flex w-full items-center justify-between border-t border-[#6c3b2d]/20 pt-4 text-left text-[10px] font-semibold uppercase tracking-[.16em] text-[#5e291f] transition-colors hover:text-[#a34e2e]">
+          <span>{t('addOrder')}</span><span className="flex h-7 w-7 items-center justify-center rounded-full border border-[#9b4f2b]/35"><Plus size={14} strokeWidth={1.5} /></span>
         </button>
       </div>
     </motion.article>
@@ -391,7 +402,7 @@ function CartDrawer({
               <p data-testid="text-cart-count" className="mb-5 font-mono-ui text-[10px] uppercase tracking-[.16em] text-[#a9a097]">{cart.reduce((sum, line) => sum + line.quantity, 0)} {t('itemsDelivery')}</p>
               {cart.map(({ product, quantity }) => (
                 <motion.div layout key={product.id} data-testid={`row-cart-${product.id}`} className="flex gap-4 border-t border-white/[.11] py-5">
-                  <img src={product.image} alt="" className="h-20 w-20 shrink-0 object-cover opacity-80" style={{ objectPosition: product.imagePosition }} />
+                  {product.image.includes('/menu-dishes/') ? <img src={product.image} alt="" className="h-20 w-20 shrink-0 object-cover opacity-80" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder h-20 w-20 shrink-0" aria-hidden="true" />}
                   <div className="min-w-0 flex-1">
                     <div className="flex justify-between gap-3"><p className="font-display text-2xl leading-none">{productText(product, locale).name}</p><button type="button" onClick={() => onRemove(product.id)} aria-label={`${t('remove')} ${productText(product, locale).name}`} data-testid={`button-remove-${product.id}`} className="text-[#8f867c] transition hover:text-[#e8c78e]"><Trash2 size={15} /></button></div>
                     <p className="mt-2 font-mono-ui text-[10px] text-[#e8c78e]">{formatPrice(product.price, locale)}</p>
@@ -421,11 +432,12 @@ function CartDrawer({
 
 function ProductDetailModal({ product, onClose, onAdd, locale, t }: { product: Product; onClose: () => void; onAdd: (product: Product) => void; locale: Locale; t: Translate }) {
   const text = productText(product, locale);
+  const isDishPhoto = product.image.includes('/menu-dishes/');
   return (
     <AnimatePresence>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080706]/80 p-4 backdrop-blur-sm" data-testid="modal-product-backdrop">
         <motion.div initial={{ opacity: 0, y: 22, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .98 }} onClick={(event) => event.stopPropagation()} className="relative grid w-full max-w-[880px] overflow-hidden border border-white/[.14] bg-[#1a1816] md:grid-cols-[.9fr_1.1fr]" data-testid={`modal-product-${product.id}`}>
-          <div className="relative min-h-[290px] md:min-h-[520px]"><img src={product.image} alt={text.name} className="absolute inset-0 h-full w-full object-cover opacity-80" style={{ objectPosition: product.imagePosition }} /><div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /><span className="absolute bottom-5 start-5 font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8c78e]">{text.category} · {text.note}</span></div>
+          <div className="relative min-h-[290px] md:min-h-[520px]">{isDishPhoto ? <img src={product.image} alt={text.name} className="absolute inset-0 h-full w-full object-cover opacity-80" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / in the room</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{text.name}</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /><span className="absolute bottom-5 start-5 font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8c78e]">{text.category} · {text.note}</span></div>
           <div className="flex flex-col justify-between p-6 md:p-10"><button type="button" onClick={onClose} aria-label={t('closeDetails')} data-testid="button-close-product-modal" className="absolute end-4 top-4 rounded-full border border-white/15 p-2 text-[#c6bdb2] transition hover:border-[#e8c78e] hover:text-[#e8c78e]"><X size={17} /></button><div><p className="font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#e8c78e]">{t('kitchen')}</p><h2 data-testid={`text-modal-name-${product.id}`} className="mt-5 max-w-[380px] font-display text-6xl leading-[.88] tracking-[-.03em] text-[#efe8dc]">{text.name}</h2><p data-testid={`text-modal-description-${product.id}`} className="mt-7 max-w-[390px] text-base leading-relaxed text-[#b8afa5]">{text.description}</p></div><div className="mt-12"><p data-testid={`text-modal-price-${product.id}`} className="font-mono-ui text-xs text-[#e8c78e]">{formatPrice(product.price, locale)}</p><button type="button" onClick={() => { onAdd(product); onClose(); }} data-testid={`button-modal-add-${product.id}`} className="mt-5 flex w-full items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.16em] text-[#171513] transition hover:bg-[#f0d7a9]"><span>{t('addOrder')}</span><Plus size={16} /></button></div></div>
         </motion.div>
       </motion.div>
@@ -672,17 +684,31 @@ function Home() {
 
       <MenuHighlights locale={locale} t={t} />
 
-      <section id="order" className="bg-[#530F0C] px-5 py-20 md:px-10 md:py-28">
+      <section id="order" className="menu-section relative overflow-hidden bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
+        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />Madinah<br />Since late</div>
         <div className="mx-auto max-w-[1440px]">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="flex flex-col justify-between gap-8 border-b border-[#f5eee2]/15 pb-8 md:flex-row md:items-end">
-            <motion.div variants={reveal}><p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('shopMenu')}</p><h2 data-testid="text-menu-heading" className="mt-4 max-w-[620px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('chooseYour')}<br /><em className="text-[#e85d43]">{t('damage')}</em></h2></motion.div>
-            <motion.p variants={reveal} className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae] md:pb-1">{t('menuIntro')}</motion.p>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.2fr_.8fr] md:items-end">
+            <motion.div variants={reveal}>
+              <div className="flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('shopMenu')}</div>
+              <h2 data-testid="text-menu-heading" className="mt-5 max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#351e19] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#a64d2d]">{t('damage')}</em></h2>
+            </motion.div>
+            <motion.div variants={reveal} className="md:pb-1">
+              <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#67473c]">{t('menuIntro')}</p>
+              <div className="mt-6 flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9b4f2b]"><span className="h-px w-10 bg-[#9b4f2b]/45" />{t('prices')}</div>
+            </motion.div>
           </motion.div>
-          <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>{categories.map((category) => <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#f2b46d] bg-[#f2b46d] text-[#210f0c]' : 'border-[#f5eee2]/15 text-[#f4c6ae] hover:border-[#f2b46d]/60 hover:text-[#f2b46d]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>)}</div>
+          <div className="mt-7 flex gap-2 overflow-x-auto pb-2" role="tablist" aria-label={t('menu')}>
+            {categories.map((category) => (
+              <button type="button" key={category} onClick={() => { trackEvent('menu_category_selected', { category }); setSelectedCategory(category); }} aria-selected={selectedCategory === category} data-testid={`button-category-${category.toLowerCase()}`} className={`focus-ring whitespace-nowrap border px-4 py-2.5 font-mono-ui text-[9px] font-bold uppercase tracking-[.17em] transition ${selectedCategory === category ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/25 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}>{category === 'All' ? (isArabic ? 'الكل' : category) : (isArabic ? productArabic[products.find((p) => p.category === category)?.id ?? '']?.category ?? category : category)}</button>
+            ))}
+          </div>
           <div className="mt-8">
             <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{filteredProducts.map((product) => <ProductCard key={product.id} product={product} onAdd={addToCart} onDetails={setSelectedProduct} locale={locale} t={t} />)}</motion.div>
           </div>
-          <div className="mt-9 flex flex-col gap-3 border-t border-[#f5eee2]/12 pt-5 text-[10px] uppercase tracking-[.14em] text-[#d49d8a] sm:flex-row sm:items-center sm:justify-between"><span>{t('prices')}</span><button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#f2b46d] transition hover:text-[#ffd097]">{t('fullBag')} <ChevronRight size={14} /></button></div>
+          <div className="mt-9 flex flex-col gap-3 border-t border-[#63372b]/20 pt-5 text-[10px] uppercase tracking-[.14em] text-[#875546] sm:flex-row sm:items-center sm:justify-between">
+            <span>{t('prices')}</span>
+            <button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#8d4027] transition hover:text-[#b15832]">{t('fullBag')} <ChevronRight size={14} /></button>
+          </div>
         </div>
       </section>
 
@@ -709,39 +735,42 @@ function Home() {
         <div className="mx-auto max-w-[1440px]"><div className="flex flex-col justify-between gap-12 border-b border-[#f5eee2]/12 pb-12 md:flex-row md:items-end"><div><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-[142px] object-contain object-start" /><p className="mt-6 max-w-[320px] font-display text-3xl leading-[.95] text-[#f2b46d]">{t('orderLoud')}<br />{t('eatWell')}</p></div><div className="flex flex-col items-start gap-4 text-[10px] uppercase tracking-[.15em] text-[#9c8f84] md:items-end"><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp" className="transition hover:text-[#f2b46d]">{t('whatsappKitchen')} <ArrowUpRight className="ms-1 inline" size={13} /></a><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-footer-phone" className="transition hover:text-[#f2b46d]">{t('call')} <span dir="ltr">{phoneNumber}</span></a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" data-testid="link-instagram" className="flex items-center gap-2 transition hover:text-[#f2b46d]"><Instagram size={14} /> {t('followRoom')}</a></div></div><div className="flex flex-col justify-between gap-3 pt-6 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#716760] md:flex-row"><span>بيانكو · Bianco · {t('madinah')}</span><span data-testid="text-footer-hours">{t('footerHours')}</span><span>© {new Date().getFullYear()} Bianco</span></div></div>
       </footer>
 
-      {menuEntered && <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(620px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
-        {trayOpen && <div className="mb-3 max-h-[58vh] overflow-y-auto border border-[#dba16f]/35 bg-[#271715] p-4 text-left shadow-2xl" dir="ltr" data-testid="tray-panel">
-          <div className="mb-3 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3">
-            <p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">YOUR TABLE · {cartCount} PLATES</p>
-            <button type="button" aria-label="Close tray" onClick={() => setTrayOpen(false)} className="text-[#dba16f]"><ChevronDown size={16} /></button>
+      {menuEntered && <div className="fixed inset-x-3 bottom-3 z-40 lg:inset-x-auto lg:bottom-5 lg:start-1/2 lg:w-[min(680px,calc(100vw-80px))] lg:-translate-x-1/2" data-testid="menu-tray">
+        {trayOpen && <div className="tray-panel mb-3 max-h-[58vh] overflow-y-auto border border-[#c98b5d]/40 bg-[#2a1714] p-4 text-left shadow-[0_18px_60px_rgba(38,14,10,.32)] sm:p-5" dir={isArabic ? 'rtl' : 'ltr'} data-testid="tray-panel">
+          <div className="mb-2 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3">
+            <div>
+              <p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">{t('cartEyebrow')}</p>
+              <p className="mt-1 font-display text-2xl text-[#f3dfca]">{t('cartTitle')} <span className="font-mono-ui text-[10px] text-[#a98575]">· {cartCount}</span></p>
+            </div>
+            <button type="button" aria-label={t('trayClose')} onClick={() => setTrayOpen(false)} data-testid="button-tray-close" className="focus-ring text-[#dba16f]"><ChevronDown size={17} /></button>
           </div>
           {cart.length ? cart.map(({ product, quantity }) => {
             const text = productText(product, locale);
             return <div key={product.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3">
-              <img src={product.image} alt="" className="h-11 w-11 object-cover opacity-80" style={{ objectPosition: product.imagePosition }} />
+              {product.image.includes('/menu-dishes/') ? <img src={product.image} alt="" className="h-12 w-12 shrink-0 object-cover opacity-90" style={{ objectPosition: product.imagePosition }} /> : <div className="menu-card-placeholder h-12 w-12 shrink-0" aria-hidden="true" />}
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-3">
                   <p className="truncate font-display text-xl text-[#f3dfca]">{text.name}</p>
                   <span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(product.price * quantity, locale)}</span>
                 </div>
                 <div className="mt-2 flex items-center gap-2">
-                  <button type="button" aria-label={`Decrease ${text.name}`} onClick={() => updateQuantity(product.id, -1)} className="border border-[#edc9aa]/25 p-1 text-[#dba16f]"><Minus size={11} /></button>
-                  <span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]">{quantity}</span>
-                  <button type="button" aria-label={`Increase ${text.name}`} onClick={() => updateQuantity(product.id, 1)} className="border border-[#edc9aa]/25 p-1 text-[#dba16f]"><Plus size={11} /></button>
+                  <button type="button" aria-label={`${t('decrease')} ${text.name}`} onClick={() => updateQuantity(product.id, -1)} data-testid={`button-tray-decrease-${product.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button>
+                  <span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${product.id}`}>{quantity}</span>
+                  <button type="button" aria-label={`${t('increase')} ${text.name}`} onClick={() => updateQuantity(product.id, 1)} data-testid={`button-tray-increase-${product.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button>
                 </div>
               </div>
             </div>;
-          }) : <p className="py-7 text-sm text-[#a98575]">Keep the route. Add a plate and it will stay with you while you browse.</p>}
-          {cartCount > 0 && <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase text-[#f8e4cc]" data-testid="tray-checkout-link">CHECKOUT <ArrowUpRight size={13} /></a>}
+          }) : <p className="py-7 text-sm text-[#c39b83]">{t('addToTable')}</p>}
+          {cartCount > 0 && <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a>}
         </div>}
-        <div className="flex items-center gap-2 border border-[#dba16f]/60 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir="ltr">
-          <ShoppingBag size={14} />
+        <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={isArabic ? 'rtl' : 'ltr'}>
+          <ShoppingBag size={15} strokeWidth={1.7} />
           <div className="min-w-0 flex-1">
-            <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} ${cartCount === 1 ? 'PLATE' : 'PLATES'} SELECTED` : 'YOUR TABLE IS OPEN'}</p>
-            <p className="font-mono-ui text-[8px] text-[#663528]">{cartCount ? `Subtotal · ${formatPrice(subtotal, locale)}` : 'Gather something good'}</p>
+            <p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>
+            <p className="font-mono-ui text-[8px] text-[#663528]">{cartCount ? `${t('estimatedSubtotal')} · ${formatPrice(subtotal, locale)}` : t('addToTable')}</p>
           </div>
-          <button type="button" onClick={() => setTrayOpen((open) => !open)} data-testid="button-open-tray" className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? 'CLOSE' : 'OPEN TRAY'} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button>
-          <a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase text-[#f8e4cc] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}>CHECKOUT <ArrowUpRight size={12} /></a>
+          <button type="button" onClick={() => setTrayOpen((open) => !open)} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button>
+          <a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a>
         </div>
       </div>}
       <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
