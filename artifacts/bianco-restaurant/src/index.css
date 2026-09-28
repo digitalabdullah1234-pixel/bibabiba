@@ -19,21 +19,21 @@
 
 :root {
   --button-outline: rgba(235,229,217,.18); --badge-outline: rgba(235,229,217,.08); --opaque-button-border-intensity: -8; --elevate-1: rgba(235,229,217,.04); --elevate-2: rgba(235,229,217,.09);
-  --background: 12 21% 6%; --foreground: 38 43% 93%; --border: 12 15% 23%; --card: 14 22% 10%; --card-foreground: 38 43% 93%; --card-border: 12 15% 25%;
-  --sidebar: 30 11% 8%; --sidebar-foreground: 38 28% 90%; --sidebar-border: 30 8% 23%; --sidebar-primary: 20 47% 60%; --sidebar-primary-foreground: 30 11% 8%; --sidebar-accent: 29 14% 16%; --sidebar-accent-foreground: 38 28% 90%; --sidebar-ring: 20 47% 60%;
-  --popover: 14 22% 10%; --popover-foreground: 38 43% 93%; --popover-border: 12 15% 25%; --primary: 12 76% 62%; --primary-foreground: 12 21% 6%; --secondary: 12 15% 19%; --secondary-foreground: 38 43% 93%;
-  --muted: 12 15% 18%; --muted-foreground: 28 15% 62%; --accent: 35 82% 69%; --accent-foreground: 12 21% 6%; --destructive: 4 65% 50%; --destructive-foreground: 38 43% 93%; --input: 12 15% 25%; --ring: 12 76% 62%;
+  --background: 37 48% 91%; --foreground: 12 29% 13%; --border: 20 25% 72%; --card: 37 55% 94%; --card-foreground: 12 29% 13%; --card-border: 20 25% 72%;
+  --sidebar: 37 45% 88%; --sidebar-foreground: 12 29% 13%; --sidebar-border: 20 25% 72%; --sidebar-primary: 12 76% 30%; --sidebar-primary-foreground: 37 48% 91%; --sidebar-accent: 30 35% 83%; --sidebar-accent-foreground: 12 29% 13%; --sidebar-ring: 12 76% 30%;
+  --popover: 37 55% 94%; --popover-foreground: 12 29% 13%; --popover-border: 20 25% 72%; --primary: 12 76% 30%; --primary-foreground: 37 48% 91%; --secondary: 20 25% 76%; --secondary-foreground: 12 29% 13%;
+  --muted: 30 28% 84%; --muted-foreground: 20 22% 38%; --accent: 29 62% 58%; --accent-foreground: 12 29% 13%; --destructive: 4 65% 42%; --destructive-foreground: 37 48% 91%; --input: 20 25% 72%; --ring: 29 62% 58%;
   --chart-1: 18 54% 19%; --chart-2: 39 73% 65%; --chart-3: 77 20% 35%; --chart-4: 3 58% 42%; --chart-5: 20 23% 13%;
   --app-font-sans: 'DM Sans', sans-serif; --app-font-serif: 'Bodoni Moda', Georgia, serif; --app-font-mono: 'DM Mono', monospace; --radius: .2rem;
-  --shadow-2xs: 0 1px 2px hsl(30 11% 4% / .2); --shadow-xs: 0 2px 5px hsl(30 11% 4% / .24); --shadow-sm: 0 4px 14px hsl(30 11% 4% / .28); --shadow: 0 10px 24px hsl(30 11% 4% / .35); --shadow-md: 0 15px 30px hsl(30 11% 4% / .4); --shadow-lg: 0 22px 42px hsl(30 11% 4% / .48); --shadow-xl: 0 30px 60px hsl(30 11% 4% / .55); --shadow-2xl: 0 36px 75px hsl(30 11% 4% / .65);
+  --shadow-2xs: 0 1px 2px hsl(20 28% 18% / .08); --shadow-xs: 0 2px 5px hsl(20 28% 18% / .1); --shadow-sm: 0 4px 14px hsl(20 28% 18% / .12); --shadow: 0 10px 24px hsl(20 28% 18% / .14); --shadow-md: 0 15px 30px hsl(20 28% 18% / .16); --shadow-lg: 0 22px 42px hsl(20 28% 18% / .18); --shadow-xl: 0 30px 60px hsl(20 28% 18% / .2); --shadow-2xl: 0 36px 75px hsl(20 28% 18% / .24);
   --tracking-normal: 0em; --spacing: .25rem;
   --sidebar-primary-border: hsl(var(--sidebar-primary)); --sidebar-accent-border: hsl(var(--sidebar-accent)); --primary-border: hsl(var(--primary)); --secondary-border: hsl(var(--secondary)); --muted-border: hsl(var(--muted)); --accent-border: hsl(var(--accent)); --destructive-border: hsl(var(--destructive));
 }
 .dark {
-  --background: 30 11% 8%; --foreground: 38 28% 90%; --border: 30 8% 23%; --card: 29 12% 12%; --card-foreground: 38 28% 90%; --card-border: 30 8% 25%;
-  --primary: 20 47% 60%; --primary-foreground: 30 11% 8%; --secondary: 30 8% 19%; --secondary-foreground: 38 28% 90%; --muted: 30 8% 18%; --muted-foreground: 34 12% 62%; --accent: 40 46% 66%; --accent-foreground: 30 11% 8%; --input: 30 8% 25%; --ring: 20 47% 60%;
-  --sidebar: 30 11% 8%; --sidebar-foreground: 38 28% 90%; --sidebar-border: 30 8% 23%; --sidebar-primary: 20 47% 60%; --sidebar-primary-foreground: 30 11% 8%; --sidebar-accent: 29 14% 16%; --sidebar-accent-foreground: 38 28% 90%; --sidebar-ring: 20 47% 60%;
-  --popover: 29 12% 12%; --popover-foreground: 38 28% 90%; --popover-border: 30 8% 25%; --destructive: 4 55% 50%; --destructive-foreground: 38 28% 90%;
+  --background: 12 29% 10%; --foreground: 37 48% 91%; --border: 12 22% 24%; --card: 12 27% 13%; --card-foreground: 37 48% 91%; --card-border: 12 22% 24%;
+  --primary: 29 62% 58%; --primary-foreground: 12 29% 10%; --secondary: 12 22% 20%; --secondary-foreground: 37 48% 91%; --muted: 12 22% 19%; --muted-foreground: 28 20% 64%; --accent: 37 62% 68%; --accent-foreground: 12 29% 10%; --input: 12 22% 25%; --ring: 29 62% 58%;
+  --sidebar: 12 29% 10%; --sidebar-foreground: 37 48% 91%; --sidebar-border: 12 22% 24%; --sidebar-primary: 29 62% 58%; --sidebar-primary-foreground: 12 29% 10%; --sidebar-accent: 12 22% 18%; --sidebar-accent-foreground: 37 48% 91%; --sidebar-ring: 29 62% 58%;
+  --popover: 12 27% 13%; --popover-foreground: 37 48% 91%; --popover-border: 12 22% 24%; --destructive: 4 55% 50%; --destructive-foreground: 37 48% 91%;
 }
 @layer base {
   * { @apply border-border; }
@@ -215,3 +215,62 @@ body { overflow-x: hidden; }
 @keyframes orbit { to { transform: rotate(360deg); } }
 @keyframes menu-skeleton { to { transform: translateX(100%); } }
 @media (prefers-reduced-motion: reduce) { .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
+
+/* Bianco editorial pass — a little more theatre, without sacrificing wayfinding. */
+body { background: #110d0c; }
+.site-header { height: 74px; }
+.site-header::after { content: ''; position: absolute; inset-inline: 0; bottom: -1px; height: 1px; background: linear-gradient(90deg, transparent, currentColor 18%, currentColor 82%, transparent); opacity: .13; }
+.site-header-logo { width: 122px; height: 37px; }
+.site-header .site-header-link { letter-spacing: .16em; }
+.site-header-reserve { border-radius: 0; padding-inline: 1.25rem; position: relative; overflow: hidden; }
+.site-header-reserve::after { content: ''; position: absolute; inset: 0; transform: translateX(-110%); background: rgba(255,255,255,.15); transition: transform .45s cubic-bezier(.22,1,.36,1); }
+.site-header-reserve:hover::after { transform: translateX(0); }
+.quiet-hero { background: #530f0c; }
+.quiet-hero::before { content: 'BIANCO / MADINAH'; position: absolute; z-index: 2; inset-inline-start: 2rem; top: 7.2rem; writing-mode: vertical-rl; font: 9px var(--app-font-mono); letter-spacing: .28em; color: rgba(255,246,232,.64); }
+.quiet-hero-frame { margin-block: 1.6rem; border-radius: 0 5.5rem 0 5.5rem; box-shadow: 18px 18px 0 rgba(31,6,4,.22); }
+.quiet-hero-frame::after { content: ''; position: absolute; z-index: -1; inset: 24px -18px -20px 18px; border: 1px solid rgba(242,180,109,.26); border-radius: 0 5.5rem 0 5.5rem; }
+.quiet-hero-headline { font-size: clamp(4rem, 12vw, 10rem); letter-spacing: -.055em; }
+.quiet-hero-headline em { display: inline-block; transform: translateX(.16em); }
+.quiet-hero-cta { border-radius: 0; box-shadow: 7px 7px 0 rgba(31,6,4,.25); }
+.quiet-hero-link::after { bottom: -4px; }
+.menu-highlights-window { background: #410a08; }
+.menu-highlights-track { gap: 1.1rem; }
+.menu-highlight-card { border-radius: 0; box-shadow: 8px 8px 0 rgba(18,3,2,.2); }
+.menu-highlight-card:nth-child(3n) { transform: translateY(18px); }
+.menu-highlight-card:nth-child(3n):hover { transform: translateY(12px); }
+.menu-section { background-color: #f1e5d2; }
+.menu-section::after { content: 'BUON APPETITO'; position: absolute; right: -3rem; bottom: 4rem; color: rgba(97,44,33,.11); font: 700 8rem/1 var(--app-font-serif); letter-spacing: -.08em; transform: rotate(-90deg); pointer-events: none; }
+.menu-section-stamp { border-radius: 0; transform: rotate(9deg); }
+.menu-category-scroll button { border-radius: 0; }
+.product-card:hover { transform: translateY(-6px); }
+.menu-image-empty, .menu-card-placeholder { border-radius: 0; }
+.menu-image-empty::after, .menu-card-placeholder::after { border-radius: 0; transform: rotate(45deg); }
+.menu-section [data-testid^="button-menu-add-"] { border-radius: 0; }
+.menu-section [data-testid="button-menu-show-more"] { border-radius: 0; }
+.story-section { position: relative; }
+#story { background: #1a1210; }
+#story::before { content: '02'; position: absolute; right: 8vw; margin-top: -2rem; color: rgba(242,180,109,.12); font: 10rem/1 var(--app-font-serif); }
+#gallery { position: relative; }
+#gallery::before { content: ''; display: block; width: 5rem; height: 1px; margin-bottom: 2rem; background: #a64d2d; }
+#gallery figure:nth-child(2) { transform: translateY(22px); }
+#gallery figure:nth-child(4) { transform: translateY(-12px); }
+#visit { background: #8d2d23; }
+#visit .border { border-radius: 0; }
+.line-link::after { transform-origin: left; }
+.focus-ring:focus-visible { outline-offset: 5px; }
+
+@media (max-width: 767px) {
+  .quiet-hero::before { inset-inline-start: 1rem; top: 6.4rem; font-size: 8px; }
+  .quiet-hero-frame { margin-block: .7rem; box-shadow: 9px 9px 0 rgba(31,6,4,.22); }
+  .quiet-hero-frame::after { inset: 13px -9px -11px 9px; border-radius: 0 3.2rem 0 3.2rem; }
+  .quiet-hero-headline { font-size: clamp(4rem, 19vw, 6rem); }
+  .quiet-hero-headline em { transform: none; }
+  .menu-highlight-card:nth-child(3n) { transform: translateY(0); }
+  .menu-section::after { display: none; }
+  #gallery figure:nth-child(2), #gallery figure:nth-child(4) { transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header-reserve::after { transition: none; }
+  .quiet-hero-frame, .quiet-hero-frame::after, #gallery figure:nth-child(2), #gallery figure:nth-child(4) { transform: none; }
+}
