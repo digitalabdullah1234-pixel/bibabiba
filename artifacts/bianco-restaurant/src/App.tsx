@@ -42,7 +42,7 @@ const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
 const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatayn,+Madinah+42351,+Saudi+Arabia&output=embed';
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
-const heroImage = `${import.meta.env.BASE_URL}bianco-hero-table.jpg`;
+const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
@@ -107,7 +107,7 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
     reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn', countryShort: 'KSA',
-     heroAlt: "A candlelit Italian dinner table at Bianco with pizza and pasta",
+    heroAlt: "Bianco's dining room viewed from above, with tall columns and hanging lights",
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
      remove: 'Remove', decrease: 'Decrease', increase: 'Increase', featured: 'Featured', loadingMenu: 'Loading menu', menuError: 'The menu is taking a moment.', menuErrorText: 'Please try again. The kitchen catalog could not be reached.', retry: 'Try again', menuEmpty: 'The menu is quiet.', menuEmptyText: 'There are no available dishes at the moment.', cartUpdateError: 'We could not update your basket. Please try again.', cartError: 'Your basket could not be loaded. Please try again.',
@@ -144,7 +144,7 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
     reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين', countryShort: 'السعودية',
-     heroAlt: 'مائدة عشاء إيطالي مضاءة بالشموع في بيانكو مع البيتزا والمعكرونة',
+    heroAlt: 'صالة بيانكو من الأعلى بأعمدتها الطويلة وإضاءتها المعلقة',
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
      remove: 'حذف', decrease: 'تقليل', increase: 'زيادة', featured: 'مميز', loadingMenu: 'جارٍ تحميل القائمة', menuError: 'القائمة تحتاج لحظة.', menuErrorText: 'تعذر الوصول إلى قائمة المطبخ. حاول مرة أخرى.', retry: 'حاول مرة أخرى', menuEmpty: 'القائمة هادئة الآن.', menuEmptyText: 'لا توجد أطباق متاحة في الوقت الحالي.', cartUpdateError: 'تعذر تحديث طلبك. حاول مرة أخرى.', cartError: 'تعذر تحميل طلبك. حاول مرة أخرى.',
@@ -366,18 +366,9 @@ function ProductDetailModal({ product, onClose, onAdd, locale, t }: { product: P
   );
 }
 
-const menuImageOverrides: Record<string, string> = {
-  tiramisu: 'menu-dishes/tiramisu-cutout.png',
-  'soft-drinks': 'menu-dishes/soft-drinks-cutout.png',
-  water: 'menu-dishes/water-cutout.png',
-  'mineral-water': 'menu-dishes/mineral-water-cutout.png',
-  'carbonated-water': 'menu-dishes/carbonated-water-cutout.png',
-};
-
-function menuImage(path: string | null, itemId: string) {
-  const assetPath = menuImageOverrides[itemId] ?? path?.replace(/\.(?:png|jpe?g|webp)$/i, '-cutout.png');
-  if (!assetPath) return null;
-  return `${import.meta.env.BASE_URL}${assetPath.replace(/^\/+/, '')}`;
+function menuImage(path: string | null) {
+  if (!path) return null;
+  return `${import.meta.env.BASE_URL}${path.replace(/^\/+/, '')}`;
 }
 
 function itemName(item: MenuItem, locale: Locale) {
@@ -425,11 +416,11 @@ function ApiMenuHighlights({
         <div className="menu-highlights-track flex w-max gap-4 px-5">
           {repeatedItems.map(({ item, category }, index) => {
             const isDuplicate = index >= items.length;
-            const image = menuImage(item.imagePath, item.id);
+            const image = menuImage(item.imagePath);
             return (
-              <button type="button" key={`${item.id}-${index}`} onClick={() => onSelect(item)} aria-hidden={isDuplicate} tabIndex={isDuplicate ? -1 : undefined} data-testid={`button-featured-${item.id}${isDuplicate ? '-duplicate' : ''}`} className="menu-highlight-card group relative h-[230px] w-[230px] shrink-0 overflow-hidden border border-[#e8bd82]/35 bg-[#e7d3b7] text-start md:h-[280px] md:w-[280px]">
-                {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="absolute inset-x-4 top-3 h-[76%] w-[calc(100%-2rem)] object-contain drop-shadow-[0_12px_18px_rgba(0,0,0,.4)] transition duration-700 group-hover:scale-105" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/10 to-transparent" />
+              <button type="button" key={`${item.id}-${index}`} onClick={() => onSelect(item)} aria-hidden={isDuplicate} tabIndex={isDuplicate ? -1 : undefined} data-testid={`button-featured-${item.id}${isDuplicate ? '-duplicate' : ''}`} className="menu-highlight-card group relative h-[230px] w-[230px] shrink-0 overflow-hidden border border-[#f5eee2]/20 bg-[#420b09] text-start md:h-[280px] md:w-[280px]">
+                {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="absolute inset-0 h-full w-full object-cover opacity-65 transition duration-700 group-hover:scale-105 group-hover:opacity-85" /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />
                 <div className="relative flex h-full flex-col justify-between p-5 text-[#fff2df]">
                   <span className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#e8bd82]">{String((index % items.length) + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
                   <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className="mt-2 block font-mono-ui text-[10px] text-[#f7d8be]">{formatPrice(item.price, locale)}</span></span>
@@ -458,33 +449,33 @@ function ApiMenuItem({
   onAdd: (item: MenuItem) => void;
   onDetails: (item: MenuItem) => void;
 }) {
-  const image = menuImage(item.imagePath, item.id);
+  const image = menuImage(item.imagePath);
   return (
-    <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} data-testid={`card-menu-item-${item.id}`} className="group grid gap-4 border-b border-white/[.12] py-5 sm:grid-cols-[112px_1fr_auto] sm:items-center sm:gap-5">
-      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-details-${item.id}`} className="menu-photo-stage focus-ring relative aspect-[1.25] overflow-hidden text-start sm:aspect-square">
-        {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="h-full w-full object-contain p-1.5 drop-shadow-[0_10px_15px_rgba(0,0,0,.3)] transition duration-700 group-hover:scale-105" /> : <div className="menu-image-empty h-full w-full p-3" aria-hidden="true"><span className="font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#e8bd82]">Bianco</span><span className="mt-4 block font-display text-xl leading-none text-[#f5eee2]">{itemName(item, locale)}</span></div>}
+    <motion.article layout initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: '-40px' }} data-testid={`card-menu-item-${item.id}`} className="group grid gap-4 border-b border-[#63372b]/16 py-5 sm:grid-cols-[112px_1fr_auto] sm:items-center sm:gap-5">
+      <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-details-${item.id}`} className="focus-ring relative aspect-[1.25] overflow-hidden bg-[#ead7bd] text-start sm:aspect-square">
+        {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className="h-full w-full object-cover transition duration-700 group-hover:scale-105" /> : <div className="menu-image-empty h-full w-full p-3" aria-hidden="true"><span className="font-mono-ui text-[8px] uppercase tracking-[.18em] text-[#814331]">Bianco</span><span className="mt-4 block font-display text-xl leading-none text-[#612c21]">{itemName(item, locale)}</span></div>}
       </button>
       <button type="button" onClick={() => onDetails(item)} data-testid={`button-menu-copy-${item.id}`} className="focus-ring text-start">
-        <p className="font-mono-ui text-[8px] uppercase tracking-[.16em] text-[#e8bd82]">{locale === 'ar' ? category.titleAr : category.titleEn}{item.featured ? ` · ${t('featured')}` : ''}</p>
-        <h3 className="mt-2 font-display text-[1.8rem] leading-[.9] tracking-[-.025em] text-[#fff2df]">{itemName(item, locale)}</h3>
-        <p className="mt-2 max-w-[35rem] text-[13px] leading-[1.45] text-[#cbb5a6]">{itemDescription(item, locale)}</p>
-        {item.calories !== null && <p className="mt-2 font-mono-ui text-[9px] uppercase tracking-[.1em] text-[#967a6d]">{item.calories} kcal</p>}
+        <p className="font-mono-ui text-[8px] uppercase tracking-[.16em] text-[#9b4f2b]">{locale === 'ar' ? category.titleAr : category.titleEn}{item.featured ? ` · ${t('featured')}` : ''}</p>
+        <h3 className="mt-2 font-display text-[1.8rem] leading-[.9] tracking-[-.025em] text-[#351e19]">{itemName(item, locale)}</h3>
+        <p className="mt-2 max-w-[35rem] text-[13px] leading-[1.45] text-[#67473c]">{itemDescription(item, locale)}</p>
+        {item.calories !== null && <p className="mt-2 font-mono-ui text-[9px] uppercase tracking-[.1em] text-[#9b7869]">{item.calories} kcal</p>}
       </button>
       <div className="flex items-center justify-between gap-4 sm:flex-col sm:items-end">
-        <span className="font-mono-ui text-[11px] text-[#e8bd82]">{formatPrice(item.price, locale)}</span>
-        <button type="button" onClick={() => onAdd(item)} data-testid={`button-menu-add-${item.id}`} className="focus-ring flex items-center gap-2 border border-[#e8bd82]/35 px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f4ddc5] transition hover:border-[#e8bd82] hover:bg-[#e8bd82] hover:text-[#27110f]"><Plus size={13} /> {t('addOrder')}</button>
+        <span className="font-mono-ui text-[11px] text-[#8c4028]">{formatPrice(item.price, locale)}</span>
+        <button type="button" onClick={() => onAdd(item)} data-testid={`button-menu-add-${item.id}`} className="focus-ring flex items-center gap-2 border border-[#8d4a32]/35 px-3 py-2 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#612c21] transition hover:border-[#612c21] hover:bg-[#612c21] hover:text-[#f8ead6]"><Plus size={13} /> {t('addOrder')}</button>
       </div>
     </motion.article>
   );
 }
 
 function ApiMenuDetailModal({ item, category, onClose, onAdd, locale, t }: { item: MenuItem; category?: MenuCategory; onClose: () => void; onAdd: (item: MenuItem) => void; locale: Locale; t: Translate }) {
-  const image = menuImage(item.imagePath, item.id);
+  const image = menuImage(item.imagePath);
   return (
     <AnimatePresence>
       <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="fixed inset-0 z-[80] flex items-center justify-center bg-[#080706]/80 p-4 backdrop-blur-sm" data-testid="modal-menu-backdrop">
         <motion.div initial={{ opacity: 0, y: 22, scale: .98 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 12, scale: .98 }} onClick={(event) => event.stopPropagation()} className="relative grid max-h-[90vh] w-full max-w-[860px] overflow-y-auto border border-white/[.14] bg-[#1a1816] md:grid-cols-[.9fr_1.1fr]" data-testid={`modal-menu-item-${item.id}`}>
-          <div className="menu-detail-stage relative min-h-[270px] md:min-h-[480px]">{image ? <img src={image} alt={itemName(item, locale)} className="absolute inset-0 h-full w-full object-contain p-8 drop-shadow-[0_18px_24px_rgba(0,0,0,.38)]" /> : <div className="menu-image-empty absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#e8bd82]">Bianco / {locale === 'ar' ? 'من المطبخ' : 'from the kitchen'}</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#fff2df]">{itemName(item, locale)}</span></div>}</div>
+          <div className="relative min-h-[270px] md:min-h-[480px]">{image ? <img src={image} alt={itemName(item, locale)} className="absolute inset-0 h-full w-full object-cover opacity-80" /> : <div className="menu-image-empty absolute inset-0 p-6"><span className="font-mono-ui text-[9px] uppercase tracking-[.22em] text-[#765044]">Bianco / {locale === 'ar' ? 'من المطبخ' : 'from the kitchen'}</span><span className="mt-10 block max-w-[12rem] font-display text-5xl leading-[.85] text-[#491d17]">{itemName(item, locale)}</span></div>}<div className="absolute inset-0 bg-gradient-to-t from-[#171513] via-transparent to-transparent" /></div>
           <div className="flex flex-col justify-between p-6 md:p-10"><button type="button" onClick={onClose} aria-label={t('closeDetails')} data-testid="button-close-menu-modal" className="absolute end-4 top-4 rounded-full border border-white/15 p-2 text-[#c6bdb2] transition hover:border-[#e8c78e] hover:text-[#e8c78e]"><X size={17} /></button><div><p className="font-mono-ui text-[10px] uppercase tracking-[.22em] text-[#e8c78e]">{category ? (locale === 'ar' ? category.titleAr : category.titleEn) : t('kitchen')}</p><h2 className="mt-5 max-w-[380px] font-display text-6xl leading-[.88] tracking-[-.03em] text-[#efe8dc]">{itemName(item, locale)}</h2><p className="mt-7 max-w-[390px] text-base leading-relaxed text-[#b8afa5]">{itemDescription(item, locale)}</p>{item.calories !== null && <p className="mt-4 font-mono-ui text-[10px] uppercase tracking-[.14em] text-[#9c8f84]">{item.calories} kcal</p>}</div><div className="mt-12"><p className="font-mono-ui text-xs text-[#e8c78e]">{formatPrice(item.price, locale)}</p><button type="button" onClick={() => { onAdd(item); onClose(); }} data-testid={`button-modal-menu-add-${item.id}`} className="mt-5 flex w-full items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.16em] text-[#171513] transition hover:bg-[#f0d7a9]"><span>{t('addOrder')}</span><Plus size={16} /></button></div></div>
         </motion.div>
       </motion.div>
@@ -494,8 +485,8 @@ function ApiMenuDetailModal({ item, category, onClose, onAdd, locale, t }: { ite
 
 function MenuNotice({ kind, t, onRetry }: { kind: 'loading' | 'error' | 'empty'; t: Translate; onRetry?: () => void }) {
   if (kind === 'loading') return <div className="grid gap-4 md:grid-cols-2" aria-label={t('loadingMenu')}><div className="menu-skeleton h-40" /><div className="menu-skeleton h-40" /><div className="menu-skeleton h-40" /></div>;
-  if (kind === 'error') return <div role="alert" data-testid="status-menu-error" className="border border-[#e8bd82]/25 bg-[#24110f] p-8 text-[#fff2df]"><p className="font-display text-3xl">{t('menuError')}</p><p className="mt-2 text-sm text-[#cbb5a6]">{t('menuErrorText')}</p>{onRetry && <button type="button" onClick={onRetry} data-testid="button-menu-retry" className="mt-5 border-b border-[#e8bd82] pb-1 font-mono-ui text-[10px] uppercase tracking-[.15em] text-[#e8bd82]">{t('retry')}</button>}</div>;
-  return <div data-testid="status-menu-empty" className="border border-dashed border-[#e8bd82]/30 bg-[#24110f] p-10 text-center"><p className="font-display text-4xl text-[#fff2df]">{t('menuEmpty')}</p><p className="mt-2 text-sm text-[#cbb5a6]">{t('menuEmptyText')}</p></div>;
+  if (kind === 'error') return <div role="alert" data-testid="status-menu-error" className="border border-[#8d4a32]/25 bg-[#f6ead8] p-8 text-[#612c21]"><p className="font-display text-3xl">{t('menuError')}</p><p className="mt-2 text-sm text-[#765044]">{t('menuErrorText')}</p>{onRetry && <button type="button" onClick={onRetry} data-testid="button-menu-retry" className="mt-5 border-b border-[#612c21] pb-1 font-mono-ui text-[10px] uppercase tracking-[.15em]">{t('retry')}</button>}</div>;
+  return <div data-testid="status-menu-empty" className="border border-dashed border-[#8d4a32]/30 bg-[#f6ead8] p-10 text-center"><p className="font-display text-4xl text-[#612c21]">{t('menuEmpty')}</p><p className="mt-2 text-sm text-[#765044]">{t('menuEmptyText')}</p></div>;
 }
 
 function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutationError, cartError, whatsappUrl }: { cart: CartResponse | undefined; locale: Locale; t: Translate; trayOpen: boolean; onToggle: () => void; onUpdate: (itemId: string, delta: number) => void; mutationError: boolean; cartError: boolean; whatsappUrl: string }) {
@@ -506,7 +497,7 @@ function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutation
       {trayOpen && <div className="tray-panel mb-3 max-h-[58vh] overflow-y-auto border border-[#c98b5d]/40 bg-[#2a1714] p-4 text-left shadow-[0_18px_60px_rgba(38,14,10,.32)] sm:p-5" dir={locale === 'ar' ? 'rtl' : 'ltr'} data-testid="tray-panel">
         <div className="mb-2 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3"><div><p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">{t('cartEyebrow')}</p><p className="mt-1 font-display text-2xl text-[#f3dfca]">{t('cartTitle')} <span className="font-mono-ui text-[10px] text-[#a98575]">· {cartCount}</span></p></div><button type="button" aria-label={t('trayClose')} onClick={onToggle} data-testid="button-tray-close" className="focus-ring text-[#dba16f]"><ChevronDown size={17} /></button></div>
         {mutationError && <p role="alert" data-testid="status-cart-mutation-error" className="border border-[#e8bd82]/30 bg-[#491511] px-3 py-2 text-xs text-[#f5d3b5]">{t('cartUpdateError')}</p>}
-        {cartError ? <div role="alert" data-testid="status-cart-error" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('cartError')}</p></div> : !cart ? <div className="space-y-3 py-6"><div className="menu-skeleton h-14" /><div className="menu-skeleton h-14" /></div> : cart.items.length ? cart.items.map(({ item, quantity }) => <div key={item.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3"><div className="menu-photo-stage h-12 w-12 shrink-0 overflow-hidden">{menuImage(item.imagePath, item.id) ? <img src={menuImage(item.imagePath, item.id)!} alt="" className="h-full w-full object-contain p-0.5" /> : <span className="block p-2 font-display text-xs text-[#f3dfca]">{itemName(item, locale)}</span>}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><p className="truncate font-display text-xl text-[#f3dfca]">{itemName(item, locale)}</p><span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(item.price * quantity, locale)}</span></div><div className="mt-2 flex items-center gap-2"><button type="button" aria-label={`${t('decrease')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, -1)} data-testid={`button-tray-decrease-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button><span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${item.id}`}>{quantity}</span><button type="button" aria-label={`${t('increase')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, 1)} data-testid={`button-tray-increase-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button></div></div></div>) : <div data-testid="empty-cart" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('emptyNow')}</p><p className="mt-2 text-sm text-[#c39b83]">{t('emptySummary')}</p></div>}
+        {cartError ? <div role="alert" data-testid="status-cart-error" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('cartError')}</p></div> : !cart ? <div className="space-y-3 py-6"><div className="menu-skeleton h-14" /><div className="menu-skeleton h-14" /></div> : cart.items.length ? cart.items.map(({ item, quantity }) => <div key={item.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3"><div className="h-12 w-12 shrink-0 overflow-hidden bg-[#5b2921]">{menuImage(item.imagePath) ? <img src={menuImage(item.imagePath)!} alt="" className="h-full w-full object-cover opacity-90" /> : <span className="block p-2 font-display text-xs text-[#f3dfca]">{itemName(item, locale)}</span>}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><p className="truncate font-display text-xl text-[#f3dfca]">{itemName(item, locale)}</p><span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(item.price * quantity, locale)}</span></div><div className="mt-2 flex items-center gap-2"><button type="button" aria-label={`${t('decrease')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, -1)} data-testid={`button-tray-decrease-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button><span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${item.id}`}>{quantity}</span><button type="button" aria-label={`${t('increase')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, 1)} data-testid={`button-tray-increase-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button></div></div></div>) : <div data-testid="empty-cart" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('emptyNow')}</p><p className="mt-2 text-sm text-[#c39b83]">{t('emptySummary')}</p></div>}
         {cartCount > 0 && <><div className="flex items-center justify-between border-t border-[#edc9aa]/15 pt-4 text-[#f3dfca]"><span className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#c39b83]">{t('subtotal')}</span><span className="font-display text-2xl">{formatPrice(subtotal, locale)}</span></div><a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a></>}
       </div>}
       <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={locale === 'ar' ? 'rtl' : 'ltr'}><ShoppingBag size={15} strokeWidth={1.7} /><div className="min-w-0 flex-1"><p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>{cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}</div><button type="button" onClick={onToggle} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button><a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a></div>
@@ -786,27 +777,27 @@ function Home() {
 
       <ApiMenuHighlights categories={menuCategories} locale={locale} t={t} onSelect={setSelectedProduct} />
 
-      <section id="order" className="menu-section relative overflow-clip bg-[#1b0e0c] px-5 py-16 text-[#f5eee2] md:px-10 md:py-24">
-        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#e8bd82]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#e8bd82] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
+      <section id="order" className="menu-section relative overflow-clip bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
+        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-white/[.12] pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
             <motion.div variants={reveal}>
-              <div className="flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#e8bd82]"><span className="h-px w-8 bg-[#e8bd82]/60" />{t('shopMenu')}</div>
-              <h2 data-testid="text-menu-heading" className="mt-5 max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#fff2df] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#e8bd82]">{t('damage')}</em></h2>
+              <div className="flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('shopMenu')}</div>
+              <h2 data-testid="text-menu-heading" className="mt-5 max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#351e19] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#a64d2d]">{t('damage')}</em></h2>
             </motion.div>
             <motion.div variants={reveal} className="md:pb-1">
-              <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#cbb5a6]">{t('menuIntro')}</p>
-              <p className="mt-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#967a6d]">{t('prices')}</p>
+              <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#67473c]">{t('menuIntro')}</p>
+              <p className="mt-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#9b7869]">{t('prices')}</p>
             </motion.div>
           </motion.div>
           <div className="mt-8 grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-14">
             <div className="lg:sticky lg:top-24 lg:self-start">
               <nav className="menu-category-scroll flex gap-2 overflow-x-auto pb-2 lg:block lg:overflow-visible" role="tablist" aria-label={t('menu')}>
-                <button type="button" role="tab" onClick={() => { trackEvent('menu_category_selected', { category: 'all' }); setSelectedCategory('all'); setAllMenuExpanded(false); }} aria-selected={isAllMenu} data-testid="button-category-all" className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isAllMenu ? 'border-[#e8bd82] bg-[#e8bd82] text-[#27110f]' : 'border-white/[.14] text-[#e2cfc0] hover:border-[#e8bd82] hover:text-[#e8bd82]'}`}><span className="opacity-50">00</span>{t('allCategories')}</button>
+                <button type="button" role="tab" onClick={() => { trackEvent('menu_category_selected', { category: 'all' }); setSelectedCategory('all'); setAllMenuExpanded(false); }} aria-selected={isAllMenu} data-testid="button-category-all" className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isAllMenu ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">00</span>{t('allCategories')}</button>
                 {menuCategories.map((category, index) => {
                   const isActive = selectedCategory === category.id;
                   return (
-                    <button type="button" role="tab" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); setAllMenuExpanded(false); }} aria-selected={isActive} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isActive ? 'border-[#e8bd82] bg-[#e8bd82] text-[#27110f]' : 'border-white/[.14] text-[#e2cfc0] hover:border-[#e8bd82] hover:text-[#e8bd82]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
+                    <button type="button" role="tab" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); setAllMenuExpanded(false); }} aria-selected={isActive} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isActive ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
                   );
                 })}
               </nav>
@@ -840,31 +831,31 @@ function Home() {
                     const shownItems = allMenuExpanded ? categoryItems : categoryItems.slice(0, 1);
                     return (
                       <section key={category.id} className="mb-8 last:mb-0">
-                        <div className="flex items-end justify-between border-b border-white/[.12] pb-3">
-                          <h3 className="font-display text-3xl leading-none tracking-[-.04em] text-[#fff2df]">{locale === 'ar' ? category.titleAr : category.titleEn}</h3>
-                          <span className="font-mono-ui text-[9px] text-[#e8bd82]">{String(categoryItems.length).padStart(2, '0')}</span>
+                        <div className="flex items-end justify-between border-b border-[#63372b]/20 pb-3">
+                          <h3 className="font-display text-3xl leading-none tracking-[-.04em] text-[#351e19]">{locale === 'ar' ? category.titleAr : category.titleEn}</h3>
+                          <span className="font-mono-ui text-[9px] text-[#9b4f2b]">{String(categoryItems.length).padStart(2, '0')}</span>
                         </div>
-                        <motion.div layout className="border-t border-white/[.12]">
+                        <motion.div layout className="border-t border-[#63372b]/20">
                           {shownItems.map((item) => <ApiMenuItem key={item.id} item={item} category={category} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}
                         </motion.div>
                       </section>
                     );
                   })}
                   {hiddenAllMenuItems > 0 && (
-                    <div className="flex justify-center border-t border-white/[.12] py-6">
-                      <button type="button" onClick={() => setAllMenuExpanded((expanded) => !expanded)} data-testid="button-menu-show-more" aria-expanded={allMenuExpanded} className="focus-ring inline-flex items-center gap-3 rounded-full border border-[#e8bd82]/50 px-6 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.15em] text-[#f4ddc5] transition hover:bg-[#e8bd82] hover:text-[#27110f]">
+                    <div className="flex justify-center border-t border-[#63372b]/20 py-6">
+                      <button type="button" onClick={() => setAllMenuExpanded((expanded) => !expanded)} data-testid="button-menu-show-more" aria-expanded={allMenuExpanded} className="focus-ring inline-flex items-center gap-3 rounded-full border border-[#8d4027]/50 px-6 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.15em] text-[#612c21] transition hover:bg-[#612c21] hover:text-[#f8ead6]">
                         {allMenuExpanded ? t('showLess') : t('showMore')}
                         <ChevronDown size={14} className={`transition-transform ${allMenuExpanded ? 'rotate-180' : ''}`} />
                       </button>
                     </div>
                   )}
                 </div>
-              ) : activeCategory && visibleItems.length ? <motion.div layout className="border-t border-white/[.12]">{visibleItems.map((item) => <ApiMenuItem key={item.id} item={item} category={activeCategory} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div> : <MenuNotice kind="empty" t={t} />}
+              ) : activeCategory && visibleItems.length ? <motion.div layout className="border-t border-[#63372b]/20">{visibleItems.map((item) => <ApiMenuItem key={item.id} item={item} category={activeCategory} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}</motion.div> : <MenuNotice kind="empty" t={t} />}
             </div>
           </div>
-          <div className="mt-9 flex flex-col gap-3 border-t border-white/[.12] pt-5 text-[10px] uppercase tracking-[.14em] text-[#a99081] sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-9 flex flex-col gap-3 border-t border-[#63372b]/20 pt-5 text-[10px] uppercase tracking-[.14em] text-[#875546] sm:flex-row sm:items-center sm:justify-between">
             <span>{t('prices')}</span>
-            <button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#e8bd82] transition hover:text-[#fff2df]">{t('fullBag')} <ChevronRight size={14} /></button>
+            <button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#8d4027] transition hover:text-[#b15832]">{t('fullBag')} <ChevronRight size={14} /></button>
           </div>
         </div>
       </section>
