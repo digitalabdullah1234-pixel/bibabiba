@@ -102,13 +102,13 @@ const ui: Record<Locale, Record<string, string>> = {
     storyHeadingA: 'Not a', storyHeadingB: 'quiet', storyHeadingC: 'room.',
     storyLead: 'Bianco means white. The evening is anything but.',
     storyBody: 'We built this Italian room for the in-between hours: the late dinner after a long day, the table that keeps ordering, the plate passed across the room without asking.',
-    googleRating: 'Google rating', lastOrder: 'Last order', galleryLabel: '04 — Step inside', roomA: 'The', roomB: 'room.',
-    galleryCaption: 'The glow, the clatter, the last forkful.', visitLabel: '05 — Come find us',
+    galleryLabel: '04 — Step inside', roomA: 'The', roomB: 'room.',
+    galleryCaption: 'The glow, the clatter, the last forkful.', visitLabel: '06 — Come find us',
     doorA: 'The door', doorB: 'is open.', address: 'Abo Bakr Al Siddiq\nAl Qiblatayn, Madinah 42351\nSaudi Arabia',
     everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
-    reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn', countryShort: 'KSA',
-    reservationLabel: '06 — Make it an evening', reservationHeading: 'A table, set for you.',
+    reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn',
+    reservationLabel: '05 — Make it an evening', reservationHeading: 'A table, set for you.',
     reservationIntro: 'Tell us what you have in mind. This preview helps you prepare the details; our team confirms availability by phone.',
     reservationName: 'Full name', reservationMobile: 'Mobile number', reservationEmail: 'Email address',
     reservationDate: 'Reservation date', reservationTime: 'Preferred time', reservationGuests: 'Guests',
@@ -151,13 +151,13 @@ const ui: Record<Locale, Record<string, string>> = {
     storyHeadingA: 'ليست', storyHeadingB: 'هادئة', storyHeadingC: 'هذه الصالة.',
     storyLead: 'بيانكو تعني الأبيض، لكن المساء هنا مليء بالألوان.',
     storyBody: 'صممنا هذه الصالة الإيطالية لساعات المساء: عشاء متأخر بعد يوم طويل، مائدة تستمر في الطلب، وطبق يمر بين الأصدقاء بلا تكلف.',
-    googleRating: 'تقييم جوجل', lastOrder: 'آخر طلب', galleryLabel: '04 — ادخل إلى عالمنا', roomA: 'هذه', roomB: 'الصالة.',
-    galleryCaption: 'الضوء الدافئ، صوت المكان، واللقمة الأخيرة.', visitLabel: '05 — تفضل بزيارتنا',
+    galleryLabel: '04 — ادخل إلى عالمنا', roomA: 'هذه', roomB: 'الصالة.',
+    galleryCaption: 'الضوء الدافئ، صوت المكان، واللقمة الأخيرة.', visitLabel: '06 — تفضل بزيارتنا',
     doorA: 'الباب', doorB: 'مفتوح.', address: 'طريق أبو بكر الصديق\nالقبلتين، المدينة المنورة 42351\nالمملكة العربية السعودية',
     everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
-    reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين', countryShort: 'السعودية',
-    reservationLabel: '06 — لنجعلها أمسية جميلة', reservationHeading: 'مائدة، أعددناها لك.',
+    reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين',
+    reservationLabel: '05 — لنجعلها أمسية جميلة', reservationHeading: 'مائدة، أعددناها لك.',
     reservationIntro: 'أخبرنا بما ترغب به. تساعدك هذه المعاينة على تجهيز التفاصيل؛ وفريقنا يؤكد التوفر عبر الهاتف.',
     reservationName: 'الاسم الكامل', reservationMobile: 'رقم الجوال', reservationEmail: 'البريد الإلكتروني',
     reservationDate: 'تاريخ الحجز', reservationTime: 'الوقت المفضل', reservationGuests: 'عدد الضيوف',
@@ -939,7 +939,10 @@ function Home() {
       <section id="story" className="border-y border-[#f5eee2]/10 bg-[#1a1210] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.8fr_1.2fr] md:items-start">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.p variants={reveal} className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('energyLabel')}</motion.p><motion.h2 variants={reveal} className="mt-5 max-w-[450px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('storyHeadingA')}<br /><em className="text-[#e85d43]">{t('storyHeadingB')}</em> {t('storyHeadingC')}</motion.h2></motion.div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="max-w-[620px] md:pt-16"><motion.p variants={reveal} className="text-2xl leading-[1.1] text-[#f5eee2] md:text-4xl">{t('storyLead')}</motion.p><motion.p variants={reveal} className="mt-8 max-w-[500px] text-base leading-relaxed text-[#9c8f84]">{t('storyBody')}</motion.p><motion.div variants={reveal} className="mt-12 grid grid-cols-2 gap-6 border-t border-[#f5eee2]/12 pt-5 sm:grid-cols-3"><div><p data-testid="text-rating" className="font-display text-4xl text-[#f2b46d]">4.4</p><p className="mt-1 font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#716760]">{t('googleRating')}</p></div><div><p data-testid="text-hours" className="font-display text-4xl text-[#f2b46d]">02:00</p><p className="mt-1 font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#716760]">{t('lastOrder')}</p></div><div><p data-testid="text-location" className="font-display text-4xl text-[#f2b46d]">{t('countryShort')}</p><p className="mt-1 font-mono-ui text-[9px] uppercase tracking-[.14em] text-[#716760]">{t('madinah')}</p></div></motion.div></motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="max-w-[620px] md:pt-16">
+            <motion.p variants={reveal} className="text-2xl leading-[1.1] text-[#f5eee2] md:text-4xl">{t('storyLead')}</motion.p>
+            <motion.p variants={reveal} className="mt-8 max-w-[500px] text-base leading-relaxed text-[#9c8f84]">{t('storyBody')}</motion.p>
+          </motion.div>
         </div>
       </section>
 
@@ -950,7 +953,7 @@ function Home() {
 
       <ReservationSection t={t} locale={locale} />
 
-      <section id="visit" className="border-t border-[#f5eee2]/10 bg-[#8d2d23] px-5 py-20 md:px-10 md:py-28">
+      <section id="visit" className="border-t border-[#f5eee2]/10 bg-[#530f0c] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.9fr_1.1fr] md:items-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.p variants={reveal} className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#ffd097]">{t('visitLabel')}</motion.p><motion.h2 variants={reveal} className="mt-5 font-display text-6xl leading-[.78] tracking-[-.06em] text-[#fff2df] md:text-8xl">{t('doorA')}<br /><em>{t('doorB')}</em></motion.h2><motion.div variants={reveal} className="mt-10 space-y-5 text-sm leading-relaxed text-[#f4c6ae]"><p className="flex gap-3"><MapPin className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span className="whitespace-pre-line">{t('address')}</span></p><p className="flex gap-3"><Clock3 className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span>{t('everyDay')}<br />{t('dailyHours').replace(/^Daily |^يومياً /, '')}</span></p><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-phone" className="flex gap-3 transition hover:text-[#fff2df]"><Phone className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span dir="ltr">{phoneNumber}</span></a></motion.div><motion.a variants={reveal} href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-google-maps" className="mt-10 inline-flex items-center gap-3 border border-[#ffd097]/60 px-5 py-3.5 text-[10px] uppercase tracking-[.15em] text-[#fff2df] transition hover:bg-[#ffd097] hover:text-[#8d2d23]">{t('googleMaps')} <ArrowUpRight size={15} /></motion.a></motion.div>
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8 }} className="relative min-h-[380px] overflow-hidden border border-[#ffd097]/35 bg-[#6b231c] shadow-2xl md:min-h-[500px]"><iframe title={t('findUs')} data-testid="embed-google-map" src={mapsEmbed} loading="lazy" className="absolute inset-0 h-full w-full border-0 grayscale-[.3] contrast-110" /><div className="pointer-events-none absolute start-5 top-5 bg-[#110d0c] px-4 py-3 text-[#f5eee2] shadow-lg"><p className="font-display text-2xl">Bianco</p><p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#f2b46d]">{t('mapArea')}</p></div></motion.div>
