@@ -3,10 +3,13 @@ import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/reac
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import {
   ArrowUpRight,
+  BookOpenText,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
+  Clock3,
   Instagram,
+  MessageCircle,
   Menu,
   Minus,
   Phone,
@@ -95,6 +98,16 @@ const ui: Record<Locale, Record<string, string>> = {
     emptyNow: 'Empty for now.', emptySummary: 'Add a plate and we’ll keep your order here while you browse.',
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
     prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag',
+    trustTitle: 'The kind of place you come back to.',
+    trustIntro: 'Start with a menu you can explore, prices you can see, and our team only a call away.',
+    trustMenuTitle: 'Know the menu.',
+    trustMenuText: 'Explore dishes and see prices in Saudi riyals before you choose.',
+    trustOrderTitle: 'Order your way.',
+    trustOrderText: 'Start your order on WhatsApp or call Bianco directly.',
+    trustHoursTitle: 'Made for late evenings.',
+    trustHoursText: 'We’re open every day, from 12 PM until 2 AM.',
+    trustMenuCta: 'Explore the menu',
+    trustCallCta: 'Call Bianco',
     trayOpen: 'Open tray', trayClose: 'Close tray', checkout: 'Checkout', selected: 'selected', tableOpen: 'Your table is open', addToTable: 'Add a plate and your table will hold it here.',
     orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
@@ -135,6 +148,16 @@ const ui: Record<Locale, Record<string, string>> = {
     emptyNow: 'فارغة الآن.', emptySummary: 'أضف طبقاً وسنحتفظ بطلبك هنا أثناء التصفح.',
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
     prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة',
+    trustTitle: 'مكانٌ تحب أن تعود إليه.',
+    trustIntro: 'قائمة واضحة، وأسعار بالريال السعودي، وفريقنا على بُعد مكالمة.',
+    trustMenuTitle: 'اعرف قائمتنا.',
+    trustMenuText: 'تصفّح الأطباق واطّلع على أسعارها بالريال السعودي قبل الاختيار.',
+    trustOrderTitle: 'اطلب بالطريقة التي تناسبك.',
+    trustOrderText: 'ابدأ طلبك عبر واتساب أو اتصل ببيانكو مباشرة.',
+    trustHoursTitle: 'للأمسيات الطويلة.',
+    trustHoursText: 'نستقبلكم يومياً من 12 ظهراً حتى 2 صباحاً.',
+    trustMenuCta: 'استكشف القائمة',
+    trustCallCta: 'اتصل ببيانكو',
     trayOpen: 'افتح مائدتك', trayClose: 'أغلق مائدتك', checkout: 'إتمام الطلب', selected: 'مختارة', tableOpen: 'مائدتك مفتوحة', addToTable: 'أضف طبقاً وسنحتفظ به هنا أثناء التصفح.',
     orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
@@ -896,6 +919,32 @@ function Home() {
           <div className="mt-9 flex flex-col gap-3 border-t border-[#63372b]/20 pt-5 text-[10px] uppercase tracking-[.14em] text-[#875546] sm:flex-row sm:items-center sm:justify-between">
             <span>{t('prices')}</span>
             <button type="button" onClick={() => setTrayOpen(true)} data-testid="button-review-order" className="flex items-center gap-2 text-[#8d4027] transition hover:text-[#b15832]">{t('fullBag')} <ChevronRight size={14} /></button>
+          </div>
+        </div>
+      </section>
+
+      <section id="why-bianco" aria-labelledby="why-bianco-heading" className="bg-[#530f0c] px-5 py-20 text-[#fff2df] md:px-10 md:py-28">
+        <div className="mx-auto grid max-w-[1440px] gap-12 lg:grid-cols-[.8fr_1.2fr] lg:items-center">
+          <div>
+            <h2 id="why-bianco-heading" className="max-w-[560px] font-display text-5xl leading-[.86] tracking-[-.05em] md:text-7xl">{t('trustTitle')}</h2>
+            <p className="mt-6 max-w-[440px] text-sm leading-relaxed text-[#f3dfca]/80 md:text-base">{t('trustIntro')}</p>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href={menuPath} onClick={() => trackEvent('order_started', { location: 'trust_section' })} data-testid="link-trust-menu" className="focus-ring inline-flex min-h-12 items-center gap-3 bg-[#f2c486] px-5 py-3 text-[10px] font-bold uppercase tracking-[.14em] text-[#3b1510] transition hover:bg-[#fff2df]">{t('trustMenuCta')} <ArrowUpRight size={15} aria-hidden="true" /></a>
+              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('phone_order_intent', { location: 'trust_section' })} data-testid="link-trust-call" className="focus-ring inline-flex min-h-12 items-center gap-3 border border-[#f5eee2]/35 px-5 py-3 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:border-[#f2c486] hover:text-[#f2c486]"><Phone size={14} aria-hidden="true" /> {t('trustCallCta')}</a>
+            </div>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-3">
+            {[
+              { icon: BookOpenText, title: t('trustMenuTitle'), text: t('trustMenuText') },
+              { icon: MessageCircle, title: t('trustOrderTitle'), text: t('trustOrderText') },
+              { icon: Clock3, title: t('trustHoursTitle'), text: t('trustHoursText') },
+            ].map(({ icon: Icon, title, text }) => (
+              <article key={title} className="min-h-[220px] border border-[#f5eee2]/20 bg-[#fff2df]/[.04] p-5 md:p-6">
+                <span className="mb-8 flex h-11 w-11 items-center justify-center border border-[#f2c486]/55 text-[#f2c486]"><Icon size={19} strokeWidth={1.6} aria-hidden="true" /></span>
+                <h3 className="font-display text-2xl leading-none text-[#fff2df]">{title}</h3>
+                <p className="mt-4 text-sm leading-relaxed text-[#f3dfca]/75">{text}</p>
+              </article>
+            ))}
           </div>
         </div>
       </section>
