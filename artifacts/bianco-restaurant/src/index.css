@@ -244,15 +244,6 @@ body { background: #110d0c; }
 .menu-image-empty::after, .menu-card-placeholder::after { border-radius: 0; transform: rotate(45deg); }
 .menu-section [data-testid^="button-menu-add-"] { border-radius: 0; }
 .menu-section [data-testid="button-menu-show-more"] { border-radius: 0; }
-.story-section { position: relative; }
-#story { background: #1a1210; }
-#gallery { position: relative; }
-#gallery::before { content: ''; display: block; width: 5rem; height: 1px; margin-bottom: 2rem; background: #a64d2d; }
-#gallery figure:nth-child(2) { transform: translateY(22px); }
-#gallery figure:nth-child(4) { transform: translateY(-12px); }
-#visit { background: #530f0c; }
-#visit .border { border-radius: 0; }
-#visit a[data-testid="link-google-maps"]:hover { color: #530f0c; }
 [class~="text-[#9c8f84]"] { color: #d6c2a8; }
 [class~="text-[#716760]"] { color: #c9b08f; }
 [class~="text-[#a9a097]"] { color: #ddcdb7; }
@@ -271,12 +262,11 @@ body { background: #110d0c; }
   .quiet-hero-headline em { transform: none; }
   .menu-highlight-card:nth-child(3n) { transform: translateY(0); }
   .menu-section::after { display: none; }
-  #gallery figure:nth-child(2), #gallery figure:nth-child(4) { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .site-header-reserve::after { transition: none; }
-  .quiet-hero-frame, .quiet-hero-frame::after, #gallery figure:nth-child(2), #gallery figure:nth-child(4) { transform: none; }
+  .quiet-hero-frame, .quiet-hero-frame::after { transform: none; }
 }
 
 .bianco-menu img[src*="-cutout.png"] {

@@ -6,9 +6,7 @@ import {
   ChevronDown,
   ChevronLeft,
   ChevronRight,
-  Clock3,
   Instagram,
-  MapPin,
   Menu,
   Minus,
   Phone,
@@ -78,7 +76,7 @@ type Translate = (key: string) => string;
 
 const ui: Record<Locale, Record<string, string>> = {
   en: {
-    madinah: 'Madinah', menu: 'Menu', energy: 'The room', maps: 'Maps',
+    madinah: 'Madinah', menu: 'Menu', maps: 'Maps',
     reserve: 'Reserve a table', callForTable: 'Reserve a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
     dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
@@ -98,15 +96,8 @@ const ui: Record<Locale, Record<string, string>> = {
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
     prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag',
     trayOpen: 'Open tray', trayClose: 'Close tray', checkout: 'Checkout', selected: 'selected', tableOpen: 'Your table is open', addToTable: 'Add a plate and your table will hold it here.',
-    storyHeadingA: 'Not a', storyHeadingB: 'quiet', storyHeadingC: 'room.',
-    storyLead: 'Bianco means white. The evening is anything but.',
-    storyBody: 'We built this Italian room for the in-between hours: the late dinner after a long day, the table that keeps ordering, the plate passed across the room without asking.',
-    roomA: 'The', roomB: 'room.',
-    galleryCaption: 'The glow, the clatter, the last forkful.',
-    doorA: 'The door', doorB: 'is open.', address: 'Abo Bakr Al Siddiq\nAl Qiblatayn, Madinah 42351\nSaudi Arabia',
-    everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
+    orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
-    locationPhotoAlt: 'Bianco restaurant exterior in Madinah',
     reservationHeading: 'A table, set for you.',
     reservationIntro: 'Tell us what you have in mind. This preview helps you prepare the details; our team confirms availability by phone.',
     reservationName: 'Full name', reservationMobile: 'Mobile number', reservationEmail: 'Email address',
@@ -123,11 +114,9 @@ const ui: Record<Locale, Record<string, string>> = {
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
      remove: 'Remove', decrease: 'Decrease', increase: 'Increase', featured: 'Featured', loadingMenu: 'Loading menu', menuError: 'The menu is taking a moment.', menuErrorText: 'Please try again. The kitchen catalog could not be reached.', retry: 'Try again', menuEmpty: 'The menu is quiet.', menuEmptyText: 'There are no available dishes at the moment.', cartUpdateError: 'We could not update your basket. Please try again.', cartError: 'Your basket could not be loaded. Please try again.',
-    gallery0: 'Bianco dining room from the Google Maps listing', gallery1: 'A closer look inside Bianco',
-    gallery2: 'The Bianco room after dark', gallery3: 'Warm details from the restaurant',
   },
   ar: {
-    madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء المكان', maps: 'الخرائط',
+    madinah: 'المدينة المنورة', menu: 'القائمة', maps: 'الخرائط',
     reserve: 'احجز طاولة', callForTable: 'احجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
     dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
@@ -147,15 +136,8 @@ const ui: Record<Locale, Record<string, string>> = {
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
     prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة',
     trayOpen: 'افتح مائدتك', trayClose: 'أغلق مائدتك', checkout: 'إتمام الطلب', selected: 'مختارة', tableOpen: 'مائدتك مفتوحة', addToTable: 'أضف طبقاً وسنحتفظ به هنا أثناء التصفح.',
-    storyHeadingA: 'ليست', storyHeadingB: 'هادئة', storyHeadingC: 'هذه الصالة.',
-    storyLead: 'بيانكو تعني الأبيض، لكن المساء هنا مليء بالألوان.',
-    storyBody: 'صممنا هذه الصالة الإيطالية لساعات المساء: عشاء متأخر بعد يوم طويل، مائدة تستمر في الطلب، وطبق يمر بين الأصدقاء بلا تكلف.',
-    roomA: 'هذه', roomB: 'الصالة.',
-    galleryCaption: 'الضوء الدافئ، صوت المكان، واللقمة الأخيرة.',
-    doorA: 'الباب', doorB: 'مفتوح.', address: 'طريق أبو بكر الصديق\nالقبلتين، المدينة المنورة 42351\nالمملكة العربية السعودية',
-    everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
+    orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
-    locationPhotoAlt: 'واجهة مطعم بيانكو في المدينة المنورة',
     reservationHeading: 'مائدة، أعددناها لك.',
     reservationIntro: 'أخبرنا بما ترغب به. تساعدك هذه المعاينة على تجهيز التفاصيل؛ وفريقنا يؤكد التوفر عبر الهاتف.',
     reservationName: 'الاسم الكامل', reservationMobile: 'رقم الجوال', reservationEmail: 'البريد الإلكتروني',
@@ -172,8 +154,6 @@ const ui: Record<Locale, Record<string, string>> = {
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
      remove: 'حذف', decrease: 'تقليل', increase: 'زيادة', featured: 'مميز', loadingMenu: 'جارٍ تحميل القائمة', menuError: 'القائمة تحتاج لحظة.', menuErrorText: 'تعذر الوصول إلى قائمة المطبخ. حاول مرة أخرى.', retry: 'حاول مرة أخرى', menuEmpty: 'القائمة هادئة الآن.', menuEmptyText: 'لا توجد أطباق متاحة في الوقت الحالي.', cartUpdateError: 'تعذر تحديث طلبك. حاول مرة أخرى.', cartError: 'تعذر تحميل طلبك. حاول مرة أخرى.',
-    gallery0: 'صالة بيانكو من صور خرائط جوجل', gallery1: 'نظرة أقرب داخل بيانكو',
-    gallery2: 'صالة بيانكو في المساء', gallery3: 'تفاصيل دافئة من المطعم',
   },
 };
 
@@ -184,13 +164,6 @@ const menuHighlights: MenuHighlight[] = [];
 function productText(product: Product, _locale: Locale) {
   return product;
 }
-
-const gallery = [
-  { src: mapsPhoto, altKey: 'gallery0', className: 'md:col-span-2 md:row-span-2' },
-  { src: mapsPhotoPortrait, altKey: 'gallery1', className: '' },
-  { src: mapsPhoto, altKey: 'gallery2', className: '' },
-  { src: mapsPhotoPortrait, altKey: 'gallery3', className: 'md:col-span-2' },
-];
 
 const categories: string[] = [];
 
@@ -783,7 +756,6 @@ function Home() {
             <button type="button" onClick={() => setLocale(isArabic ? 'en' : 'ar')} data-testid="button-language" aria-label={isArabic ? 'Switch to English' : 'التبديل إلى العربية'} className="site-header-language focus-ring min-w-10 border px-2.5 py-2.5 text-center text-[.7rem] font-semibold transition">{isArabic ? 'EN' : 'عر'}</button>
             <nav dir="ltr" className={`${menuOpen ? 'site-header-mobile-open absolute left-0 right-0 top-[74px] flex flex-col border-b px-6 pb-7 pt-6 shadow-xl' : 'site-header-mobile-closed hidden'} site-header-nav gap-6 text-[11px] uppercase tracking-[.2em] ${isArabic ? 'text-right' : 'text-left'} md:static md:flex md:flex-row md:items-center md:border-0 md:bg-transparent md:p-0 md:shadow-none`} aria-label={t('menu')}>
               <a href={menuPath} onClick={closeMenu} data-testid="link-nav-order" className="line-link site-header-link transition">{t('menu')}</a>
-              <a href="#story" onClick={closeMenu} data-testid="link-nav-story" className="line-link site-header-link transition">{t('energy')}</a>
               <a href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-nav-maps" className="line-link site-header-link transition">{t('maps')} <ArrowUpRight className="ms-1 inline" size={12} /></a>
               <button type="button" onClick={() => { closeMenu(); openReservation('nav_mobile'); }} data-testid="button-nav-reserve-mobile" className="site-header-reserve mt-2 flex items-center justify-between border px-5 py-3.5 text-[.68rem] uppercase tracking-[.26em] md:hidden"><span>{t('callForTable')}</span><Phone size={13} strokeWidth={1.6} /></button>
             </nav>
@@ -928,46 +900,8 @@ function Home() {
         </div>
       </section>
 
-      <section id="story" className="border-y border-[#f5eee2]/10 bg-[#1a1210] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.8fr_1.2fr] md:items-start">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.h2 variants={reveal} className="max-w-[450px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('storyHeadingA')}<br /><em className="text-[#e85d43]">{t('storyHeadingB')}</em> {t('storyHeadingC')}</motion.h2></motion.div>
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="max-w-[620px] md:pt-16">
-            <motion.p variants={reveal} className="text-2xl leading-[1.1] text-[#f5eee2] md:text-4xl">{t('storyLead')}</motion.p>
-            <motion.p variants={reveal} className="mt-8 max-w-[500px] text-base leading-relaxed text-[#9c8f84]">{t('storyBody')}</motion.p>
-          </motion.div>
-        </div>
-      </section>
-
-      <section id="gallery" className="mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-28">
-        <div className="mb-10 flex items-end justify-between gap-5"><div><h2 className="font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('roomA')}<br /><em className="text-[#e85d43]">{t('roomB')}</em></h2></div><p className="hidden max-w-[220px] text-end text-sm leading-relaxed text-[#716760] md:block">{t('galleryCaption')}</p></div>
-        <div className="grid auto-rows-[220px] gap-3 md:grid-cols-4 md:auto-rows-[190px]">{gallery.map((image, i) => <motion.figure key={`${image.src}-${i}`} initial={{ opacity: 0, scale: .97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * .08, duration: .7 }} data-testid={`figure-gallery-${i}`} className={`group relative overflow-hidden border border-[#f5eee2]/10 ${image.className}`}><img src={image.src} alt={t(image.altKey)} data-testid={`img-gallery-${i}`} loading="lazy" className="h-full w-full object-cover opacity-70 grayscale-[.15] transition duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" /><div className="absolute inset-0 bg-gradient-to-t from-[#110d0c]/80 to-transparent" /><figcaption className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f5eee2]/80">{t(image.altKey)}</figcaption></motion.figure>)}</div>
-      </section>
-
       <ReservationSection t={t} locale={locale} />
-
-      <section id="visit" className="border-t border-[#f5eee2]/10 bg-[#530f0c] px-5 py-20 md:px-10 md:py-28">
-        <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.9fr_1.1fr] md:items-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
-            <motion.h2 variants={reveal} className="font-display text-6xl leading-[.78] tracking-[-.06em] text-[#fff2df] md:text-8xl">{t('doorA')}<br /><em>{t('doorB')}</em></motion.h2>
-            <motion.div variants={reveal} className="mt-10 space-y-5 text-sm leading-relaxed text-[#f5e3cb]">
-              <p className="flex gap-3"><MapPin className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span className="whitespace-pre-line">{t('address')}</span></p>
-              <p className="flex gap-3"><Clock3 className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span>{t('everyDay')}<br />{t('dailyHours').replace(/^Daily |^يومياً /, '')}</span></p>
-              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-phone" className="flex gap-3 transition hover:text-[#fff2df]"><Phone className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span dir="ltr">{phoneNumber}</span></a>
-            </motion.div>
-            <motion.a variants={reveal} href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-google-maps" className="mt-10 inline-flex items-center gap-3 border border-[#ffd097]/60 px-5 py-3.5 text-[10px] uppercase tracking-[.15em] text-[#fff2df] transition hover:bg-[#ffd097] hover:text-[#530f0c]">{t('googleMaps')} <ArrowUpRight size={15} /></motion.a>
-          </motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8 }} data-testid="card-visit-photo" className="group relative min-h-[380px] overflow-hidden border border-[#ffd097]/40 bg-[#2b0907] shadow-2xl md:min-h-[500px]">
-            <img src={heroImage} alt={t('locationPhotoAlt')} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.03]" />
-            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#110d0c]/90 via-[#110d0c]/10 to-transparent" />
-            <div className="absolute inset-x-0 bottom-0 flex items-center gap-4 p-6 pt-20 md:p-10 md:pt-24">
-              <span className="flex h-12 w-12 shrink-0 items-center justify-center border border-[#ffd097] bg-[#530f0c]/90 text-[#ffd097]"><MapPin size={21} aria-hidden="true" /></span>
-              <div className="text-[#fff2df]"><p className="font-display text-3xl leading-none md:text-4xl">Bianco</p><p className="mt-2 text-sm text-[#f2d8b4]">{t('madinah')}</p></div>
-            </div>
-          </motion.div>
-        </div>
-      </section>
-
-      <footer className="bg-[#110d0c] px-5 py-14 md:px-10 md:py-20">
+      <footer className="bg-[#530f0c] px-5 py-14 md:px-10 md:py-20">
         <div className="mx-auto max-w-[1440px]"><div className="flex flex-col justify-between gap-12 border-b border-[#f5eee2]/12 pb-12 md:flex-row md:items-end"><div><img src="/bianco-logo-transparent.png" alt="Bianco بيانكو" data-testid="img-logo-footer" className="h-12 w-[142px] object-contain object-start" /><p className="mt-6 max-w-[320px] font-display text-3xl leading-[.95] text-[#f2b46d]">{t('orderLoud')}<br />{t('eatWell')}</p></div><div className="flex flex-col items-start gap-4 text-[10px] uppercase tracking-[.15em] text-[#9c8f84] md:items-end"><a href={`https://wa.me/${whatsappNumber}`} target="_blank" rel="noreferrer" data-testid="link-footer-whatsapp" className="transition hover:text-[#f2b46d]">{t('whatsappKitchen')} <ArrowUpRight className="ms-1 inline" size={13} /></a><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-footer-phone" className="transition hover:text-[#f2b46d]">{t('call')} <span dir="ltr">{phoneNumber}</span></a><a href="https://www.instagram.com/" target="_blank" rel="noreferrer" data-testid="link-instagram" className="flex items-center gap-2 transition hover:text-[#f2b46d]"><Instagram size={14} /> {t('followRoom')}</a></div></div><div className="flex flex-col justify-between gap-3 pt-6 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#716760] md:flex-row"><span>بيانكو · Bianco · {t('madinah')}</span><span data-testid="text-footer-hours">{t('footerHours')}</span><span>© {new Date().getFullYear()} Bianco</span></div></div>
       </footer>
 
