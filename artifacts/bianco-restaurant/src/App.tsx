@@ -19,7 +19,6 @@ import {
   X,
 } from 'lucide-react';
 import { ErrorBoundary } from '@/components/error-boundary';
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from '@/components/ui/dialog';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { trackEvent } from '@/lib/analytics';
@@ -81,7 +80,7 @@ type Translate = (key: string) => string;
 const ui: Record<Locale, Record<string, string>> = {
   en: {
     madinah: 'Madinah', menu: 'Menu', energy: 'The room', findUs: 'Find us', maps: 'Maps',
-    reserve: 'Reserve a table', callForTable: 'Call for a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
+    reserve: 'Reserve a table', callForTable: 'Reserve a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
     dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
     heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
@@ -109,6 +108,18 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
     reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn', countryShort: 'KSA',
+    reservationLabel: '06 — Make it an evening', reservationHeading: 'A table, set for you.',
+    reservationIntro: 'Tell us what you have in mind. This preview helps you prepare the details; our team confirms availability by phone.',
+    reservationName: 'Full name', reservationMobile: 'Mobile number', reservationEmail: 'Email address',
+    reservationDate: 'Reservation date', reservationTime: 'Preferred time', reservationGuests: 'Guests',
+    reservationTables: 'Tables', reservationOccasion: 'Occasion', reservationNotes: 'Notes for our team',
+    reservationChoose: 'Choose an occasion', occasionDinner: 'Dinner', occasionBirthday: 'Birthday celebration', occasionGathering: 'Large gathering',
+    occasionAnniversary: 'Anniversary', occasionBusiness: 'Business dinner', occasionOther: 'Something else',
+    reservationNotesHint: 'Dietary requests, a little detail about the occasion…',
+    reservationUnavailable: 'Online reservations are not available yet',
+    reservationUnavailableText: 'Nothing will be sent or saved from this preview. Call us and we’ll check your preferred time together.',
+    reservationPhoneCta: 'Call to check availability', reservationFormNote: 'A request is not a confirmed reservation.',
+    reservationOneTable: '1 table', reservationManyTables: 'tables',
     heroAlt: "Bianco's restaurant and dining terrace in Madinah",
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
@@ -118,7 +129,7 @@ const ui: Record<Locale, Record<string, string>> = {
   },
   ar: {
     madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء المكان', findUs: 'موقعنا', maps: 'الخرائط',
-    reserve: 'احجز طاولة', callForTable: 'اتصل لحجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
+    reserve: 'احجز طاولة', callForTable: 'احجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
     dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
     heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
@@ -146,6 +157,18 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
     reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين', countryShort: 'السعودية',
+    reservationLabel: '06 — لنجعلها أمسية جميلة', reservationHeading: 'مائدة، أعددناها لك.',
+    reservationIntro: 'أخبرنا بما ترغب به. تساعدك هذه المعاينة على تجهيز التفاصيل؛ وفريقنا يؤكد التوفر عبر الهاتف.',
+    reservationName: 'الاسم الكامل', reservationMobile: 'رقم الجوال', reservationEmail: 'البريد الإلكتروني',
+    reservationDate: 'تاريخ الحجز', reservationTime: 'الوقت المفضل', reservationGuests: 'عدد الضيوف',
+    reservationTables: 'عدد الطاولات', reservationOccasion: 'المناسبة', reservationNotes: 'ملاحظات لفريقنا',
+    reservationChoose: 'اختر المناسبة', occasionDinner: 'عشاء', occasionBirthday: 'احتفال بعيد ميلاد', occasionGathering: 'تجمع كبير',
+    occasionAnniversary: 'ذكرى سنوية', occasionBusiness: 'عشاء عمل', occasionOther: 'مناسبة أخرى',
+    reservationNotesHint: 'طلبات غذائية أو تفاصيل بسيطة عن المناسبة…',
+    reservationUnavailable: 'الحجز الإلكتروني غير متاح حالياً',
+    reservationUnavailableText: 'لن يتم إرسال أو حفظ أي شيء من هذه المعاينة. اتصل بنا لنتحقق معاً من الوقت المناسب.',
+    reservationPhoneCta: 'اتصل للتحقق من التوفر', reservationFormNote: 'إرسال الطلب لا يعني تأكيد الحجز.',
+    reservationOneTable: 'طاولة واحدة', reservationManyTables: 'طاولات',
     heroAlt: 'مطعم بيانكو وتراس الطعام في المدينة المنورة',
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
@@ -517,26 +540,57 @@ function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutation
   );
 }
 
-function ReservationDialog({ open, onOpenChange, t }: { open: boolean; onOpenChange: (open: boolean) => void; t: Translate }) {
+function ReservationSection({ t, locale }: { t: Translate; locale: Locale }) {
+  const isArabic = locale === 'ar';
+  const minDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  const fields = 'reservation-field focus-ring w-full rounded-none border border-[#6b382c]/25 bg-[#fffaf1] px-3.5 py-3 text-[14px] text-[#351e19] placeholder:text-[#92796a]';
+  const label = 'mb-2 block font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] text-[#795143]';
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent data-testid="dialog-reservation" className="reserve-dialog w-[calc(100%-2rem)] max-w-[430px] gap-0 rounded-none border border-white/25 bg-[#530F0C] p-3 text-white shadow-[0_40px_120px_rgba(0,0,0,.6)] sm:rounded-none">
-        <div className="relative border border-white/[.18] px-6 py-9 text-center sm:px-9 sm:py-11">
-          <span aria-hidden="true" className="quiet-hero-corner -left-[5px] -top-[5px]" />
-          <span aria-hidden="true" className="quiet-hero-corner -right-[5px] -top-[5px]" />
-          <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -left-[5px]" />
-          <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
-          <p className="quiet-hero-serif text-[.64rem] uppercase tracking-[.4em] text-white/70">{t('reservationEyebrow')}</p>
-          <DialogTitle data-testid="text-reservation-heading" className="quiet-hero-serif mt-4 text-[2.6rem] font-normal leading-[1] tracking-[-.01em] text-white">{t('reserve')}</DialogTitle>
-          <div aria-hidden="true" className="quiet-hero-diamonds mt-6 flex items-center justify-center gap-4">
-            <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
+    <section id="reserve" dir={isArabic ? 'rtl' : 'ltr'} aria-labelledby="reservation-heading" className="reservation-section scroll-mt-20 bg-[#f1e5d2] px-5 py-16 text-[#351e19] md:px-10 md:py-24" data-testid="section-reservation">
+      <div className="mx-auto max-w-[1440px]">
+        <div className="mb-9 flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.24em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('reservationLabel')}</div>
+        <div className="grid overflow-hidden border border-[#63372b]/20 bg-[#f8efdf] shadow-[0_24px_70px_rgba(62,32,20,.12)] lg:grid-cols-[.72fr_1.28fr]">
+          <aside className="reservation-aside relative flex flex-col justify-between overflow-hidden bg-[#530f0c] p-6 text-[#fff2df] sm:p-9 md:p-12">
+            <div aria-hidden="true" className="reservation-mark">B.</div>
+            <div className="relative z-[1]">
+              <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('reservationEyebrow')}</p>
+              <h2 id="reservation-heading" data-testid="text-reservation-heading" className="mt-5 max-w-[430px] font-display text-[3.4rem] leading-[.88] tracking-[-.055em] sm:text-6xl md:text-7xl">{t('reservationHeading')}</h2>
+              <p className="mt-6 max-w-[360px] text-sm leading-relaxed text-[#f5eee2]/75">{t('reservationIntro')}</p>
+            </div>
+            <div className="relative z-[1] mt-10 border-t border-white/15 pt-5">
+              <p className="font-mono-ui text-[9px] uppercase tracking-[.13em] text-[#f2b46d]">{t('reservationUnavailable')}</p>
+              <p className="mt-2 max-w-sm text-xs leading-relaxed text-white/65">{t('reservationUnavailableText')}</p>
+              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('reservation_call_intent', { location: 'section' })} data-testid="link-reservation-call" className="focus-ring mt-5 flex min-h-12 items-center justify-between gap-3 border border-[#f2c486]/70 bg-[#f2c486] px-4 py-3 text-[10px] font-bold uppercase tracking-[.13em] text-[#3b1510] transition-colors hover:bg-[#fff2df]">
+                <span>{t('reservationPhoneCta')}</span><span dir="ltr" className="whitespace-nowrap">{phoneNumber}</span><Phone size={15} aria-hidden="true" />
+              </a>
+              <p className="mt-3 font-mono-ui text-[8px] uppercase tracking-[.1em] text-white/50">{t('openDaily')}</p>
+            </div>
+          </aside>
+          <div className="p-5 sm:p-8 md:p-10 lg:p-12">
+            <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#63372b]/20 pb-4">
+              <div><p className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#9b4f2b]">{t('reserve')}</p><p className="mt-2 max-w-xl text-sm leading-relaxed text-[#795f50]">{t('reservationFormNote')}</p></div>
+              <span aria-hidden="true" className="hidden h-9 w-9 shrink-0 rotate-45 border border-[#9b4f2b]/45 sm:block" />
+            </div>
+            <form onSubmit={(event) => event.preventDefault()} aria-describedby="reservation-preview-note" className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
+              <div className="sm:col-span-2"><label className={label} htmlFor="reservation-name">{t('reservationName')}</label><input className={fields} id="reservation-name" name="name" type="text" autoComplete="name" required data-testid="input-reservation-name" /></div>
+              <div><label className={label} htmlFor="reservation-mobile">{t('reservationMobile')}</label><input className={fields} id="reservation-mobile" name="mobile" type="tel" autoComplete="tel" inputMode="tel" required data-testid="input-reservation-mobile" /></div>
+              <div><label className={label} htmlFor="reservation-email">{t('reservationEmail')}</label><input className={fields} id="reservation-email" name="email" type="email" autoComplete="email" required data-testid="input-reservation-email" /></div>
+              <div><label className={label} htmlFor="reservation-date">{t('reservationDate')}</label><input className={fields} id="reservation-date" name="date" type="date" min={minDate} required data-testid="input-reservation-date" /></div>
+              <div><label className={label} htmlFor="reservation-time">{t('reservationTime')}</label><input className={fields} id="reservation-time" name="time" type="time" required data-testid="input-reservation-time" /></div>
+              <div><label className={label} htmlFor="reservation-guests">{t('reservationGuests')}</label><input className={fields} id="reservation-guests" name="guests" type="number" min="1" max="200" defaultValue="2" inputMode="numeric" required data-testid="input-reservation-guests" /></div>
+              <div><label className={label} htmlFor="reservation-tables">{t('reservationTables')}</label><select className={fields} id="reservation-tables" name="tables" defaultValue="1" required data-testid="select-reservation-tables">{Array.from({ length: 20 }, (_, index) => <option key={index + 1} value={index + 1}>{index === 0 ? t('reservationOneTable') : `${index + 1} ${t('reservationManyTables')}`}</option>)}</select></div>
+              <div className="sm:col-span-2"><label className={label} htmlFor="reservation-occasion">{t('reservationOccasion')}</label><select className={fields} id="reservation-occasion" name="occasion" defaultValue="" required data-testid="select-reservation-occasion"><option value="" disabled>{t('reservationChoose')}</option><option value="dinner">{t('occasionDinner')}</option><option value="birthday">{t('occasionBirthday')}</option><option value="large-gathering">{t('occasionGathering')}</option><option value="anniversary">{t('occasionAnniversary')}</option><option value="business">{t('occasionBusiness')}</option><option value="other">{t('occasionOther')}</option></select></div>
+              <div className="sm:col-span-2"><label className={label} htmlFor="reservation-notes">{t('reservationNotes')}</label><textarea className={`${fields} min-h-24 resize-y`} id="reservation-notes" name="notes" placeholder={t('reservationNotesHint')} data-testid="input-reservation-notes" /></div>
+              <div className="sm:col-span-2">
+                <button type="button" disabled aria-disabled="true" data-testid="button-reservation-unavailable" className="w-full cursor-not-allowed border border-[#6b382c]/15 bg-[#d9cbb8] px-5 py-4 text-[10px] font-bold uppercase tracking-[.13em] text-[#705d50] opacity-80">{t('reservationUnavailable')}</button>
+                <p id="reservation-preview-note" data-testid="text-reservation-preview-note" className="mt-3 text-center text-[11px] leading-relaxed text-[#795f50]">{t('reservationFormNote')}</p>
+              </div>
+            </form>
           </div>
-          <DialogDescription data-testid="text-reservation-description" className="quiet-hero-serif mx-auto mt-6 max-w-[21rem] text-[1.08rem] leading-[1.6] text-white/85">{t('reservationText')}</DialogDescription>
-          <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('reservation_call_intent', { location: 'dialog' })} data-testid="link-reservation-call" className="quiet-hero-cta focus-ring mt-8 flex items-center justify-center gap-3 border border-white px-6 py-4 text-[.7rem] uppercase tracking-[.26em] text-white"><Phone size={14} strokeWidth={1.6} /> {t('call')} {phoneNumber}</a>
-          <p className="quiet-hero-serif mt-6 text-[.62rem] uppercase tracking-[.3em] text-white/60">{t('openDaily')}</p>
         </div>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </section>
   );
 }
 
@@ -597,7 +651,6 @@ function Home() {
   const [locale, setLocale] = useState<Locale>(() => new URLSearchParams(window.location.search).get('lang') === 'ar' || window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [menuOpen, setMenuOpen] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(() => window.scrollY > 12);
-  const [reservationOpen, setReservationOpen] = useState(false);
   const [trayOpen, setTrayOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [allMenuExpanded, setAllMenuExpanded] = useState(false);
@@ -721,7 +774,7 @@ function Home() {
   const closeMenu = () => setMenuOpen(false);
   const openReservation = (location: string) => {
     trackEvent('reservation_started', { location });
-    setReservationOpen(true);
+    document.getElementById('reserve')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
   return (
@@ -895,6 +948,8 @@ function Home() {
         <div className="grid auto-rows-[220px] gap-3 md:grid-cols-4 md:auto-rows-[190px]">{gallery.map((image, i) => <motion.figure key={`${image.src}-${i}`} initial={{ opacity: 0, scale: .97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * .08, duration: .7 }} data-testid={`figure-gallery-${i}`} className={`group relative overflow-hidden border border-[#f5eee2]/10 ${image.className}`}><img src={image.src} alt={t(image.altKey)} data-testid={`img-gallery-${i}`} loading="lazy" className="h-full w-full object-cover opacity-70 grayscale-[.15] transition duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" /><div className="absolute inset-0 bg-gradient-to-t from-[#110d0c]/80 to-transparent" /><figcaption className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f5eee2]/80">{t(image.altKey)}</figcaption></motion.figure>)}</div>
       </section>
 
+      <ReservationSection t={t} locale={locale} />
+
       <section id="visit" className="border-t border-[#f5eee2]/10 bg-[#8d2d23] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.9fr_1.1fr] md:items-center">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.p variants={reveal} className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#ffd097]">{t('visitLabel')}</motion.p><motion.h2 variants={reveal} className="mt-5 font-display text-6xl leading-[.78] tracking-[-.06em] text-[#fff2df] md:text-8xl">{t('doorA')}<br /><em>{t('doorB')}</em></motion.h2><motion.div variants={reveal} className="mt-10 space-y-5 text-sm leading-relaxed text-[#f4c6ae]"><p className="flex gap-3"><MapPin className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span className="whitespace-pre-line">{t('address')}</span></p><p className="flex gap-3"><Clock3 className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span>{t('everyDay')}<br />{t('dailyHours').replace(/^Daily |^يومياً /, '')}</span></p><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-phone" className="flex gap-3 transition hover:text-[#fff2df]"><Phone className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span dir="ltr">{phoneNumber}</span></a></motion.div><motion.a variants={reveal} href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-google-maps" className="mt-10 inline-flex items-center gap-3 border border-[#ffd097]/60 px-5 py-3.5 text-[10px] uppercase tracking-[.15em] text-[#fff2df] transition hover:bg-[#ffd097] hover:text-[#8d2d23]">{t('googleMaps')} <ArrowUpRight size={15} /></motion.a></motion.div>
@@ -907,7 +962,6 @@ function Home() {
       </footer>
 
        {menuEntered && <ApiBasketTray cart={cart} cartError={cartQuery.isError} locale={locale} t={t} trayOpen={trayOpen} onToggle={() => setTrayOpen((open) => !open)} onUpdate={updateQuantity} mutationError={cartMutationError || Boolean(putCart.error)} whatsappUrl={whatsappUrl} />}
-      <ReservationDialog open={reservationOpen} onOpenChange={setReservationOpen} t={t} />
         <AnimatePresence>{selectedProduct && <ApiMenuDetailModal item={selectedProduct} category={menuCategories.find((category) => category.items.some((item) => item.id === selectedProduct.id))} onClose={() => setSelectedProduct(null)} onAdd={addToCart} locale={locale} t={t} />}</AnimatePresence>
      </main>
     </>

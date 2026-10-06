@@ -280,6 +280,42 @@ body { background: #110d0c; }
   padding: .25rem;
 }
 
+/* Reservation preview: a tactile editorial form, with quiet but unmistakable controls. */
+.reservation-section { position: relative; }
+.reservation-aside::before {
+  content: '';
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(242, 180, 109, .2);
+  pointer-events: none;
+}
+.reservation-mark {
+  position: absolute;
+  inset-inline-end: -1.2rem;
+  top: 18%;
+  color: rgba(242, 180, 109, .08);
+  font: italic 17rem/.8 var(--app-font-serif);
+  pointer-events: none;
+}
+.reservation-field {
+  min-height: 48px;
+  font-family: var(--app-font-sans);
+  transition: border-color .2s ease, background-color .2s ease;
+}
+.reservation-field:hover { border-color: rgba(107, 56, 44, .55); }
+.reservation-field:focus-visible {
+  border-color: #8d4027;
+  outline: 2px solid #8d4027;
+  outline-offset: 2px;
+}
+.locale-ar .reservation-field { font-family: 'Noto Kufi Arabic', sans-serif; }
+@media (max-width: 639px) {
+  .reservation-mark { top: 12%; font-size: 12rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reservation-field { transition: none; }
+}
+
 [data-testid="tray-panel"] img[src*="-cutout.png"],
 [data-testid="panel-cart"] img[src*="-cutout.png"] {
   background-color: #f1e5d2;
