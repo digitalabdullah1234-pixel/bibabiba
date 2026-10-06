@@ -179,10 +179,9 @@ body { overflow-x: hidden; }
 .menu-skeleton { position: relative; overflow: hidden; background: rgba(141,74,50,.12); }
 .menu-skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,247,229,.4), transparent); animation: menu-skeleton 1.6s ease-in-out infinite; }
 .tray-panel { scrollbar-color: rgba(219,161,111,.55) transparent; }
-.menu-highlights-track { animation: menu-slide 72s linear infinite; }
-.menu-highlights-window:hover .menu-highlights-track { animation-play-state: paused; }
-.menu-highlight-card { transition: border-color .45s ease, transform .45s cubic-bezier(.22,1,.36,1); }
-.menu-highlight-card:hover { border-color: rgba(242,180,109,.65); transform: translateY(-4px); }
+.menu-highlights-track { animation: menu-slide 48s linear infinite; }
+.menu-highlight-card { transition: border-color .45s ease; }
+.menu-highlight-card:hover { border-color: rgba(242,180,109,.65); }
 .hero-orbit { animation: orbit 22s linear infinite; }
 .line-link { position: relative; }
 .line-link::after { content: ''; position: absolute; left: 0; right: 0; bottom: -6px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: right; transition: transform .3s ease; }
@@ -236,8 +235,6 @@ body { background: #110d0c; }
 .menu-highlights-window { background: #410a08; }
 .menu-highlights-track { gap: 1.1rem; }
 .menu-highlight-card { border-radius: 0; box-shadow: 8px 8px 0 rgba(18,3,2,.2); }
-.menu-highlight-card:nth-child(3n) { transform: translateY(18px); }
-.menu-highlight-card:nth-child(3n):hover { transform: translateY(12px); }
 .menu-section { background-color: #f1e5d2; }
 .menu-section::after { content: 'BUON APPETITO'; position: absolute; right: -3rem; bottom: 4rem; color: rgba(97,44,33,.11); font: 700 8rem/1 var(--app-font-serif); letter-spacing: -.08em; transform: rotate(-90deg); pointer-events: none; }
 .menu-section-stamp { border-radius: 0; transform: rotate(9deg); }

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ArrowUpRight, ChevronDown, ChevronUp, Minus, Plus, ShoppingBag, X } from 'lucide-react';
 import { trackEvent } from '@/lib/analytics';
 import { resolveMenuImage } from '@/lib/menu-images';
@@ -64,6 +64,7 @@ export function ProductionMenu({ embedded = false }: { embedded?: boolean }) {
   const [locale, setLocale] = useState<Locale>('en');
   const [active, setActive] = useState('all');
   const [expanded, setExpanded] = useState(false);
+  const wasExpanded = useRef(false);
   const [cart, setCart] = useState<Line[]>([]);
   const [trayOpen, setTrayOpen] = useState(false);
   const [details, setDetails] = useState<Item | null>(null);
@@ -72,6 +73,12 @@ export function ProductionMenu({ embedded = false }: { embedded?: boolean }) {
   const hidden = sections.reduce((n, s) => n + Math.max(s.items.length - 1, 0), 0);
   const count = cart.reduce((n, l) => n + l.quantity, 0);
   const subtotal = cart.reduce((n, l) => n + l.item.price * l.quantity, 0);
+  useEffect(() => {
+    if (wasExpanded.current && !expanded) {
+      requestAnimationFrame(() => document.getElementById('production-menu-starters')?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+    }
+    wasExpanded.current = expanded;
+  }, [expanded]);
   const update = (item: Item, delta: number) => {
     setCart(lines => {
       const found = lines.some(l => l.item.id === item.id);

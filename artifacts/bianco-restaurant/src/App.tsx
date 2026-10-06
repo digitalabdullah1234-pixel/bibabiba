@@ -43,7 +43,8 @@ const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
 const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatayn,+Madinah+42351,+Saudi+Arabia&output=embed';
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
-const heroImage = `${import.meta.env.BASE_URL}bianco-interior-hero.jpg`;
+const heroImage = mapsPhoto.replace('w1200-h800-k-no', 'w2400-h1600-k-no');
+const heroPortraitImage = mapsPhotoPortrait.replace('w900-h1200-k-no', 'w2400-h3200-k-no');
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
@@ -108,7 +109,7 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
     reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn', countryShort: 'KSA',
-    heroAlt: "Bianco's dining room viewed from above, with tall columns and hanging lights",
+    heroAlt: "Bianco's restaurant and dining terrace in Madinah",
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
      remove: 'Remove', decrease: 'Decrease', increase: 'Increase', featured: 'Featured', loadingMenu: 'Loading menu', menuError: 'The menu is taking a moment.', menuErrorText: 'Please try again. The kitchen catalog could not be reached.', retry: 'Try again', menuEmpty: 'The menu is quiet.', menuEmptyText: 'There are no available dishes at the moment.', cartUpdateError: 'We could not update your basket. Please try again.', cartError: 'Your basket could not be loaded. Please try again.',
@@ -145,7 +146,7 @@ const ui: Record<Locale, Record<string, string>> = {
     everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
     reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين', countryShort: 'السعودية',
-    heroAlt: 'صالة بيانكو من الأعلى بأعمدتها الطويلة وإضاءتها المعلقة',
+    heroAlt: 'مطعم بيانكو وتراس الطعام في المدينة المنورة',
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
      remove: 'حذف', decrease: 'تقليل', increase: 'زيادة', featured: 'مميز', loadingMenu: 'جارٍ تحميل القائمة', menuError: 'القائمة تحتاج لحظة.', menuErrorText: 'تعذر الوصول إلى قائمة المطبخ. حاول مرة أخرى.', retry: 'حاول مرة أخرى', menuEmpty: 'القائمة هادئة الآن.', menuEmptyText: 'لا توجد أطباق متاحة في الوقت الحالي.', cartUpdateError: 'تعذر تحديث طلبك. حاول مرة أخرى.', cartError: 'تعذر تحميل طلبك. حاول مرة أخرى.',
@@ -739,13 +740,16 @@ function Home() {
       </header>
 
       <section id="top" className="quiet-hero relative isolate overflow-hidden border-b border-white/10">
-        <img
-          src={heroImage}
-          alt={t('heroAlt')}
-          data-testid="img-hero"
-          fetchPriority="high"
-          className="quiet-hero-photo absolute inset-0 h-full w-full object-cover"
-        />
+        <picture className="absolute inset-0">
+          <source media="(max-width: 767px)" srcSet={heroPortraitImage} />
+          <img
+            src={heroImage}
+            alt={t('heroAlt')}
+            data-testid="img-hero"
+            fetchPriority="high"
+            className="quiet-hero-photo absolute inset-0 h-full w-full object-cover"
+          />
+        </picture>
         <div aria-hidden="true" className="hero-photo-veil absolute inset-0" />
         <div aria-hidden="true" className="quiet-hero-shade absolute inset-0" />
 
@@ -782,7 +786,7 @@ function Home() {
 
       <ApiMenuHighlights categories={menuCategories} locale={locale} t={t} onSelect={setSelectedProduct} />
 
-      <section id="order" className="menu-section relative overflow-clip bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
+      <section id="order" className="menu-section scroll-mt-24 relative overflow-clip bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
         <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
@@ -848,7 +852,15 @@ function Home() {
                   })}
                   {hiddenAllMenuItems > 0 && (
                     <div className="flex justify-center border-t border-[#63372b]/20 py-6">
-                      <button type="button" onClick={() => setAllMenuExpanded((expanded) => !expanded)} data-testid="button-menu-show-more" aria-expanded={allMenuExpanded} className="focus-ring inline-flex items-center gap-3 rounded-full border border-[#8d4027]/50 px-6 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.15em] text-[#612c21] transition hover:bg-[#612c21] hover:text-[#f8ead6]">
+                      <button type="button" onClick={() => {
+                        const wasExpanded = allMenuExpanded;
+                        setAllMenuExpanded(!wasExpanded);
+                        if (wasExpanded) {
+                          requestAnimationFrame(() => {
+                            document.getElementById('order')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          });
+                        }
+                      }} data-testid="button-menu-show-more" aria-expanded={allMenuExpanded} className="focus-ring inline-flex items-center gap-3 rounded-full border border-[#8d4027]/50 px-6 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.15em] text-[#612c21] transition hover:bg-[#612c21] hover:text-[#f8ead6]">
                         {allMenuExpanded ? t('showLess') : t('showMore')}
                         <ChevronDown size={14} className={`transition-transform ${allMenuExpanded ? 'rotate-180' : ''}`} />
                       </button>
