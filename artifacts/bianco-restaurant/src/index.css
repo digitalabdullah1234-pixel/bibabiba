@@ -238,7 +238,6 @@ body { background: #110d0c; }
 .menu-highlight-card { border-radius: 0; box-shadow: 8px 8px 0 rgba(18,3,2,.2); }
 .menu-section { background-color: #f1e5d2; }
 .menu-section::after { content: 'BUON APPETITO'; position: absolute; right: -3rem; bottom: 4rem; color: rgba(97,44,33,.11); font: 700 8rem/1 var(--app-font-serif); letter-spacing: -.08em; transform: rotate(-90deg); pointer-events: none; }
-.menu-section-stamp { border-radius: 0; transform: rotate(9deg); }
 .menu-category-scroll button { border-radius: 0; }
 .product-card:hover { transform: translateY(-6px); }
 .menu-image-empty, .menu-card-placeholder { border-radius: 0; }
@@ -247,15 +246,20 @@ body { background: #110d0c; }
 .menu-section [data-testid="button-menu-show-more"] { border-radius: 0; }
 .story-section { position: relative; }
 #story { background: #1a1210; }
-#story::before { content: '03'; position: absolute; right: 8vw; margin-top: -2rem; color: rgba(242,180,109,.12); font: 10rem/1 var(--app-font-serif); }
 #gallery { position: relative; }
 #gallery::before { content: ''; display: block; width: 5rem; height: 1px; margin-bottom: 2rem; background: #a64d2d; }
 #gallery figure:nth-child(2) { transform: translateY(22px); }
 #gallery figure:nth-child(4) { transform: translateY(-12px); }
 #visit { background: #530f0c; }
 #visit .border { border-radius: 0; }
-#visit iframe { filter: grayscale(.68) contrast(1.08) saturate(.72); }
 #visit a[data-testid="link-google-maps"]:hover { color: #530f0c; }
+[class~="text-[#9c8f84]"] { color: #d6c2a8; }
+[class~="text-[#716760]"] { color: #c9b08f; }
+[class~="text-[#a9a097]"] { color: #ddcdb7; }
+[class~="text-[#8f867c]"] { color: #d2bd9e; }
+[class~="text-[#c6bdb2]"] { color: #e4d5c0; }
+[class~="text-[#b8afa5]"] { color: #dfcfb9; }
+[class~="text-[#c4b7a9]"] { color: #e6d8c3; }
 .line-link::after { transform-origin: left; }
 .focus-ring:focus-visible { outline-offset: 5px; }
 

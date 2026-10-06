@@ -39,7 +39,6 @@ import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 const queryClient = new QueryClient();
 
 const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
-const mapsEmbed = 'https://www.google.com/maps?q=Abo+Bakr+Al+Siddiq,+Al+Qiblatayn,+Madinah+42351,+Saudi+Arabia&output=embed';
 const mapsPhoto = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWm83Up9qihXIoG9ZDosn8hLq66NWL-kPgGwdvkhmeY-sVYhuOrIQsgIcjzy2SthVYGTLZhRPQvYsAgEoTvVYM3MlMgOl5lptxb7toRNIQFDKDr22Whd_142fiUJQU9n4n4oCyKQ6OpHFrw=w1200-h800-k-no';
 const mapsPhotoPortrait = 'https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmP0e7c4hB3BZ9VRFsuiAG71wFetpD92S1nxkBJ6XJfp9aZ8UIXKt8S3c8u0MFGFubnoV9q7C4YZXWjlNAw8R_P6flmlQPQnYWVKjV0BVbUBwqEPNDIu9-uhVC0H4DAu6dDfsmQ67yATLHF=w900-h1200-k-no';
 const heroImage = mapsPhoto.replace('w1200-h800-k-no', 'w2400-h1600-k-no');
@@ -79,36 +78,36 @@ type Translate = (key: string) => string;
 
 const ui: Record<Locale, Record<string, string>> = {
   en: {
-    madinah: 'Madinah', menu: 'Menu', energy: 'The room', findUs: 'Find us', maps: 'Maps',
+    madinah: 'Madinah', menu: 'Menu', energy: 'The room', maps: 'Maps',
     reserve: 'Reserve a table', callForTable: 'Reserve a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
     dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
     heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
     heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
-    menuGalleryLabel: '01 — From the menu', menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.', pauseGallery: 'Pause gallery', playGallery: 'Play gallery',
+    menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.', pauseGallery: 'Pause gallery', playGallery: 'Play gallery',
     allCategories: 'All', showMore: 'Show more', showLess: 'Show less', yourCart: 'Your Cart',
     cartEyebrow: 'Your table, to go', cartTitle: 'Your order', closeCart: 'Close cart',
     emptyTitle: 'Nothing on the table yet.', emptyText: 'Add a signature, a little something to share, and we will get it moving.',
     browseMenu: 'Browse the menu', itemsDelivery: 'items · for pickup or delivery', estimatedSubtotal: 'Estimated subtotal',
     whatsappOrder: 'Order via WhatsApp', preferCall: 'Prefer to call?', kitchen: 'From the Bianco kitchen',
     closeDetails: 'Close product details', reservationText: 'Call with your party size and preferred time to check availability and confirm your reservation with our team.',
-    call: 'Call', openDaily: 'Open daily · 12 PM — 2 AM', shopMenu: '02 — The Bianco menu',
+    call: 'Call', openDaily: 'Open daily · 12 PM — 2 AM',
     chooseYour: 'Made for', damage: 'long evenings.', menuIntro: 'A few favourites from the Bianco table. Find your dish, then add it to your order.',
     emptyNow: 'Empty for now.', emptySummary: 'Add a plate and we’ll keep your order here while you browse.',
     more: 'more', subtotal: 'Subtotal', reviewCheckout: 'Review & checkout', secureWhatsapp: 'Checkout securely via WhatsApp',
-    prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag', energyLabel: '03 — The room',
+    prices: 'Prices in Saudi Riyal · pickup or delivery', fullBag: 'Open full bag',
     trayOpen: 'Open tray', trayClose: 'Close tray', checkout: 'Checkout', selected: 'selected', tableOpen: 'Your table is open', addToTable: 'Add a plate and your table will hold it here.',
     storyHeadingA: 'Not a', storyHeadingB: 'quiet', storyHeadingC: 'room.',
     storyLead: 'Bianco means white. The evening is anything but.',
     storyBody: 'We built this Italian room for the in-between hours: the late dinner after a long day, the table that keeps ordering, the plate passed across the room without asking.',
-    galleryLabel: '04 — Step inside', roomA: 'The', roomB: 'room.',
-    galleryCaption: 'The glow, the clatter, the last forkful.', visitLabel: '06 — Come find us',
+    roomA: 'The', roomB: 'room.',
+    galleryCaption: 'The glow, the clatter, the last forkful.',
     doorA: 'The door', doorB: 'is open.', address: 'Abo Bakr Al Siddiq\nAl Qiblatayn, Madinah 42351\nSaudi Arabia',
     everyDay: 'Every day', googleMaps: 'Open in Google Maps', orderLoud: 'Order loud.', eatWell: 'Eat well.',
     whatsappKitchen: 'WhatsApp the kitchen', followRoom: 'Follow the room', footerHours: '12 PM — 2 AM · Every day',
-    reservationEyebrow: 'Bianco, Madinah', mapArea: 'Al Qiblatayn',
-    reservationLabel: '05 — Make it an evening', reservationHeading: 'A table, set for you.',
+    locationPhotoAlt: 'Bianco restaurant exterior in Madinah',
+    reservationHeading: 'A table, set for you.',
     reservationIntro: 'Tell us what you have in mind. This preview helps you prepare the details; our team confirms availability by phone.',
     reservationName: 'Full name', reservationMobile: 'Mobile number', reservationEmail: 'Email address',
     reservationDate: 'Reservation date', reservationTime: 'Preferred time', reservationGuests: 'Guests',
@@ -128,36 +127,36 @@ const ui: Record<Locale, Record<string, string>> = {
     gallery2: 'The Bianco room after dark', gallery3: 'Warm details from the restaurant',
   },
   ar: {
-    madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء المكان', findUs: 'موقعنا', maps: 'الخرائط',
+    madinah: 'المدينة المنورة', menu: 'القائمة', energy: 'أجواء المكان', maps: 'الخرائط',
     reserve: 'احجز طاولة', callForTable: 'احجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
     dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
     heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
     heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
-    menuGalleryLabel: '01 — من القائمة', menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.', pauseGallery: 'إيقاف معرض الأطباق', playGallery: 'تشغيل معرض الأطباق',
+    menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.', pauseGallery: 'إيقاف معرض الأطباق', playGallery: 'تشغيل معرض الأطباق',
     allCategories: 'الكل', showMore: 'عرض المزيد', showLess: 'عرض أقل', yourCart: 'سلتك',
     cartEyebrow: 'مائدتك، أينما كنت', cartTitle: 'طلبك', closeCart: 'إغلاق السلة',
     emptyTitle: 'مائدتك فارغة حتى الآن.', emptyText: 'أضف طبقاً مميزاً أو شيئاً للمشاركة وسنتولى الباقي.',
     browseMenu: 'تصفح القائمة', itemsDelivery: 'عناصر · للاستلام أو التوصيل', estimatedSubtotal: 'المجموع التقديري',
     whatsappOrder: 'اطلب عبر واتساب', preferCall: 'تفضل الاتصال؟', kitchen: 'من مطبخ بيانكو',
     closeDetails: 'إغلاق تفاصيل الطبق', reservationText: 'اتصل بنا مع عدد الضيوف والوقت المفضل للتحقق من التوفر وتأكيد حجزك مع فريقنا.',
-    call: 'اتصل', openDaily: 'مفتوح يومياً · 12 ظهراً — 2 صباحاً', shopMenu: '02 — قائمة بيانكو',
+    call: 'اتصل', openDaily: 'مفتوح يومياً · 12 ظهراً — 2 صباحاً',
     chooseYour: 'نكهاتٌ تُحكى', damage: 'على مهل.', menuIntro: 'أطباق مختارة من مائدة بيانكو. اختر طبقك وأضفه إلى طلبك.',
     emptyNow: 'فارغة الآن.', emptySummary: 'أضف طبقاً وسنحتفظ بطلبك هنا أثناء التصفح.',
     more: 'إضافية', subtotal: 'المجموع', reviewCheckout: 'راجع وأكمل الطلب', secureWhatsapp: 'إتمام الطلب بأمان عبر واتساب',
-    prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة', energyLabel: '03 — أجواء المكان',
+    prices: 'الأسعار بالريال السعودي · استلام أو توصيل', fullBag: 'افتح السلة كاملة',
     trayOpen: 'افتح مائدتك', trayClose: 'أغلق مائدتك', checkout: 'إتمام الطلب', selected: 'مختارة', tableOpen: 'مائدتك مفتوحة', addToTable: 'أضف طبقاً وسنحتفظ به هنا أثناء التصفح.',
     storyHeadingA: 'ليست', storyHeadingB: 'هادئة', storyHeadingC: 'هذه الصالة.',
     storyLead: 'بيانكو تعني الأبيض، لكن المساء هنا مليء بالألوان.',
     storyBody: 'صممنا هذه الصالة الإيطالية لساعات المساء: عشاء متأخر بعد يوم طويل، مائدة تستمر في الطلب، وطبق يمر بين الأصدقاء بلا تكلف.',
-    galleryLabel: '04 — ادخل إلى عالمنا', roomA: 'هذه', roomB: 'الصالة.',
-    galleryCaption: 'الضوء الدافئ، صوت المكان، واللقمة الأخيرة.', visitLabel: '06 — تفضل بزيارتنا',
+    roomA: 'هذه', roomB: 'الصالة.',
+    galleryCaption: 'الضوء الدافئ، صوت المكان، واللقمة الأخيرة.',
     doorA: 'الباب', doorB: 'مفتوح.', address: 'طريق أبو بكر الصديق\nالقبلتين، المدينة المنورة 42351\nالمملكة العربية السعودية',
     everyDay: 'كل يوم', googleMaps: 'افتح في خرائط جوجل', orderLoud: 'اطلب بشغف.', eatWell: 'وكل جيداً.',
     whatsappKitchen: 'راسل المطبخ عبر واتساب', followRoom: 'تابع أجواءنا', footerHours: '12 ظهراً — 2 صباحاً · يومياً',
-    reservationEyebrow: 'بيانكو، المدينة المنورة', mapArea: 'القبلتين',
-    reservationLabel: '05 — لنجعلها أمسية جميلة', reservationHeading: 'مائدة، أعددناها لك.',
+    locationPhotoAlt: 'واجهة مطعم بيانكو في المدينة المنورة',
+    reservationHeading: 'مائدة، أعددناها لك.',
     reservationIntro: 'أخبرنا بما ترغب به. تساعدك هذه المعاينة على تجهيز التفاصيل؛ وفريقنا يؤكد التوفر عبر الهاتف.',
     reservationName: 'الاسم الكامل', reservationMobile: 'رقم الجوال', reservationEmail: 'البريد الإلكتروني',
     reservationDate: 'تاريخ الحجز', reservationTime: 'الوقت المفضل', reservationGuests: 'عدد الضيوف',
@@ -274,8 +273,7 @@ function MenuHighlights({ locale, t }: { locale: Locale; t: Translate }) {
       <div className="mx-auto max-w-[1440px] px-5 py-14 md:px-10 md:py-16">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('menuGalleryLabel')}</p>
-            <h2 id="menu-highlights-heading" className="mt-4 max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
+            <h2 id="menu-highlights-heading" className="max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
           </div>
           <p className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
         </div>
@@ -433,8 +431,7 @@ function ApiMenuHighlights({
       <div className="mx-auto max-w-[1440px] px-5 py-14 md:px-10 md:py-16">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#e8bd82]">{t('menuGalleryLabel')}</p>
-            <h2 id="menu-highlights-heading" className="mt-4 max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
+            <h2 id="menu-highlights-heading" className="max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
           </div>
           <div className="flex max-w-[420px] items-center justify-between gap-4 md:justify-end">
             <p className="min-w-0 max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
@@ -455,7 +452,7 @@ function ApiMenuHighlights({
                 {image ? <img src={image} alt={itemName(item, locale)} loading="lazy" className={`absolute inset-0 h-full w-full transition duration-700 group-hover:scale-105 ${isCutoutPhoto ? 'object-contain p-5 drop-shadow-[0_14px_18px_rgba(59,27,19,.18)]' : 'object-cover opacity-65 group-hover:opacity-85'}`} /> : <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_25%,rgba(232,189,130,.22),transparent_35%),linear-gradient(135deg,#681b16,#2d0808)]" aria-hidden="true" />}
                 {!isCutoutPhoto && <div className="absolute inset-0 bg-gradient-to-t from-[#210604] via-[#210604]/20 to-transparent" />}
                 <div className={`relative flex h-full flex-col justify-between p-5 ${isCutoutPhoto ? 'text-[#3a211b]' : 'text-[#fff2df]'}`}>
-                  <span className={`font-mono-ui text-[9px] uppercase tracking-[.18em] ${isCutoutPhoto ? 'text-[#9b4f2b]' : 'text-[#e8bd82]'}`}>{String((index % items.length) + 1).padStart(2, '0')} · {locale === 'ar' ? category.titleAr : category.titleEn}</span>
+                  <span className={`font-mono-ui text-[9px] uppercase tracking-[.18em] ${isCutoutPhoto ? 'text-[#9b4f2b]' : 'text-[#e8bd82]'}`}>{locale === 'ar' ? category.titleAr : category.titleEn}</span>
                   <span><span className="block font-display text-[2rem] leading-none">{itemName(item, locale)}</span><span className={`mt-2 block font-mono-ui text-[10px] ${isCutoutPhoto ? 'text-[#765b4e]' : 'text-[#f7d8be]'}`}>{formatPrice(item.price, locale)}</span></span>
                 </div>
               </button>
@@ -549,13 +546,11 @@ function ReservationSection({ t, locale }: { t: Translate; locale: Locale }) {
   return (
     <section id="reserve" dir={isArabic ? 'rtl' : 'ltr'} aria-labelledby="reservation-heading" className="reservation-section scroll-mt-20 bg-[#f1e5d2] px-5 py-16 text-[#351e19] md:px-10 md:py-24" data-testid="section-reservation">
       <div className="mx-auto max-w-[1440px]">
-        <div className="mb-9 flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.24em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('reservationLabel')}</div>
         <div className="grid overflow-hidden border border-[#63372b]/20 bg-[#f8efdf] shadow-[0_24px_70px_rgba(62,32,20,.12)] lg:grid-cols-[.72fr_1.28fr]">
           <aside className="reservation-aside relative flex flex-col justify-between overflow-hidden bg-[#530f0c] p-6 text-[#fff2df] sm:p-9 md:p-12">
             <div aria-hidden="true" className="reservation-mark">B.</div>
             <div className="relative z-[1]">
-              <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('reservationEyebrow')}</p>
-              <h2 id="reservation-heading" data-testid="text-reservation-heading" className="mt-5 max-w-[430px] font-display text-[3.4rem] leading-[.88] tracking-[-.055em] sm:text-6xl md:text-7xl">{t('reservationHeading')}</h2>
+              <h2 id="reservation-heading" data-testid="text-reservation-heading" className="max-w-[430px] font-display text-[3.4rem] leading-[.88] tracking-[-.055em] sm:text-6xl md:text-7xl">{t('reservationHeading')}</h2>
               <p className="mt-6 max-w-[360px] text-sm leading-relaxed text-[#f5eee2]/75">{t('reservationIntro')}</p>
             </div>
             <div className="relative z-[1] mt-10 border-t border-white/15 pt-5">
@@ -569,7 +564,7 @@ function ReservationSection({ t, locale }: { t: Translate; locale: Locale }) {
           </aside>
           <div className="p-5 sm:p-8 md:p-10 lg:p-12">
             <div className="mb-6 flex items-end justify-between gap-4 border-b border-[#63372b]/20 pb-4">
-              <div><p className="font-mono-ui text-[9px] uppercase tracking-[.18em] text-[#9b4f2b]">{t('reserve')}</p><p className="mt-2 max-w-xl text-sm leading-relaxed text-[#795f50]">{t('reservationFormNote')}</p></div>
+              <div><p className="max-w-xl text-sm leading-relaxed text-[#795f50]">{t('reservationFormNote')}</p></div>
               <span aria-hidden="true" className="hidden h-9 w-9 shrink-0 rotate-45 border border-[#9b4f2b]/45 sm:block" />
             </div>
             <form onSubmit={(event) => event.preventDefault()} aria-describedby="reservation-preview-note" className="grid grid-cols-1 gap-x-4 gap-y-4 sm:grid-cols-2">
@@ -846,12 +841,10 @@ function Home() {
       <ApiMenuHighlights categories={menuCategories} locale={locale} t={t} onSelect={setSelectedProduct} />
 
       <section id="order" className="menu-section scroll-mt-24 relative overflow-clip bg-[#f1e5d2] px-5 py-16 text-[#2b1d19] md:px-10 md:py-24">
-        <div aria-hidden="true" className="menu-section-stamp absolute end-[-2.5rem] top-10 hidden h-32 w-32 items-center justify-center rounded-full border border-[#8d4a32]/25 font-mono-ui text-[8px] uppercase tracking-[.2em] text-[#8d4a32] md:flex">Bianco<br />{t('madinah')}<br />{t('everyDay')}</div>
         <div className="mx-auto max-w-[1440px]">
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true, margin: '-80px' }} variants={stagger} className="grid gap-9 border-b border-[#63372b]/20 pb-8 md:grid-cols-[1.15fr_.85fr] md:items-end">
             <motion.div variants={reveal}>
-              <div className="flex items-center gap-3 font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#9b4f2b]"><span className="h-px w-8 bg-[#9b4f2b]/60" />{t('shopMenu')}</div>
-              <h2 data-testid="text-menu-heading" className="mt-5 max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#351e19] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#a64d2d]">{t('damage')}</em></h2>
+              <h2 data-testid="text-menu-heading" className="max-w-[680px] font-display text-[4.3rem] leading-[.78] tracking-[-.065em] text-[#351e19] sm:text-7xl md:text-8xl">{t('chooseYour')}<br /><em className="text-[#a64d2d]">{t('damage')}</em></h2>
             </motion.div>
             <motion.div variants={reveal} className="md:pb-1">
               <p className="max-w-[350px] text-[15px] leading-[1.55] text-[#67473c]">{t('menuIntro')}</p>
@@ -861,11 +854,11 @@ function Home() {
           <div className="mt-8 grid gap-10 lg:grid-cols-[220px_1fr] lg:gap-14">
             <div className="lg:sticky lg:top-24 lg:self-start">
               <nav className="menu-category-scroll flex gap-2 overflow-x-auto pb-2 lg:block lg:overflow-visible" role="tablist" aria-label={t('menu')}>
-                <button type="button" role="tab" onClick={() => { trackEvent('menu_category_selected', { category: 'all' }); setSelectedCategory('all'); setAllMenuExpanded(false); }} aria-selected={isAllMenu} data-testid="button-category-all" className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isAllMenu ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">00</span>{t('allCategories')}</button>
-                {menuCategories.map((category, index) => {
+                <button type="button" role="tab" onClick={() => { trackEvent('menu_category_selected', { category: 'all' }); setSelectedCategory('all'); setAllMenuExpanded(false); }} aria-selected={isAllMenu} data-testid="button-category-all" className={`focus-ring flex shrink-0 items-center border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isAllMenu ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}>{t('allCategories')}</button>
+                {menuCategories.map((category) => {
                   const isActive = selectedCategory === category.id;
                   return (
-                    <button type="button" role="tab" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); setAllMenuExpanded(false); }} aria-selected={isActive} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center gap-3 border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isActive ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}><span className="opacity-50">{String(index + 1).padStart(2, '0')}</span>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
+                    <button type="button" role="tab" key={category.id} onClick={() => { trackEvent('menu_category_selected', { category: category.id }); setSelectedCategory(category.id); setAllMenuExpanded(false); }} aria-selected={isActive} data-testid={`button-category-${category.id}`} className={`focus-ring flex shrink-0 items-center border px-4 py-3 text-start font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] transition lg:mb-2 lg:w-full ${isActive ? 'border-[#612c21] bg-[#612c21] text-[#f8ead6]' : 'border-[#754333]/20 text-[#754333] hover:border-[#9b4f2b] hover:text-[#9b4f2b]'}`}>{locale === 'ar' ? category.titleAr : category.titleEn}</button>
                   );
                 })}
               </nav>
@@ -901,7 +894,6 @@ function Home() {
                       <section key={category.id} className="mb-8 last:mb-0">
                         <div className="flex items-end justify-between border-b border-[#63372b]/20 pb-3">
                           <h3 className="font-display text-3xl leading-none tracking-[-.04em] text-[#351e19]">{locale === 'ar' ? category.titleAr : category.titleEn}</h3>
-                          <span className="font-mono-ui text-[9px] text-[#9b4f2b]">{String(categoryItems.length).padStart(2, '0')}</span>
                         </div>
                         <motion.div layout className="border-t border-[#63372b]/20">
                           {shownItems.map((item) => <ApiMenuItem key={item.id} item={item} category={category} locale={locale} t={t} onAdd={addToCart} onDetails={setSelectedProduct} />)}
@@ -938,7 +930,7 @@ function Home() {
 
       <section id="story" className="border-y border-[#f5eee2]/10 bg-[#1a1210] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.8fr_1.2fr] md:items-start">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.p variants={reveal} className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('energyLabel')}</motion.p><motion.h2 variants={reveal} className="mt-5 max-w-[450px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('storyHeadingA')}<br /><em className="text-[#e85d43]">{t('storyHeadingB')}</em> {t('storyHeadingC')}</motion.h2></motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.h2 variants={reveal} className="max-w-[450px] font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('storyHeadingA')}<br /><em className="text-[#e85d43]">{t('storyHeadingB')}</em> {t('storyHeadingC')}</motion.h2></motion.div>
           <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger} className="max-w-[620px] md:pt-16">
             <motion.p variants={reveal} className="text-2xl leading-[1.1] text-[#f5eee2] md:text-4xl">{t('storyLead')}</motion.p>
             <motion.p variants={reveal} className="mt-8 max-w-[500px] text-base leading-relaxed text-[#9c8f84]">{t('storyBody')}</motion.p>
@@ -947,7 +939,7 @@ function Home() {
       </section>
 
       <section id="gallery" className="mx-auto max-w-[1440px] px-5 py-20 md:px-10 md:py-28">
-        <div className="mb-10 flex items-end justify-between gap-5"><div><p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#f2b46d]">{t('galleryLabel')}</p><h2 className="mt-4 font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('roomA')}<br /><em className="text-[#e85d43]">{t('roomB')}</em></h2></div><p className="hidden max-w-[220px] text-end text-sm leading-relaxed text-[#716760] md:block">{t('galleryCaption')}</p></div>
+        <div className="mb-10 flex items-end justify-between gap-5"><div><h2 className="font-display text-6xl leading-[.78] tracking-[-.06em] md:text-8xl">{t('roomA')}<br /><em className="text-[#e85d43]">{t('roomB')}</em></h2></div><p className="hidden max-w-[220px] text-end text-sm leading-relaxed text-[#716760] md:block">{t('galleryCaption')}</p></div>
         <div className="grid auto-rows-[220px] gap-3 md:grid-cols-4 md:auto-rows-[190px]">{gallery.map((image, i) => <motion.figure key={`${image.src}-${i}`} initial={{ opacity: 0, scale: .97 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true }} transition={{ delay: i * .08, duration: .7 }} data-testid={`figure-gallery-${i}`} className={`group relative overflow-hidden border border-[#f5eee2]/10 ${image.className}`}><img src={image.src} alt={t(image.altKey)} data-testid={`img-gallery-${i}`} loading="lazy" className="h-full w-full object-cover opacity-70 grayscale-[.15] transition duration-700 group-hover:scale-105 group-hover:opacity-95 group-hover:grayscale-0" /><div className="absolute inset-0 bg-gradient-to-t from-[#110d0c]/80 to-transparent" /><figcaption className="absolute bottom-4 start-4 font-mono-ui text-[9px] uppercase tracking-[.16em] text-[#f5eee2]/80">{t(image.altKey)}</figcaption></motion.figure>)}</div>
       </section>
 
@@ -955,8 +947,23 @@ function Home() {
 
       <section id="visit" className="border-t border-[#f5eee2]/10 bg-[#530f0c] px-5 py-20 md:px-10 md:py-28">
         <div className="mx-auto grid max-w-[1440px] gap-14 md:grid-cols-[.9fr_1.1fr] md:items-center">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}><motion.p variants={reveal} className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#ffd097]">{t('visitLabel')}</motion.p><motion.h2 variants={reveal} className="mt-5 font-display text-6xl leading-[.78] tracking-[-.06em] text-[#fff2df] md:text-8xl">{t('doorA')}<br /><em>{t('doorB')}</em></motion.h2><motion.div variants={reveal} className="mt-10 space-y-5 text-sm leading-relaxed text-[#f4c6ae]"><p className="flex gap-3"><MapPin className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span className="whitespace-pre-line">{t('address')}</span></p><p className="flex gap-3"><Clock3 className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span>{t('everyDay')}<br />{t('dailyHours').replace(/^Daily |^يومياً /, '')}</span></p><a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-phone" className="flex gap-3 transition hover:text-[#fff2df]"><Phone className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span dir="ltr">{phoneNumber}</span></a></motion.div><motion.a variants={reveal} href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-google-maps" className="mt-10 inline-flex items-center gap-3 border border-[#ffd097]/60 px-5 py-3.5 text-[10px] uppercase tracking-[.15em] text-[#fff2df] transition hover:bg-[#ffd097] hover:text-[#8d2d23]">{t('googleMaps')} <ArrowUpRight size={15} /></motion.a></motion.div>
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8 }} className="relative min-h-[380px] overflow-hidden border border-[#ffd097]/35 bg-[#6b231c] shadow-2xl md:min-h-[500px]"><iframe title={t('findUs')} data-testid="embed-google-map" src={mapsEmbed} loading="lazy" className="absolute inset-0 h-full w-full border-0 grayscale-[.3] contrast-110" /><div className="pointer-events-none absolute start-5 top-5 bg-[#110d0c] px-4 py-3 text-[#f5eee2] shadow-lg"><p className="font-display text-2xl">Bianco</p><p className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#f2b46d]">{t('mapArea')}</p></div></motion.div>
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={stagger}>
+            <motion.h2 variants={reveal} className="font-display text-6xl leading-[.78] tracking-[-.06em] text-[#fff2df] md:text-8xl">{t('doorA')}<br /><em>{t('doorB')}</em></motion.h2>
+            <motion.div variants={reveal} className="mt-10 space-y-5 text-sm leading-relaxed text-[#f5e3cb]">
+              <p className="flex gap-3"><MapPin className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span className="whitespace-pre-line">{t('address')}</span></p>
+              <p className="flex gap-3"><Clock3 className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span>{t('everyDay')}<br />{t('dailyHours').replace(/^Daily |^يومياً /, '')}</span></p>
+              <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} data-testid="link-phone" className="flex gap-3 transition hover:text-[#fff2df]"><Phone className="mt-0.5 shrink-0 text-[#ffd097]" size={17} /><span dir="ltr">{phoneNumber}</span></a>
+            </motion.div>
+            <motion.a variants={reveal} href={listingUrl} target="_blank" rel="noreferrer" data-testid="link-google-maps" className="mt-10 inline-flex items-center gap-3 border border-[#ffd097]/60 px-5 py-3.5 text-[10px] uppercase tracking-[.15em] text-[#fff2df] transition hover:bg-[#ffd097] hover:text-[#530f0c]">{t('googleMaps')} <ArrowUpRight size={15} /></motion.a>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .8 }} data-testid="card-visit-photo" className="group relative min-h-[380px] overflow-hidden border border-[#ffd097]/40 bg-[#2b0907] shadow-2xl md:min-h-[500px]">
+            <img src={heroImage} alt={t('locationPhotoAlt')} loading="lazy" className="absolute inset-0 h-full w-full object-cover object-center transition duration-700 group-hover:scale-[1.03]" />
+            <div aria-hidden="true" className="absolute inset-0 bg-gradient-to-t from-[#110d0c]/90 via-[#110d0c]/10 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 flex items-center gap-4 p-6 pt-20 md:p-10 md:pt-24">
+              <span className="flex h-12 w-12 shrink-0 items-center justify-center border border-[#ffd097] bg-[#530f0c]/90 text-[#ffd097]"><MapPin size={21} aria-hidden="true" /></span>
+              <div className="text-[#fff2df]"><p className="font-display text-3xl leading-none md:text-4xl">Bianco</p><p className="mt-2 text-sm text-[#f2d8b4]">{t('madinah')}</p></div>
+            </div>
+          </motion.div>
         </div>
       </section>
 
