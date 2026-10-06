@@ -87,7 +87,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
     heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
-    menuGalleryLabel: '01 — From the menu', menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.',
+    menuGalleryLabel: '01 — From the menu', menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.', pauseGallery: 'Pause gallery', playGallery: 'Play gallery',
     allCategories: 'All', showMore: 'Show more', showLess: 'Show less', yourCart: 'Your Cart',
     cartEyebrow: 'Your table, to go', cartTitle: 'Your order', closeCart: 'Close cart',
     emptyTitle: 'Nothing on the table yet.', emptyText: 'Add a signature, a little something to share, and we will get it moving.',
@@ -124,7 +124,7 @@ const ui: Record<Locale, Record<string, string>> = {
     heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
     heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
-    menuGalleryLabel: '01 — من القائمة', menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.',
+    menuGalleryLabel: '01 — من القائمة', menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.', pauseGallery: 'إيقاف معرض الأطباق', playGallery: 'تشغيل معرض الأطباق',
     allCategories: 'الكل', showMore: 'عرض المزيد', showLess: 'عرض أقل', yourCart: 'سلتك',
     cartEyebrow: 'مائدتك، أينما كنت', cartTitle: 'طلبك', closeCart: 'إغلاق السلة',
     emptyTitle: 'مائدتك فارغة حتى الآن.', emptyText: 'أضف طبقاً مميزاً أو شيئاً للمشاركة وسنتولى الباقي.',
@@ -403,20 +403,26 @@ function ApiMenuHighlights({
 }) {
   const items = orderedCategories(categories).flatMap((category) => orderedItems(category).filter((item) => item.featured).map((item) => ({ item, category }))).slice(0, 6);
   const repeatedItems = [...items, ...items];
+  const [isPaused, setIsPaused] = useState(false);
   if (!items.length) return null;
   return (
-    <section aria-labelledby="menu-highlights-heading" className="overflow-hidden border-y border-[#f5eee2]/15 bg-[#530f0c]">
+    <section id="menu-highlights" aria-labelledby="menu-highlights-heading" className="overflow-hidden border-y border-[#f5eee2]/15 bg-[#530f0c]">
       <div className="mx-auto max-w-[1440px] px-5 py-14 md:px-10 md:py-16">
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
             <p className="font-mono-ui text-[9px] uppercase tracking-[.25em] text-[#e8bd82]">{t('menuGalleryLabel')}</p>
             <h2 id="menu-highlights-heading" className="mt-4 max-w-[560px] font-display text-5xl leading-[.84] tracking-[-.05em] text-[#fff2df] md:text-7xl">{t('menuGalleryTitle')}</h2>
           </div>
-          <p className="max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
+          <div className="flex max-w-[420px] items-center justify-between gap-4 md:justify-end">
+            <p className="min-w-0 max-w-[330px] text-sm leading-relaxed text-[#f4c6ae]">{t('menuGalleryText')}</p>
+            <button type="button" onClick={() => setIsPaused((paused) => !paused)} aria-controls="menu-highlights-track" aria-label={isPaused ? t('playGallery') : t('pauseGallery')} className="focus-ring shrink-0 border border-[#e8bd82]/50 px-3 py-2 font-mono-ui text-[8px] uppercase tracking-[.16em] text-[#e8bd82] transition hover:bg-[#e8bd82] hover:text-[#351e19]">
+              {isPaused ? t('playGallery') : t('pauseGallery')}
+            </button>
+          </div>
         </div>
       </div>
       <div className="menu-highlights-window border-y border-[#f5eee2]/15 py-5" aria-label={t('menuGalleryTitle')}>
-        <div className="menu-highlights-track flex w-max gap-4 px-5">
+        <div id="menu-highlights-track" className={`menu-highlights-track flex w-max gap-4 px-5 ${isPaused ? 'is-paused' : ''}`}>
           {repeatedItems.map(({ item, category }, index) => {
             const isDuplicate = index >= items.length;
             const image = menuImage(item.imagePath);

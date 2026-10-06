@@ -179,7 +179,8 @@ body { overflow-x: hidden; }
 .menu-skeleton { position: relative; overflow: hidden; background: rgba(141,74,50,.12); }
 .menu-skeleton::after { content: ''; position: absolute; inset: 0; transform: translateX(-100%); background: linear-gradient(90deg, transparent, rgba(255,247,229,.4), transparent); animation: menu-skeleton 1.6s ease-in-out infinite; }
 .tray-panel { scrollbar-color: rgba(219,161,111,.55) transparent; }
-.menu-highlights-track { animation: menu-slide 48s linear infinite; }
+.menu-highlights-track { animation: menu-slide 24s linear infinite; }
+.menu-highlights-track.is-paused { animation-play-state: paused; }
 .menu-highlight-card { transition: border-color .45s ease; }
 .menu-highlight-card:hover { border-color: rgba(242,180,109,.65); }
 .hero-orbit { animation: orbit 22s linear infinite; }
@@ -213,7 +214,7 @@ body { overflow-x: hidden; }
 @keyframes menu-slide { to { transform: translateX(-50%); } }
 @keyframes orbit { to { transform: rotate(360deg); } }
 @keyframes menu-skeleton { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { .menu-highlights-track, .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
+@media (prefers-reduced-motion: reduce) { .hero-orbit { animation: none; } .quiet-hero-cta, .quiet-hero-bag, .quiet-hero-link, .quiet-hero-link::after { transition: none; } html { scroll-behavior: auto; } }
 
 /* Bianco editorial pass — a little more theatre, without sacrificing wayfinding. */
 body { background: #110d0c; }
