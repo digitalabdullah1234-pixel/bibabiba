@@ -538,3 +538,14 @@ body { background: #110d0c; }
 @media (prefers-reduced-motion: reduce) {
   .quiet-hero-photo { transform: none; }
 }
+
+.bianco-editorial-hero { min-height: 100svh; }
+.editorial-hero-photo { object-position: 55% center; }
+.locale-ar .editorial-hero-title {
+  font-family: 'Noto Naskh Arabic', Georgia, serif;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+@media (max-width: 767px) {
+  .editorial-hero-photo { object-position: 58% center; }
+}

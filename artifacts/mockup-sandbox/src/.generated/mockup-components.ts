@@ -2,6 +2,8 @@
 type ModuleMap = Record<string, () => Promise<Record<string, unknown>>>;
 export const modules: ModuleMap = {
   "./components/mockups/bianco/BiancoOrderStudio.tsx": () => import("../components/mockups/bianco/BiancoOrderStudio.tsx"),
+  "./components/mockups/bianco-hero-redesign/Current.tsx": () => import("../components/mockups/bianco-hero-redesign/Current.tsx"),
+  "./components/mockups/bianco-hero-redesign/EditorialSplit.tsx": () => import("../components/mockups/bianco-hero-redesign/EditorialSplit.tsx"),
   "./components/mockups/bianco-menu/Current.tsx": () => import("../components/mockups/bianco-menu/Current.tsx"),
   "./components/mockups/bianco-menu/MenuJournal.tsx": () => import("../components/mockups/bianco-menu/MenuJournal.tsx"),
   "./components/mockups/bianco-menu/MenuOnly.tsx": () => import("../components/mockups/bianco-menu/MenuOnly.tsx"),
