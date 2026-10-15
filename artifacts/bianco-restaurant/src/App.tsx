@@ -805,11 +805,13 @@ function Home() {
 
             <div className="quiet-hero-content relative flex flex-1 flex-col justify-end px-6 pb-14 pt-24 text-start sm:px-10 md:max-w-[760px] md:px-16 md:pb-20">
               <p data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.7rem] uppercase tracking-[.44em] text-white/85 md:text-[.78rem]">{t('cuisine')}</p>
-              <h1 data-testid="text-hero-heading" className="quiet-hero-serif quiet-hero-headline mt-5 text-[clamp(3.7rem,10vw,8.8rem)] font-normal leading-[.84] tracking-[-.045em] text-white md:mt-7">
-                {t('heroHello')}<br /><em className="font-normal italic text-[#FBF3E8]">{t('heroCity')}</em>
-              </h1>
-              <div aria-hidden="true" className="quiet-hero-diamonds mt-7 flex items-center justify-start gap-4 md:mt-9">
-                <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" />
+              <div dir="ltr" lang="it" className="w-fit">
+                <h1 data-testid="text-hero-heading" aria-label="Aroma d’Italia" className="quiet-hero-serif quiet-hero-headline mt-5 w-fit text-[clamp(3.7rem,10vw,8.8rem)] font-normal leading-[.84] tracking-[-.045em] text-white md:mt-7">
+                  <span>Aroma</span><br /><em className="font-normal italic text-[#FBF3E8]">d’Italia</em>
+                </h1>
+                <div aria-hidden="true" className="quiet-hero-diamonds mx-auto mt-7 flex w-fit items-center justify-center gap-4 md:mt-9">
+                  <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
+                </div>
               </div>
               <p data-testid="text-hero-description" className="quiet-hero-serif mt-6 max-w-[30rem] text-[1.05rem] leading-[1.55] text-white/85 md:mt-7 md:text-[1.22rem]">{t('heroDescription')}</p>
               <div className="mt-8 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-7 md:mt-10">
