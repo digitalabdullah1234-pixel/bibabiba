@@ -40,7 +40,7 @@ import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 const queryClient = new QueryClient();
 
 const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
-const heroImage = `${import.meta.env.BASE_URL}bianco-listing-1.jpg`;
+const heroImage = `${import.meta.env.BASE_URL}bianco-hero-user.jpeg`;
 const loadingHandImage = `${import.meta.env.BASE_URL}bianco-sabar-hand.png`;
 const phoneNumber = '+966 55 994 9069';
 const whatsappNumber = '966559949069';
