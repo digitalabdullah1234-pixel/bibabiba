@@ -425,7 +425,7 @@ body { background: #110d0c; }
 .quiet-hero-photo {
   filter: saturate(.95) contrast(1.04) brightness(.94);
   object-position: 50% 47%;
-  transform: none;
+  transform: scale(1.04) translateY(4%);
 }
 .hero-photo-veil {
   background:
@@ -506,7 +506,7 @@ body { background: #110d0c; }
   }
   .quiet-hero-photo {
     object-position: 50% 45%;
-    transform: none;
+    transform: scale(1.04) translateY(4%);
   }
   .hero-photo-veil {
     background:
@@ -536,5 +536,5 @@ body { background: #110d0c; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .quiet-hero-photo { transform: none; }
+  .quiet-hero-photo { transform: scale(1.04) translateY(4%); }
 }
