@@ -79,9 +79,10 @@ const ui: Record<Locale, Record<string, string>> = {
     madinah: 'Madinah', menu: 'Menu', maps: 'Maps',
     reserve: 'Reserve a table', callForTable: 'Reserve a table', bag: 'Your bag', closeMenu: 'Close menu', openMenu: 'Open menu',
     openCart: 'Open cart with {count} items', location: 'Al Qiblatayn, Madinah', terrace: 'Terrace & dining room',
-    dailyHours: 'Daily 12 PM — 2 AM', cuisine: 'Cucina Italiana', heroHello: 'Buonasera,', heroCity: 'Madinah.',
+    dailyHours: 'Daily 12 PM — 2 AM',
     heroFooterLeft: 'Italian dining · Madinah', heroFooterCenter: 'Open daily', heroFooterRight: '12 PM — 2 AM',
-    heroDescription: 'Pizza, pasta, and long Italian dinners, on the terrace or in the dining room. Tables are reserved by phone.',
+    heroDescription: 'to our Classic Italian Menu, where authenticity and traditional flavors come together to offer you a pleasant and memorable dining experience.',
+    heroReservationQuestion: 'Wanna reserve a table?',
     viewMenu: 'View the menu', reservationsPhone: 'Reservations by phone', addOrder: 'Add to order',
     menuGalleryTitle: 'Made to be seen.', menuGalleryText: 'A few plates from our Italian kitchen. Keep scrolling — there is more to come.', pauseGallery: 'Pause gallery', playGallery: 'Play gallery',
     allCategories: 'All', showMore: 'Show more', showLess: 'Show less', yourCart: 'Your Cart',
@@ -120,6 +121,8 @@ const ui: Record<Locale, Record<string, string>> = {
     reservationUnavailableText: 'Nothing will be sent or saved from this preview. Call us and we’ll check your preferred time together.',
     reservationPhoneCta: 'Call to check availability', reservationFormNote: 'A request is not a confirmed reservation.',
     reservationOneTable: '1 table', reservationManyTables: 'tables',
+    reservationPartyHint: 'Up to 4 guests per table · maximum 10 tables (40 guests).',
+    reservationOccasionRequired: 'Required for parties of 5 or more.',
     heroAlt: "Bianco's restaurant and dining terrace in Madinah",
     pickupMessage: "Hello Bianco, I'd like to order:", estimatedTotal: 'Estimated total',
     emptyOrderMessage: 'Hello Bianco, I would like to place an order.', currency: 'SAR',
@@ -129,9 +132,10 @@ const ui: Record<Locale, Record<string, string>> = {
     madinah: 'المدينة المنورة', menu: 'القائمة', maps: 'الخرائط',
     reserve: 'احجز طاولة', callForTable: 'احجز طاولة', bag: 'طلبك', closeMenu: 'إغلاق القائمة', openMenu: 'فتح القائمة',
     openCart: 'فتح السلة وبها {count} عناصر', location: 'القبلتين، المدينة المنورة', terrace: 'التراس وصالة الطعام',
-    dailyHours: 'يومياً 12 ظهراً — 2 صباحاً', cuisine: 'مطبخ إيطالي', heroHello: 'مساء الخير،', heroCity: 'المدينة.',
+    dailyHours: 'يومياً 12 ظهراً — 2 صباحاً',
     heroFooterLeft: 'تجربة إيطالية · المدينة', heroFooterCenter: 'مفتوح يومياً', heroFooterRight: '12 ظهراً — 2 صباحاً',
-    heroDescription: 'بيتزا وباستا وعشاء إيطالي طويل، في التراس أو صالة الطعام. الحجز عبر الهاتف.',
+    heroDescription: 'إلى قائمتنا الإيطالية الكلاسيكية، حيث تجتمع الأصالة والنكهات التقليدية لتمنحكم تجربة طعام ممتعة لا تُنسى.',
+    heroReservationQuestion: 'هل ترغب في حجز طاولة؟',
     viewMenu: 'شاهد القائمة', reservationsPhone: 'الحجز عبر الهاتف', addOrder: 'أضف إلى الطلب',
     menuGalleryTitle: 'أطباق تستحق أن تُرى.', menuGalleryText: 'مختارات من مطبخنا الإيطالي. واصل التمرير — هناك المزيد.', pauseGallery: 'إيقاف معرض الأطباق', playGallery: 'تشغيل معرض الأطباق',
     allCategories: 'الكل', showMore: 'عرض المزيد', showLess: 'عرض أقل', yourCart: 'سلتك',
@@ -170,6 +174,8 @@ const ui: Record<Locale, Record<string, string>> = {
     reservationUnavailableText: 'لن يتم إرسال أو حفظ أي شيء من هذه المعاينة. اتصل بنا لنتحقق معاً من الوقت المناسب.',
     reservationPhoneCta: 'اتصل للتحقق من التوفر', reservationFormNote: 'إرسال الطلب لا يعني تأكيد الحجز.',
     reservationOneTable: 'طاولة واحدة', reservationManyTables: 'طاولات',
+    reservationPartyHint: 'حتى 4 ضيوف لكل طاولة · 10 طاولات كحد أقصى (40 ضيفاً).',
+    reservationOccasionRequired: 'مطلوب للمجموعات التي تضم 5 ضيوف أو أكثر.',
     heroAlt: 'مطعم بيانكو وتراس الطعام في المدينة المنورة',
     pickupMessage: 'مرحباً بيانكو، أود طلب:', estimatedTotal: 'المجموع التقديري',
     emptyOrderMessage: 'مرحباً بيانكو، أود تقديم طلب.', currency: 'ر.س',
@@ -532,6 +538,10 @@ function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutation
 
 function ReservationSection({ t, locale }: { t: Translate; locale: Locale }) {
   const isArabic = locale === 'ar';
+  const [guestCount, setGuestCount] = useState('2');
+  const [tableCount, setTableCount] = useState(1);
+  const guestCountValue = Number(guestCount);
+  const minimumTables = Math.max(1, Math.ceil((guestCountValue || 1) / 4));
   const minDate = new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   const fields = 'reservation-field focus-ring w-full rounded-none border border-[#6b382c]/25 bg-[#fffaf1] px-3.5 py-3 text-[14px] text-[#351e19] placeholder:text-[#92796a]';
   const label = 'mb-2 block font-mono-ui text-[9px] font-bold uppercase tracking-[.14em] text-[#795143]';
@@ -566,9 +576,64 @@ function ReservationSection({ t, locale }: { t: Translate; locale: Locale }) {
               <div><label className={label} htmlFor="reservation-email">{t('reservationEmail')}</label><input className={fields} id="reservation-email" name="email" type="email" autoComplete="email" required data-testid="input-reservation-email" /></div>
               <div><label className={label} htmlFor="reservation-date">{t('reservationDate')}</label><input className={fields} id="reservation-date" name="date" type="date" min={minDate} required data-testid="input-reservation-date" /></div>
               <div><label className={label} htmlFor="reservation-time">{t('reservationTime')}</label><input className={fields} id="reservation-time" name="time" type="time" required data-testid="input-reservation-time" /></div>
-              <div><label className={label} htmlFor="reservation-guests">{t('reservationGuests')}</label><input className={fields} id="reservation-guests" name="guests" type="number" min="1" max="200" defaultValue="2" inputMode="numeric" required data-testid="input-reservation-guests" /></div>
-              <div><label className={label} htmlFor="reservation-tables">{t('reservationTables')}</label><select className={fields} id="reservation-tables" name="tables" defaultValue="1" required data-testid="select-reservation-tables">{Array.from({ length: 20 }, (_, index) => <option key={index + 1} value={index + 1}>{index === 0 ? t('reservationOneTable') : `${index + 1} ${t('reservationManyTables')}`}</option>)}</select></div>
-              <div className="sm:col-span-2"><label className={label} htmlFor="reservation-occasion">{t('reservationOccasion')}</label><select className={fields} id="reservation-occasion" name="occasion" defaultValue="" required data-testid="select-reservation-occasion"><option value="" disabled>{t('reservationChoose')}</option><option value="dinner">{t('occasionDinner')}</option><option value="birthday">{t('occasionBirthday')}</option><option value="large-gathering">{t('occasionGathering')}</option><option value="anniversary">{t('occasionAnniversary')}</option><option value="business">{t('occasionBusiness')}</option><option value="other">{t('occasionOther')}</option></select></div>
+              <div>
+                <label className={label} htmlFor="reservation-guests">{t('reservationGuests')}</label>
+                <input
+                  className={fields}
+                  id="reservation-guests"
+                  name="guests"
+                  type="number"
+                  min="1"
+                  max="40"
+                  step="1"
+                  value={guestCount}
+                  onChange={(event) => {
+                    const value = event.currentTarget.value;
+                    setGuestCount(value);
+                    const count = Number(value);
+                    if (Number.isInteger(count) && count > 0 && count <= 40) {
+                      setTableCount((current) => Math.max(current, Math.ceil(count / 4)));
+                    }
+                  }}
+                  aria-describedby="reservation-party-hint"
+                  inputMode="numeric"
+                  required
+                  data-testid="input-reservation-guests"
+                />
+                <p id="reservation-party-hint" className="mt-2 text-[10px] leading-relaxed text-[#795f50]">{t('reservationPartyHint')}</p>
+              </div>
+              <div>
+                <label className={label} htmlFor="reservation-tables">{t('reservationTables')}</label>
+                <select
+                  className={fields}
+                  id="reservation-tables"
+                  name="tables"
+                  value={tableCount}
+                  onChange={(event) => setTableCount(Number(event.currentTarget.value))}
+                  required
+                  data-testid="select-reservation-tables"
+                >
+                  {Array.from({ length: 10 }, (_, index) => {
+                    const count = index + 1;
+                    return <option key={count} value={count} disabled={count < minimumTables}>{count === 1 ? t('reservationOneTable') : `${count} ${t('reservationManyTables')}`}</option>;
+                  })}
+                </select>
+              </div>
+              {guestCountValue > 4 && (
+                <div className="sm:col-span-2">
+                  <label className={label} htmlFor="reservation-occasion">{t('reservationOccasion')}</label>
+                  <select className={fields} id="reservation-occasion" name="occasion" defaultValue="" required aria-describedby="reservation-occasion-hint" data-testid="select-reservation-occasion">
+                    <option value="" disabled>{t('reservationChoose')}</option>
+                    <option value="dinner">{t('occasionDinner')}</option>
+                    <option value="birthday">{t('occasionBirthday')}</option>
+                    <option value="large-gathering">{t('occasionGathering')}</option>
+                    <option value="anniversary">{t('occasionAnniversary')}</option>
+                    <option value="business">{t('occasionBusiness')}</option>
+                    <option value="other">{t('occasionOther')}</option>
+                  </select>
+                  <p id="reservation-occasion-hint" className="mt-2 text-[10px] text-[#795f50]">{t('reservationOccasionRequired')}</p>
+                </div>
+              )}
               <div className="sm:col-span-2"><label className={label} htmlFor="reservation-notes">{t('reservationNotes')}</label><textarea className={`${fields} min-h-24 resize-y`} id="reservation-notes" name="notes" placeholder={t('reservationNotesHint')} data-testid="input-reservation-notes" /></div>
               <div className="sm:col-span-2">
                 <button type="button" disabled aria-disabled="true" data-testid="button-reservation-unavailable" className="w-full cursor-not-allowed border border-[#6b382c]/15 bg-[#d9cbb8] px-5 py-4 text-[10px] font-bold uppercase tracking-[.13em] text-[#705d50] opacity-80">{t('reservationUnavailable')}</button>
@@ -804,16 +869,16 @@ function Home() {
             <span aria-hidden="true" className="quiet-hero-corner -bottom-[5px] -right-[5px]" />
 
             <div className="quiet-hero-content relative flex flex-1 flex-col justify-end px-6 pb-14 pt-24 text-start sm:px-10 md:max-w-[760px] md:px-16 md:pb-20">
-              <p data-testid="text-hero-eyebrow" className="quiet-hero-serif text-[.7rem] uppercase tracking-[.44em] text-white/85 md:text-[.78rem]">{t('cuisine')}</p>
               <div dir="ltr" lang="it" className="w-fit">
-                <h1 data-testid="text-hero-heading" aria-label="Aroma d’Italia" className="quiet-hero-serif quiet-hero-headline mt-5 w-fit text-[clamp(3.7rem,10vw,8.8rem)] font-normal leading-[.84] tracking-[-.045em] text-white md:mt-7">
-                  <span>Aroma</span><br /><em className="font-normal italic text-[#FBF3E8]">d’Italia</em>
+                <h1 data-testid="text-hero-heading" aria-label="Benvenuti" className="quiet-hero-serif quiet-hero-headline mt-0 w-fit text-[clamp(3.7rem,10vw,8.8rem)] font-normal leading-[.84] tracking-[-.045em] text-white">
+                  Benvenuti
                 </h1>
                 <div aria-hidden="true" className="quiet-hero-diamonds mx-auto mt-7 flex w-fit items-center justify-center gap-4 md:mt-9">
                   <span className="quiet-hero-rule" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-diamond" /><span className="quiet-hero-rule" />
                 </div>
               </div>
               <p data-testid="text-hero-description" className="quiet-hero-serif mt-6 max-w-[30rem] text-[1.05rem] leading-[1.55] text-white/85 md:mt-7 md:text-[1.22rem]">{t('heroDescription')}</p>
+              <p data-testid="text-hero-reservation-question" className="quiet-hero-serif mt-4 text-[1.05rem] italic text-white/90">{t('heroReservationQuestion')}</p>
               <div className="mt-8 flex w-full flex-col items-stretch gap-4 sm:w-auto sm:flex-row sm:items-center sm:gap-7 md:mt-10">
                 <button type="button" onClick={() => openReservation('hero')} data-testid="button-hero-reserve" className="quiet-hero-cta focus-ring inline-flex w-full items-center justify-center gap-3 border border-white bg-black/20 px-10 py-4 text-[.7rem] uppercase tracking-[.28em] text-white backdrop-blur-[2px] sm:w-auto">{t('callForTable')}</button>
                 <a href={menuPath} onClick={() => trackEvent('order_started', { location: 'hero' })} data-testid="link-hero-order" className="quiet-hero-link focus-ring inline-flex items-center gap-2 py-2 text-[.7rem] uppercase tracking-[.28em] text-white/90">{t('viewMenu')} <ChevronRight size={13} strokeWidth={1.5} className="translate-y-px rotate-90" /></a>
