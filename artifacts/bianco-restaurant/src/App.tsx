@@ -1,6 +1,8 @@
-import { type ReactNode, useEffect, useMemo, useState } from 'react';
+import { type FormEvent, type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
+import { Elements, PaymentElement, useElements, useStripe } from '@stripe/react-stripe-js';
+import { loadStripe } from '@stripe/stripe-js';
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -32,14 +34,19 @@ import {
   type CartResponse,
   type MenuCategory,
   type MenuItem,
+  useCreateOrderPaymentIntent,
   useGetCart,
   useGetMenu,
   usePutCart,
+  useVerifyOrderPayment,
 } from '@workspace/api-client-react';
 import NotFound from '@/pages/not-found';
 import { Route, Switch, useLocation, Router as WouterRouter } from 'wouter';
 
 const queryClient = new QueryClient();
+const stripePromise = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY
+  ? loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  : null;
 
 const listingUrl = 'https://maps.app.goo.gl/X1aurWpXUuXSdWzP8';
 const heroImage = `${import.meta.env.BASE_URL}bianco-hero-user.jpeg`;
@@ -1024,18 +1031,85 @@ function Home() {
   );
 }
 
+function StripePaymentForm({
+  orderId,
+  paymentIntentId,
+  locale,
+  onStatus,
+}: {
+  orderId: string;
+  paymentIntentId: string;
+  locale: Locale;
+  onStatus: (status: 'paid' | 'processing' | 'failed', message?: string) => void;
+}) {
+  const stripe = useStripe();
+  const elements = useElements();
+  const verify = useVerifyOrderPayment();
+  const [error, setError] = useState('');
+  const [busy, setBusy] = useState(false);
+  const isArabic = locale === 'ar';
+
+  const submitPayment = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!stripe || !elements || busy) return;
+    setBusy(true);
+    setError('');
+    try {
+      const result = await stripe.confirmPayment({ elements, redirect: 'if_required' });
+      if (result.error) {
+        setError(result.error.message ?? (isArabic ? 'تعذر إكمال الدفع.' : 'Payment could not be completed.'));
+        setBusy(false);
+        return;
+      }
+      if (!result.paymentIntent) {
+        setError(isArabic ? 'لم يصل تأكيد الدفع. تحقق من الحالة قبل المحاولة مجدداً.' : 'No payment confirmation was received. Check the status before trying again.');
+        setBusy(false);
+        return;
+      }
+      verify.mutate({ data: { orderId, paymentIntentId } }, {
+        onSuccess: (response) => {
+          onStatus(response.status, response.status === 'processing'
+            ? (isArabic ? 'الدفع قيد المعالجة. لا تعاود الدفع الآن.' : 'Payment is still processing. Do not pay again yet.')
+            : undefined);
+          setBusy(false);
+        },
+        onError: () => {
+          setError(isArabic ? 'تعذر التحقق من الدفع. لا تعاود الدفع؛ تحقق من Stripe أولاً.' : 'Payment could not be verified. Do not retry yet; check Stripe first.');
+          setBusy(false);
+        },
+      });
+    } catch {
+      setError(isArabic ? 'انتهت مهلة الاتصال. تحقق من Stripe قبل المحاولة مجدداً.' : 'The request timed out. Check Stripe before trying again.');
+      setBusy(false);
+    }
+  };
+
+  return (
+    <form onSubmit={submitPayment} className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8">
+      <h2 className="flex items-center gap-2 font-display text-3xl"><CreditCard size={20} />{isArabic ? 'بيانات الدفع الآمن' : 'Secure payment'}</h2>
+      <div className="mt-6 rounded border border-[#744438]/20 bg-white p-4 md:p-5"><PaymentElement options={{ layout: 'tabs' }} /></div>
+      {error && <p role="alert" className="mt-4 border border-red-800/20 bg-red-50 p-3 text-sm text-red-900">{error}</p>}
+      <button type="submit" disabled={!stripe || busy || verify.isPending} className="mt-5 flex w-full items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#7a2b20] disabled:cursor-wait disabled:opacity-55" data-testid="button-pay-online">
+        <span>{busy || verify.isPending ? (isArabic ? 'جارٍ التحقق من الدفع…' : 'Processing payment…') : (isArabic ? 'ادفع بأمان' : 'Pay securely')}</span><CreditCard size={16} />
+      </button>
+    </form>
+  );
+}
+
 function OrderPage() {
   const [cartId] = useState(readBiancoCartId);
   const [locale] = useState<Locale>(() => window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [fulfillment, setFulfillment] = useState<'pickup' | 'delivery'>('pickup');
-  const [paymentResult, setPaymentResult] = useState<'succeeded' | 'declined' | 'no_ack' | 'timeout' | null>(null);
+  const [paymentIntent, setPaymentIntent] = useState<{ orderId: string; paymentIntentId: string; clientSecret: string } | null>(null);
+  const [paymentStatus, setPaymentStatus] = useState<'paid' | 'processing' | 'failed' | null>(null);
+  const [paymentMessage, setPaymentMessage] = useState('');
+  const createIntent = useCreateOrderPaymentIntent();
   const cartQuery = useGetCart(cartId, { query: { queryKey: getGetCartQueryKey(cartId) } });
   const localeAr = locale === 'ar';
-  const mockPaymentEnabled = import.meta.env.DEV || import.meta.env.VITE_PAYMENT_MODE === 'mock';
   const cart = cartQuery.data;
   const text = localeAr
-    ? { heading: 'أكمل طلبك', pickup: 'استلام من المطعم', delivery: 'توصيل إلى عنوانك', name: 'الاسم الكامل', phone: 'رقم الجوال', address: 'عنوان التوصيل', notes: 'ملاحظات للمطبخ', payment: 'الدفع الإلكتروني', paymentPending: 'وضع تجريبي فقط: لن يتم خصم أي مبلغ أو إنشاء طلب حقيقي.', testPay: 'محاكاة دفع ناجح', testFail: 'محاكاة دفع مرفوض', testNoAck: 'محاكاة بلا رد', testTimeout: 'محاكاة انتهاء المهلة', succeeded: 'نجح اختبار الدفع الوهمي فقط. لم يتم تحصيل مبلغ حقيقي ولم يُرسل الطلب.', declined: 'تمت محاكاة رفض الدفع. لم يتم إرسال طلب أو تحصيل مبلغ.', noAck: 'لم يصل رد من بوابة الدفع. حالة الدفع غير معروفة؛ تحقق منها قبل إعادة المحاولة. لم يُرسل طلب حقيقي.', timeout: 'انتهت مهلة الاختبار. حالة الدفع غير معروفة؛ تحقق منها قبل إعادة المحاولة. لم يُرسل طلب حقيقي.', back: 'العودة إلى القائمة', empty: 'سلتك فارغة', subtotal: 'المجموع الفرعي', total: 'الإجمالي', summary: 'طلبك', pickupNote: 'سيتم تأكيد وقت الاستلام بعد ربط الدفع الحقيقي.', deliveryNote: 'أدخل عنوانك. ستظهر خيارات التوصيل بعد إعدادها.', deliveryFee: 'رسوم التوصيل غير محسوبة بعد.' }
-    : { heading: 'Complete your order', pickup: 'Pickup', delivery: 'Delivery', name: 'Full name', phone: 'Mobile number', address: 'Delivery address', notes: 'Notes for the kitchen', payment: 'Online payment', paymentPending: 'Demo mode only: no payment will be charged and no real order will be placed.', testPay: 'Simulate approved payment', testFail: 'Simulate declined payment', testNoAck: 'Simulate no acknowledgement', testTimeout: 'Simulate timeout', succeeded: 'Demo payment approved only. No real payment was taken and no order was sent.', declined: 'Demo payment declined. No order was sent and no payment was taken.', noAck: 'The gateway did not acknowledge the request. Payment status is unknown—check it before retrying. No real order was sent.', timeout: 'The test request timed out. Payment status is unknown—check it before retrying. No real order was sent.', back: 'Back to menu', empty: 'Your bag is empty', subtotal: 'Subtotal', total: 'Total', summary: 'Your order', pickupNote: 'Pickup timing will be confirmed once real payment is connected.', deliveryNote: 'Enter your address. Delivery options will appear once delivery is configured.', deliveryFee: 'Delivery fee is not included until delivery pricing is configured.' };
+    ? { heading: 'أكمل طلبك', pickup: 'استلام من المطعم', delivery: 'توصيل إلى عنوانك', name: 'الاسم الكامل', phone: 'رقم الجوال', address: 'عنوان التوصيل', notes: 'ملاحظات للمطبخ', payment: 'الدفع الإلكتروني', paymentPending: 'سيتم الدفع عبر Stripe بوضع الاختبار.', continue: 'تابع إلى الدفع', back: 'العودة إلى القائمة', empty: 'سلتك فارغة', subtotal: 'المجموع الفرعي', total: 'الإجمالي', summary: 'طلبك', pickupNote: 'اختر الاستلام من المطعم.', deliveryNote: 'أدخل عنوان التوصيل.', deliveryFee: 'رسوم التوصيل غير محسوبة بعد.', paid: 'تم تأكيد الدفع في وضع الاختبار. لم يتم خصم أموال حقيقية.', failed: 'لم يكتمل الدفع. يمكنك مراجعة طريقة الدفع والمحاولة مجدداً.' }
+    : { heading: 'Complete your order', pickup: 'Pickup', delivery: 'Delivery', name: 'Full name', phone: 'Mobile number', address: 'Delivery address', notes: 'Notes for the kitchen', payment: 'Online payment', paymentPending: 'Payment is processed by Stripe in test mode.', continue: 'Continue to payment', back: 'Back to menu', empty: 'Your bag is empty', subtotal: 'Subtotal', total: 'Total', summary: 'Your order', pickupNote: 'Collect your order at the restaurant.', deliveryNote: 'Enter the address for delivery.', deliveryFee: 'Delivery fee is not included until delivery pricing is configured.', paid: 'Stripe confirmed the test payment. No real money was charged.', failed: 'Payment did not complete. Check your payment method and try again.' };
   const fieldClass = 'mt-2 w-full border border-[#744438]/25 bg-[#fff8ec] px-4 py-3 text-sm text-[#321a15] outline-none transition placeholder:text-[#96796b] focus:border-[#8d4027] focus:ring-2 focus:ring-[#8d4027]/15';
   const labelClass = 'block font-mono-ui text-[9px] font-bold uppercase tracking-[.13em] text-[#6d4033]';
 
@@ -1064,14 +1138,29 @@ function OrderPage() {
                 <h2 className="font-display text-3xl">{localeAr ? 'طريقة الاستلام' : 'How would you like your order?'}</h2>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {(['pickup', 'delivery'] as const).map((option) => (
-                    <button key={option} type="button" aria-pressed={fulfillment === option} onClick={() => { setFulfillment(option); setPaymentResult(null); }} data-testid={`button-fulfillment-${option}`} className={`min-h-14 border px-4 py-3 text-start font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] transition ${fulfillment === option ? 'border-[#5c1712] bg-[#5c1712] text-[#fff2df]' : 'border-[#744438]/25 text-[#63372b] hover:border-[#5c1712]'}`}>
+                    <button key={option} type="button" aria-pressed={fulfillment === option} onClick={() => setFulfillment(option)} data-testid={`button-fulfillment-${option}`} className={`min-h-14 border px-4 py-3 text-start font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] transition ${fulfillment === option ? 'border-[#5c1712] bg-[#5c1712] text-[#fff2df]' : 'border-[#744438]/25 text-[#63372b] hover:border-[#5c1712]'}`}>
                       {option === 'pickup' ? text.pickup : text.delivery}
                     </button>
                   ))}
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-[#795f50]">{fulfillment === 'pickup' ? text.pickupNote : text.deliveryNote}</p>
               </div>
-              <form className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8" onSubmit={(event) => { event.preventDefault(); const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null; const outcome = submitter?.value; setPaymentResult(outcome === 'declined' || outcome === 'no_ack' || outcome === 'timeout' ? outcome : 'succeeded'); }}>
+              {!paymentIntent ? <form className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8" onSubmit={(event) => {
+                event.preventDefault();
+                const fields = new FormData(event.currentTarget);
+                setPaymentMessage('');
+                createIntent.mutate({ data: {
+                  cartId,
+                  fulfillment,
+                  customerName: String(fields.get('name') ?? ''),
+                  phone: String(fields.get('phone') ?? ''),
+                  ...(fulfillment === 'delivery' ? { deliveryAddress: String(fields.get('address') ?? '') } : {}),
+                  notes: String(fields.get('notes') ?? ''),
+                } }, {
+                  onSuccess: (intent) => { setPaymentIntent(intent); setPaymentStatus(null); },
+                  onError: () => setPaymentMessage(localeAr ? 'تعذر بدء الدفع. تحقق من Stripe وحاول مرة أخرى.' : 'Could not start payment. Check the Stripe test setup and try again.'),
+                });
+              }}>
                 <h2 className="font-display text-3xl">{localeAr ? 'بيانات التواصل' : 'Your details'}</h2>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <label className={labelClass}>{text.name}<input className={fieldClass} name="name" autoComplete="name" required /></label>
@@ -1081,18 +1170,16 @@ function OrderPage() {
                 </div>
                 <div className="mt-7 border-t border-[#63372b]/15 pt-5">
                   <p className="flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.13em] text-[#6d4033]"><CreditCard size={15} />{text.payment}</p>
-                  <p className="mt-3 border border-[#9b4f2b]/20 bg-[#f6eddf] p-4 text-xs leading-relaxed text-[#795f50]">{mockPaymentEnabled ? text.paymentPending : (localeAr ? 'لم تُربط بوابة الدفع بعد. لم يتم تحصيل أي مبلغ.' : 'Payment gateway is not connected yet. No payment has been taken.')}</p>
-                  {mockPaymentEnabled ? (
-                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                      <button type="submit" value="succeeded" className="flex min-h-12 items-center justify-center gap-2 bg-[#5c1712] px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#fff2df] transition hover:bg-[#7a2b20]" data-testid="button-pay-online"><CreditCard size={15} />{text.testPay}</button>
-                      <button type="submit" value="declined" className="flex min-h-12 items-center justify-center border border-[#5c1712]/35 px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#5c1712] transition hover:bg-[#f6eddf]" data-testid="button-payment-test-decline">{text.testFail}</button>
-                      <button type="submit" value="no_ack" className="flex min-h-12 items-center justify-center border border-[#8d4027]/25 px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#795f50] transition hover:bg-[#f6eddf]" data-testid="button-payment-test-no-ack">{text.testNoAck}</button>
-                      <button type="submit" value="timeout" className="flex min-h-12 items-center justify-center border border-[#8d4027]/25 px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#795f50] transition hover:bg-[#f6eddf]" data-testid="button-payment-test-timeout">{text.testTimeout}</button>
-                    </div>
-                  ) : <button type="button" disabled className="mt-5 flex w-full cursor-not-allowed items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] opacity-60" data-testid="button-pay-online"><span>{localeAr ? 'الدفع بعد إعداد بوابة الدفع' : 'Online payment setup required'}</span><CreditCard size={16} /></button>}
-                  {paymentResult && <p role="status" className={`mt-4 border p-4 text-xs leading-relaxed ${paymentResult === 'succeeded' ? 'border-emerald-800/20 bg-emerald-50 text-emerald-900' : paymentResult === 'declined' ? 'border-red-800/20 bg-red-50 text-red-900' : 'border-amber-700/20 bg-amber-50 text-amber-950'}`} data-testid={`status-payment-${paymentResult}`}>{paymentResult === 'succeeded' ? text.succeeded : paymentResult === 'declined' ? text.declined : paymentResult === 'no_ack' ? text.noAck : text.timeout}</p>}
+                  <p className="mt-3 border border-[#9b4f2b]/20 bg-[#f6eddf] p-4 text-xs leading-relaxed text-[#795f50]">{text.paymentPending}</p>
+                  {paymentMessage && <p role="alert" className="mt-3 text-sm text-red-900">{paymentMessage}</p>}
+                  <button type="submit" disabled={createIntent.isPending} className="mt-5 flex w-full items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] transition hover:bg-[#7a2b20] disabled:cursor-wait disabled:opacity-55" data-testid="button-continue-to-payment"><span>{createIntent.isPending ? (localeAr ? 'جارٍ تجهيز الدفع…' : 'Preparing secure payment…') : text.continue}</span><CreditCard size={16} /></button>
                 </div>
-              </form>
+              </form> : stripePromise ? (
+                <Elements stripe={stripePromise} options={{ clientSecret: paymentIntent.clientSecret }}>
+                  <StripePaymentForm orderId={paymentIntent.orderId} paymentIntentId={paymentIntent.paymentIntentId} locale={locale} onStatus={(status, message) => { setPaymentStatus(status); setPaymentMessage(message ?? ''); }} />
+                </Elements>
+              ) : <p role="alert" className="border border-red-800/20 bg-red-50 p-4 text-sm text-red-900">{localeAr ? 'مفتاح Stripe العام غير مضبوط.' : 'Stripe publishable key is not configured.'}</p>}
+              {paymentStatus && <p role="status" className={`border p-4 text-sm leading-relaxed ${paymentStatus === 'paid' ? 'border-emerald-900/20 bg-emerald-50 text-emerald-900' : paymentStatus === 'failed' ? 'border-red-900/20 bg-red-50 text-red-900' : 'border-amber-900/20 bg-amber-50 text-amber-950'}`} data-testid={`status-payment-${paymentStatus}`}>{paymentMessage || (paymentStatus === 'paid' ? text.paid : paymentStatus === 'failed' ? text.failed : 'Payment is still processing. Check before retrying.')}</p>}
             </section>
             <aside className="h-fit border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-7">
               <h2 className="font-display text-3xl">{text.summary}</h2>

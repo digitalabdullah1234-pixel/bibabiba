@@ -23,7 +23,11 @@ import type {
   CartResponse,
   CartUpdateRequest,
   HealthStatus,
-  MenuResponse
+  MenuResponse,
+  OrderPaymentInput,
+  OrderPaymentIntent,
+  OrderPaymentVerification,
+  OrderPaymentVerificationInput
 } from './api.schemas';
 
 import { customFetch } from '../custom-fetch';
@@ -374,5 +378,181 @@ export const usePutCart = <TError = ErrorType<void>,
         TContext
       > => {
       return useMutation(getPutCartMutationOptions(options));
+    }
+
+export const getCreateOrderPaymentIntentUrl = () => {
+
+
+
+
+  return `/api/payments/intents`
+}
+
+/**
+ * @summary Create a pending restaurant order and Stripe PaymentIntent
+ */
+export const createOrderPaymentIntent = async (orderPaymentInput: OrderPaymentInput, options?: Parameters<typeof customFetch>[1]): Promise<OrderPaymentIntent> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OrderPaymentIntent>(getCreateOrderPaymentIntentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(orderPaymentInput)
+  }
+);}
+
+
+
+
+
+export const getCreateOrderPaymentIntentMutationKey = () => ['createOrderPaymentIntent'] as const;
+
+export const getCreateOrderPaymentIntentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOrderPaymentIntent>>, TError,CreateOrderPaymentIntentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof createOrderPaymentIntent>>, TError,CreateOrderPaymentIntentMutationVariables, TContext> => {
+
+const mutationKey = getCreateOrderPaymentIntentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof createOrderPaymentIntent>>, CreateOrderPaymentIntentMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  createOrderPaymentIntent(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type CreateOrderPaymentIntentMutationResult = NonNullable<Awaited<ReturnType<typeof createOrderPaymentIntent>>>
+    export type CreateOrderPaymentIntentMutationBody = BodyType<OrderPaymentInput>
+    export type CreateOrderPaymentIntentMutationError = ErrorType<void>
+    export type CreateOrderPaymentIntentMutationVariables = {data: BodyType<OrderPaymentInput>}
+
+    /**
+ * @summary Create a pending restaurant order and Stripe PaymentIntent
+ */
+export const useCreateOrderPaymentIntent = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof createOrderPaymentIntent>>, TError,CreateOrderPaymentIntentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof createOrderPaymentIntent>>,
+        TError,
+        CreateOrderPaymentIntentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getCreateOrderPaymentIntentMutationOptions(options));
+    }
+
+export const getVerifyOrderPaymentUrl = () => {
+
+
+
+
+  return `/api/payments/verify`
+}
+
+/**
+ * @summary Verify a Stripe PaymentIntent and update the order status
+ */
+export const verifyOrderPayment = async (orderPaymentVerificationInput: OrderPaymentVerificationInput, options?: Parameters<typeof customFetch>[1]): Promise<OrderPaymentVerification> => {
+
+    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
+    if (!h) return {};
+    if (h instanceof Headers) return Object.fromEntries(h.entries());
+    if (Symbol.iterator in h) {
+      return Object.fromEntries(
+        Array.from(h as Iterable<Iterable<string>>, (entry) => Array.from(entry) as [string, string]),
+      );
+    }
+    const headers: Record<string, string | readonly string[]> = {};
+    for (const [name, value] of Object.entries<string | readonly string[] | undefined>(h)) {
+      if (value !== undefined) headers[name] = value;
+    }
+    return headers;
+  };
+return customFetch<OrderPaymentVerification>(getVerifyOrderPaymentUrl(),
+  {
+    ...options,
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+    body: JSON.stringify(orderPaymentVerificationInput)
+  }
+);}
+
+
+
+
+
+export const getVerifyOrderPaymentMutationKey = () => ['verifyOrderPayment'] as const;
+
+export const getVerifyOrderPaymentMutationOptions = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyOrderPayment>>, TError,VerifyOrderPaymentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+): UseMutationOptions<Awaited<ReturnType<typeof verifyOrderPayment>>, TError,VerifyOrderPaymentMutationVariables, TContext> => {
+
+const mutationKey = getVerifyOrderPaymentMutationKey();
+const {mutation: mutationOptions, request: requestOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }, request: undefined};
+
+
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof verifyOrderPayment>>, VerifyOrderPaymentMutationVariables> = (props) => {
+          const {data} = props ?? {};
+
+          return  verifyOrderPayment(data,requestOptions)
+        }
+
+
+
+
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type VerifyOrderPaymentMutationResult = NonNullable<Awaited<ReturnType<typeof verifyOrderPayment>>>
+    export type VerifyOrderPaymentMutationBody = BodyType<OrderPaymentVerificationInput>
+    export type VerifyOrderPaymentMutationError = ErrorType<void>
+    export type VerifyOrderPaymentMutationVariables = {data: BodyType<OrderPaymentVerificationInput>}
+
+    /**
+ * @summary Verify a Stripe PaymentIntent and update the order status
+ */
+export const useVerifyOrderPayment = <TError = ErrorType<void>,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof verifyOrderPayment>>, TError,VerifyOrderPaymentMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
+ ): UseMutationResult<
+        Awaited<ReturnType<typeof verifyOrderPayment>>,
+        TError,
+        VerifyOrderPaymentMutationVariables,
+        TContext
+      > => {
+      return useMutation(getVerifyOrderPaymentMutationOptions(options));
     }
 

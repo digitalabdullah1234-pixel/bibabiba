@@ -74,3 +74,65 @@ export interface CartResponse {
   updatedAt: string | null;
 }
 
+export type OrderPaymentInputFulfillment = typeof OrderPaymentInputFulfillment[keyof typeof OrderPaymentInputFulfillment];
+
+
+export const OrderPaymentInputFulfillment = {
+  pickup: 'pickup',
+  delivery: 'delivery',
+} as const;
+
+export interface OrderPaymentInput {
+  cartId: string;
+  fulfillment: OrderPaymentInputFulfillment;
+  /**
+     * @minLength 1
+     * @maxLength 120
+     */
+  customerName: string;
+  /**
+     * @minLength 5
+     * @maxLength 40
+     */
+  phone: string;
+  /** @maxLength 500 */
+  deliveryAddress?: string;
+  /** @maxLength 1000 */
+  notes?: string;
+}
+
+export type OrderPaymentIntentCurrency = typeof OrderPaymentIntentCurrency[keyof typeof OrderPaymentIntentCurrency];
+
+
+export const OrderPaymentIntentCurrency = {
+  sar: 'sar',
+} as const;
+
+export interface OrderPaymentIntent {
+  orderId: string;
+  paymentIntentId: string;
+  clientSecret: string;
+  /** @minimum 1 */
+  amount: number;
+  currency: OrderPaymentIntentCurrency;
+}
+
+export interface OrderPaymentVerificationInput {
+  orderId: string;
+  paymentIntentId: string;
+}
+
+export type OrderPaymentVerificationStatus = typeof OrderPaymentVerificationStatus[keyof typeof OrderPaymentVerificationStatus];
+
+
+export const OrderPaymentVerificationStatus = {
+  paid: 'paid',
+  processing: 'processing',
+  failed: 'failed',
+} as const;
+
+export interface OrderPaymentVerification {
+  orderId: string;
+  status: OrderPaymentVerificationStatus;
+}
+

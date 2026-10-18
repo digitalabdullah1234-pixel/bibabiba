@@ -147,3 +147,52 @@ export const PutCartResponse = zod.object({
 })
 
 
+/**
+ * @summary Create a pending restaurant order and Stripe PaymentIntent
+ */
+export const createOrderPaymentIntentBodyCustomerNameMax = 120;
+
+export const createOrderPaymentIntentBodyPhoneMin = 5;
+export const createOrderPaymentIntentBodyPhoneMax = 40;
+
+export const createOrderPaymentIntentBodyDeliveryAddressMax = 500;
+
+export const createOrderPaymentIntentBodyNotesMax = 1000;
+
+
+
+export const CreateOrderPaymentIntentBody = zod.object({
+  "cartId": zod.string().uuid(),
+  "fulfillment": zod.enum(['pickup', 'delivery']),
+  "customerName": zod.string().min(1).max(createOrderPaymentIntentBodyCustomerNameMax),
+  "phone": zod.string().min(createOrderPaymentIntentBodyPhoneMin).max(createOrderPaymentIntentBodyPhoneMax),
+  "deliveryAddress": zod.string().max(createOrderPaymentIntentBodyDeliveryAddressMax).optional(),
+  "notes": zod.string().max(createOrderPaymentIntentBodyNotesMax).optional()
+})
+
+
+
+
+export const CreateOrderPaymentIntentResponse = zod.object({
+  "orderId": zod.string().uuid(),
+  "paymentIntentId": zod.string(),
+  "clientSecret": zod.string(),
+  "amount": zod.number().int().min(1),
+  "currency": zod.enum(['sar'])
+})
+
+
+/**
+ * @summary Verify a Stripe PaymentIntent and update the order status
+ */
+export const VerifyOrderPaymentBody = zod.object({
+  "orderId": zod.string().uuid(),
+  "paymentIntentId": zod.string()
+})
+
+export const VerifyOrderPaymentResponse = zod.object({
+  "orderId": zod.string().uuid(),
+  "status": zod.enum(['paid', 'processing', 'failed'])
+})
+
+

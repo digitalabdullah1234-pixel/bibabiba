@@ -82,6 +82,54 @@ paths:
           description: Invalid cart or item data
         "404":
           description: A menu item is missing or unavailable
+  /payments/intents:
+    post:
+      operationId: createOrderPaymentIntent
+      tags: [payments]
+      summary: Create a pending restaurant order and Stripe PaymentIntent
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPaymentInput"
+      responses:
+        "201":
+          description: Pending order and Stripe client secret
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPaymentIntent"
+        "400":
+          description: Invalid order details or empty cart
+        "404":
+          description: Cart or available menu items not found
+        "503":
+          description: Stripe test configuration is missing
+  /payments/verify:
+    post:
+      operationId: verifyOrderPayment
+      tags: [payments]
+      summary: Verify a Stripe PaymentIntent and update the order status
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/OrderPaymentVerificationInput"
+      responses:
+        "200":
+          description: Verified payment status
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OrderPaymentVerification"
+        "400":
+          description: Invalid order or payment details
+        "404":
+          description: Order not found
+        "503":
+          description: Stripe test configuration is missing
 components:
   schemas:
     HealthStatus:
@@ -203,4 +251,64 @@ components:
         updatedAt:
           type: [string, "null"]
           format: date-time
+    OrderPaymentInput:
+      type: object
+      required: [cartId, fulfillment, customerName, phone]
+      properties:
+        cartId:
+          type: string
+          format: uuid
+        fulfillment:
+          type: string
+          enum: [pickup, delivery]
+        customerName:
+          type: string
+          minLength: 1
+          maxLength: 120
+        phone:
+          type: string
+          minLength: 5
+          maxLength: 40
+        deliveryAddress:
+          type: string
+          maxLength: 500
+        notes:
+          type: string
+          maxLength: 1000
+    OrderPaymentIntent:
+      type: object
+      required: [orderId, paymentIntentId, clientSecret, amount, currency]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        paymentIntentId:
+          type: string
+        clientSecret:
+          type: string
+        amount:
+          type: integer
+          minimum: 1
+        currency:
+          type: string
+          enum: [sar]
+    OrderPaymentVerificationInput:
+      type: object
+      required: [orderId, paymentIntentId]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        paymentIntentId:
+          type: string
+    OrderPaymentVerification:
+      type: object
+      required: [orderId, status]
+      properties:
+        orderId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [paid, processing, failed]
 
