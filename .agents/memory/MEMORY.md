@@ -1,3 +1,4 @@
 - [Menu photo accuracy](pdf-menu-photo-extraction.md) — match images to the actual dish; use an honest placeholder rather than unrelated food or restaurant photos.
 - [Splash image reveal](splash-image-reveal.md) — use a direct image with a bottom-anchored transform for reliable preview rendering.
 - [Restaurant photo hosting](restaurant-photo-hosting.md) — use verified local Bianco photography for the hero rather than relying on unstable listing-image URLs.
+- [Independent checkout hosting](independent-checkout-hosting.md) — Bianco's ordering flow must remain portable to a non-Replit production host.

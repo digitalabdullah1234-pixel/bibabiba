@@ -2,12 +2,14 @@ import { type ReactNode, useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQueryClient } from '@tanstack/react-query';
 import { AnimatePresence, motion, type Variants } from 'framer-motion';
 import {
+  ArrowLeft,
   ArrowUpRight,
   BookOpenText,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Clock3,
+  CreditCard,
   Instagram,
   MessageCircle,
   Menu,
@@ -366,7 +368,7 @@ function CartDrawer({
         </div>
         <div className="border-t border-white/[.12] bg-[#1c1917] px-5 py-5 md:px-7">
           <div className="flex items-center justify-between"><span className="font-mono-ui text-[10px] uppercase tracking-[.16em] text-[#a9a097]">{t('estimatedSubtotal')}</span><motion.span key={subtotal} initial={{ opacity: 0, y: -5 }} animate={{ opacity: 1, y: 0 }} data-testid="text-cart-subtotal" className="font-display text-3xl">{formatPrice(subtotal, locale)}</motion.span></div>
-          <a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => { if (cart.length > 0) trackEvent('checkout_intent', { method: 'whatsapp', item_count: cart.reduce((sum, line) => sum + line.quantity, 0), subtotal }); }} data-testid="link-checkout-whatsapp" className={`mt-5 flex items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.14em] text-[#171513] transition hover:bg-[#f0d7a9] ${cart.length === 0 ? 'pointer-events-none opacity-40' : ''}`}><span>{t('whatsappOrder')}</span><ArrowUpRight size={16} /></a>
+          <a href={cart.length ? '/order' : undefined} aria-disabled={!cart.length} onClick={() => { if (cart.length > 0) trackEvent('checkout_started', { method: 'website', item_count: cart.reduce((sum, line) => sum + line.quantity, 0), subtotal }); }} data-testid="link-checkout-page" className={`mt-5 flex items-center justify-between bg-[#e8c78e] px-5 py-4 text-[11px] font-semibold uppercase tracking-[.14em] text-[#171513] transition hover:bg-[#f0d7a9] ${cart.length === 0 ? 'pointer-events-none opacity-40' : ''}`}><span>{t('reviewCheckout')}</span><ArrowUpRight size={16} /></a>
           <a href={`tel:${phoneNumber.replace(/\s/g, '')}`} onClick={() => trackEvent('phone_order_intent', { item_count: cart.reduce((sum, line) => sum + line.quantity, 0), subtotal })} data-testid="link-checkout-call" className="mt-3 flex items-center justify-center gap-2 py-2 text-[10px] uppercase tracking-[.15em] text-[#a9a097] transition hover:text-[#e8c78e]"><Phone size={13} /> {t('preferCall')} {phoneNumber}</a>
         </div>
       </motion.aside>
@@ -529,9 +531,9 @@ function ApiBasketTray({ cart, locale, t, trayOpen, onToggle, onUpdate, mutation
         <div className="mb-2 flex items-center justify-between border-b border-[#edc9aa]/15 pb-3"><div><p className="font-mono-ui text-[9px] uppercase tracking-[.2em] text-[#dba16f]">{t('cartEyebrow')}</p><p className="mt-1 font-display text-2xl text-[#f3dfca]">{t('cartTitle')} <span className="font-mono-ui text-[10px] text-[#a98575]">· {cartCount}</span></p></div><button type="button" aria-label={t('trayClose')} onClick={onToggle} data-testid="button-tray-close" className="focus-ring text-[#dba16f]"><ChevronDown size={17} /></button></div>
         {mutationError && <p role="alert" data-testid="status-cart-mutation-error" className="border border-[#e8bd82]/30 bg-[#491511] px-3 py-2 text-xs text-[#f5d3b5]">{t('cartUpdateError')}</p>}
         {cartError ? <div role="alert" data-testid="status-cart-error" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('cartError')}</p></div> : !cart ? <div className="space-y-3 py-6"><div className="menu-skeleton h-14" /><div className="menu-skeleton h-14" /></div> : cart.items.length ? cart.items.map(({ item, quantity }) => <div key={item.id} className="flex items-center gap-3 border-b border-[#edc9aa]/10 py-3"><div className="h-12 w-12 shrink-0 overflow-hidden bg-[#5b2921]">{menuImage(item.imagePath) ? <img src={menuImage(item.imagePath)!} alt="" className="h-full w-full object-cover opacity-90" /> : <span className="block p-2 font-display text-xs text-[#f3dfca]">{itemName(item, locale)}</span>}</div><div className="min-w-0 flex-1"><div className="flex items-center justify-between gap-3"><p className="truncate font-display text-xl text-[#f3dfca]">{itemName(item, locale)}</p><span className="font-mono-ui text-[10px] text-[#e2aa79]">{formatPrice(item.price * quantity, locale)}</span></div><div className="mt-2 flex items-center gap-2"><button type="button" aria-label={`${t('decrease')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, -1)} data-testid={`button-tray-decrease-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Minus size={11} /></button><span className="w-5 text-center font-mono-ui text-[10px] text-[#f3dfca]" data-testid={`text-tray-quantity-${item.id}`}>{quantity}</span><button type="button" aria-label={`${t('increase')} ${itemName(item, locale)}`} onClick={() => onUpdate(item.id, 1)} data-testid={`button-tray-increase-${item.id}`} className="focus-ring border border-[#edc9aa]/25 p-1.5 text-[#dba16f]"><Plus size={11} /></button></div></div></div>) : <div data-testid="empty-cart" className="py-8 text-center"><ShoppingBag className="mx-auto mb-3 text-[#dba16f]" size={24} /><p className="font-display text-2xl text-[#f3dfca]">{t('emptyNow')}</p><p className="mt-2 text-sm text-[#c39b83]">{t('emptySummary')}</p></div>}
-        {cartCount > 0 && <><div className="flex items-center justify-between border-t border-[#edc9aa]/15 pt-4 text-[#f3dfca]"><span className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#c39b83]">{t('subtotal')}</span><span className="font-display text-2xl">{formatPrice(subtotal, locale)}</span></div><a href={whatsappUrl} target="_blank" rel="noreferrer" onClick={() => trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a></>}
+        {cartCount > 0 && <><div className="flex items-center justify-between border-t border-[#edc9aa]/15 pt-4 text-[#f3dfca]"><span className="font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#c39b83]">{t('subtotal')}</span><span className="font-display text-2xl">{formatPrice(subtotal, locale)}</span></div><a href="/order" onClick={() => trackEvent('checkout_started', { method: 'website', item_count: cartCount, subtotal })} className="focus-ring mt-4 flex items-center justify-between bg-[#5d1d18] px-4 py-3 font-mono-ui text-[9px] font-bold uppercase tracking-[.12em] text-[#f8e4cc] transition hover:bg-[#7a2b20]" data-testid="tray-checkout-link"><span>{t('checkout')}</span><ArrowUpRight size={13} /></a></>}
       </div>}
-      <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={locale === 'ar' ? 'rtl' : 'ltr'}><ShoppingBag size={15} strokeWidth={1.7} /><div className="min-w-0 flex-1"><p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>{cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}</div><button type="button" onClick={onToggle} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button><a href={cartCount ? whatsappUrl : undefined} onClick={() => cartCount && trackEvent('checkout_intent', { method: 'whatsapp', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a></div>
+      <div className="flex items-center gap-2 border border-[#dba16f]/70 bg-[#dba16f] p-2 ps-3 text-[#2a1411] shadow-[0_12px_40px_rgba(0,0,0,.3)]" dir={locale === 'ar' ? 'rtl' : 'ltr'}><ShoppingBag size={15} strokeWidth={1.7} /><div className="min-w-0 flex-1"><p className="font-mono-ui text-[8px] font-bold uppercase tracking-[.14em]">{cartCount ? `${cartCount} · ${t('cartTitle')}` : t('tableOpen')}</p>{cartCount > 0 && <p className="font-mono-ui text-[8px] text-[#663528]">{t('estimatedSubtotal')} · {formatPrice(subtotal, locale)}</p>}</div><button type="button" onClick={onToggle} data-testid="button-open-tray" aria-expanded={trayOpen} className="focus-ring flex items-center gap-1 border border-[#5c281d]/35 px-2.5 py-2 font-mono-ui text-[8px] uppercase tracking-[.12em]">{trayOpen ? t('trayClose') : t('trayOpen')} <ChevronDown size={12} className={trayOpen ? '' : 'rotate-180'} /></button><a href={cartCount ? '/order' : undefined} onClick={() => cartCount && trackEvent('checkout_started', { method: 'website', item_count: cartCount, subtotal })} aria-disabled={!cartCount} data-testid="button-tray-checkout" className={`focus-ring flex items-center gap-1 bg-[#5d1d18] px-2.5 py-2 font-mono-ui text-[8px] font-bold uppercase tracking-[.08em] text-[#f8e4cc] transition hover:bg-[#7a2b20] ${cartCount ? '' : 'pointer-events-none opacity-35'}`}><span>{t('checkout')}</span><ArrowUpRight size={12} /></a></div>
     </div>
   );
 }
@@ -1022,10 +1024,89 @@ function Home() {
   );
 }
 
+function OrderPage() {
+  const [cartId] = useState(readBiancoCartId);
+  const [locale] = useState<Locale>(() => window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
+  const [fulfillment, setFulfillment] = useState<'pickup' | 'delivery'>('pickup');
+  const cartQuery = useGetCart(cartId, { query: { queryKey: getGetCartQueryKey(cartId) } });
+  const localeAr = locale === 'ar';
+  const cart = cartQuery.data;
+  const text = localeAr
+    ? { heading: 'أكمل طلبك', pickup: 'استلام من المطعم', delivery: 'توصيل إلى عنوانك', name: 'الاسم الكامل', phone: 'رقم الجوال', address: 'عنوان التوصيل', notes: 'ملاحظات للمطبخ', payment: 'الدفع الإلكتروني', paymentPending: 'بوابة الدفع لم تُربط بعد. لم يتم تحصيل أي مبلغ.', back: 'العودة إلى القائمة', empty: 'سلتك فارغة', subtotal: 'المجموع الفرعي', total: 'الإجمالي', summary: 'طلبك', pickupNote: 'سيتم تأكيد وقت الاستلام بعد تفعيل الدفع.', deliveryNote: 'أدخل عنوانك. ستظهر خيارات التوصيل بعد إعدادها.', deliveryFee: 'رسوم التوصيل غير محسوبة بعد.' }
+    : { heading: 'Complete your order', pickup: 'Pickup', delivery: 'Delivery', name: 'Full name', phone: 'Mobile number', address: 'Delivery address', notes: 'Notes for the kitchen', payment: 'Online payment', paymentPending: 'Payment gateway is not connected yet. No payment has been taken.', back: 'Back to menu', empty: 'Your bag is empty', subtotal: 'Subtotal', total: 'Total', summary: 'Your order', pickupNote: 'Pickup timing will be confirmed once online payment is enabled.', deliveryNote: 'Enter your address. Delivery options will appear once delivery is configured.', deliveryFee: 'Delivery fee is not included until delivery pricing is configured.' };
+  const fieldClass = 'mt-2 w-full border border-[#744438]/25 bg-[#fff8ec] px-4 py-3 text-sm text-[#321a15] outline-none transition placeholder:text-[#96796b] focus:border-[#8d4027] focus:ring-2 focus:ring-[#8d4027]/15';
+  const labelClass = 'block font-mono-ui text-[9px] font-bold uppercase tracking-[.13em] text-[#6d4033]';
+
+  return (
+    <main dir={localeAr ? 'rtl' : 'ltr'} className="grain min-h-screen bg-[#f6eddf] text-[#351e19]">
+      <header className="border-b border-white/10 bg-[#530f0c] px-5 py-5 text-[#fff2df] md:px-10">
+        <div className="mx-auto flex max-w-[1200px] items-center justify-between">
+          <a href="/" aria-label="Bianco home" className="font-display text-3xl tracking-tight">Bianco</a>
+          <a href="/#order" data-testid="link-checkout-back-menu" className="inline-flex items-center gap-2 font-mono-ui text-[9px] uppercase tracking-[.12em] text-[#f2c486]"><ArrowLeft size={14} />{text.back}</a>
+        </div>
+      </header>
+      <div className="mx-auto max-w-[1200px] px-5 py-10 md:px-10 md:py-16">
+        <p className="font-mono-ui text-[10px] uppercase tracking-[.2em] text-[#9b4f2b]">Bianco · Madinah</p>
+        <h1 className="mt-3 font-display text-5xl leading-none md:text-7xl">{text.heading}</h1>
+        {cartQuery.isLoading ? <p className="mt-10 text-[#795f50]">{localeAr ? 'جارٍ تحميل طلبك…' : 'Loading your order…'}</p> : cartQuery.isError ? (
+          <p role="alert" className="mt-10 border border-[#8d4027]/30 p-5 text-[#612c21]">{localeAr ? 'تعذر تحميل السلة. حاول مرة أخرى من القائمة.' : 'Could not load your bag. Please return to the menu and try again.'}</p>
+        ) : !cart?.items.length ? (
+          <section className="mt-10 border border-[#63372b]/15 bg-[#fff9ef] p-8">
+            <p className="font-display text-3xl">{text.empty}</p>
+            <a href="/#order" className="mt-5 inline-flex items-center gap-2 border-b border-[#8d4027] pb-1 font-mono-ui text-[10px] uppercase tracking-[.13em] text-[#8d4027]">{text.back}<ArrowLeft size={13} /></a>
+          </section>
+        ) : (
+          <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_390px]">
+            <section className="space-y-6">
+              <div className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8">
+                <h2 className="font-display text-3xl">{localeAr ? 'طريقة الاستلام' : 'How would you like your order?'}</h2>
+                <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                  {(['pickup', 'delivery'] as const).map((option) => (
+                    <button key={option} type="button" aria-pressed={fulfillment === option} onClick={() => setFulfillment(option)} data-testid={`button-fulfillment-${option}`} className={`min-h-14 border px-4 py-3 text-start font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] transition ${fulfillment === option ? 'border-[#5c1712] bg-[#5c1712] text-[#fff2df]' : 'border-[#744438]/25 text-[#63372b] hover:border-[#5c1712]'}`}>
+                      {option === 'pickup' ? text.pickup : text.delivery}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-4 text-xs leading-relaxed text-[#795f50]">{fulfillment === 'pickup' ? text.pickupNote : text.deliveryNote}</p>
+              </div>
+              <form className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8" onSubmit={(event) => event.preventDefault()}>
+                <h2 className="font-display text-3xl">{localeAr ? 'بيانات التواصل' : 'Your details'}</h2>
+                <div className="mt-6 grid gap-5 sm:grid-cols-2">
+                  <label className={labelClass}>{text.name}<input className={fieldClass} name="name" autoComplete="name" required /></label>
+                  <label className={labelClass}>{text.phone}<input className={fieldClass} name="phone" type="tel" autoComplete="tel" inputMode="tel" required /></label>
+                  {fulfillment === 'delivery' && <label className={`${labelClass} sm:col-span-2`}>{text.address}<textarea className={fieldClass} name="address" autoComplete="street-address" rows={3} required /></label>}
+                  <label className={`${labelClass} sm:col-span-2`}>{text.notes}<textarea className={fieldClass} name="notes" rows={2} /></label>
+                </div>
+                <div className="mt-7 border-t border-[#63372b]/15 pt-5">
+                  <p className="flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.13em] text-[#6d4033]"><CreditCard size={15} />{text.payment}</p>
+                  <p className="mt-3 border border-[#9b4f2b]/20 bg-[#f6eddf] p-4 text-xs leading-relaxed text-[#795f50]">{text.paymentPending}</p>
+                  <button type="button" disabled className="mt-5 flex w-full cursor-not-allowed items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] opacity-60" data-testid="button-pay-online">
+                    <span>{localeAr ? 'الدفع بعد إعداد بوابة الدفع' : 'Online payment setup required'}</span><CreditCard size={16} />
+                  </button>
+                </div>
+              </form>
+            </section>
+            <aside className="h-fit border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-7">
+              <h2 className="font-display text-3xl">{text.summary}</h2>
+              <div className="mt-5 divide-y divide-[#63372b]/15">
+                {cart.items.map(({ item, quantity }) => <div key={item.id} className="flex justify-between gap-4 py-4 text-sm"><span>{quantity} × {localeAr ? item.nameAr : item.nameEn}</span><span className="shrink-0 font-mono-ui text-[10px] text-[#8d4027]">{formatPrice(item.price * quantity, locale)}</span></div>)}
+              </div>
+              <div className="mt-3 flex justify-between border-t border-[#63372b]/15 pt-4 text-sm"><span>{text.subtotal}</span><span>{formatPrice(cart.subtotal, locale)}</span></div>
+              <div className="mt-3 flex justify-between font-display text-2xl"><span>{text.total}</span><span>{formatPrice(cart.subtotal, locale)}</span></div>
+              {fulfillment === 'delivery' && <p className="mt-4 text-[11px] leading-relaxed text-[#795f50]">{text.deliveryFee}</p>}
+            </aside>
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}
+
 function Router() {
   return (
     <RoutedErrorBoundary>
       <Switch>
+        <Route path="/order" component={OrderPage} />
         <Route path="/" component={Home} />
         <Route component={NotFound} />
       </Switch>
