@@ -1028,12 +1028,14 @@ function OrderPage() {
   const [cartId] = useState(readBiancoCartId);
   const [locale] = useState<Locale>(() => window.localStorage.getItem('bianco-locale') === 'ar' ? 'ar' : 'en');
   const [fulfillment, setFulfillment] = useState<'pickup' | 'delivery'>('pickup');
+  const [paymentResult, setPaymentResult] = useState<'succeeded' | 'declined' | null>(null);
   const cartQuery = useGetCart(cartId, { query: { queryKey: getGetCartQueryKey(cartId) } });
   const localeAr = locale === 'ar';
+  const mockPaymentEnabled = import.meta.env.DEV || import.meta.env.VITE_PAYMENT_MODE === 'mock';
   const cart = cartQuery.data;
   const text = localeAr
-    ? { heading: 'أكمل طلبك', pickup: 'استلام من المطعم', delivery: 'توصيل إلى عنوانك', name: 'الاسم الكامل', phone: 'رقم الجوال', address: 'عنوان التوصيل', notes: 'ملاحظات للمطبخ', payment: 'الدفع الإلكتروني', paymentPending: 'بوابة الدفع لم تُربط بعد. لم يتم تحصيل أي مبلغ.', back: 'العودة إلى القائمة', empty: 'سلتك فارغة', subtotal: 'المجموع الفرعي', total: 'الإجمالي', summary: 'طلبك', pickupNote: 'سيتم تأكيد وقت الاستلام بعد تفعيل الدفع.', deliveryNote: 'أدخل عنوانك. ستظهر خيارات التوصيل بعد إعدادها.', deliveryFee: 'رسوم التوصيل غير محسوبة بعد.' }
-    : { heading: 'Complete your order', pickup: 'Pickup', delivery: 'Delivery', name: 'Full name', phone: 'Mobile number', address: 'Delivery address', notes: 'Notes for the kitchen', payment: 'Online payment', paymentPending: 'Payment gateway is not connected yet. No payment has been taken.', back: 'Back to menu', empty: 'Your bag is empty', subtotal: 'Subtotal', total: 'Total', summary: 'Your order', pickupNote: 'Pickup timing will be confirmed once online payment is enabled.', deliveryNote: 'Enter your address. Delivery options will appear once delivery is configured.', deliveryFee: 'Delivery fee is not included until delivery pricing is configured.' };
+    ? { heading: 'أكمل طلبك', pickup: 'استلام من المطعم', delivery: 'توصيل إلى عنوانك', name: 'الاسم الكامل', phone: 'رقم الجوال', address: 'عنوان التوصيل', notes: 'ملاحظات للمطبخ', payment: 'الدفع الإلكتروني', paymentPending: 'وضع تجريبي فقط: لن يتم خصم أي مبلغ أو إنشاء طلب حقيقي.', testPay: 'محاكاة دفع ناجح', testFail: 'محاكاة دفع مرفوض', succeeded: 'نجح اختبار الدفع الوهمي فقط. لم يتم تحصيل مبلغ حقيقي ولم يُرسل الطلب.', declined: 'تمت محاكاة رفض الدفع. لم يتم إرسال طلب أو تحصيل مبلغ.', back: 'العودة إلى القائمة', empty: 'سلتك فارغة', subtotal: 'المجموع الفرعي', total: 'الإجمالي', summary: 'طلبك', pickupNote: 'سيتم تأكيد وقت الاستلام بعد ربط الدفع الحقيقي.', deliveryNote: 'أدخل عنوانك. ستظهر خيارات التوصيل بعد إعدادها.', deliveryFee: 'رسوم التوصيل غير محسوبة بعد.' }
+    : { heading: 'Complete your order', pickup: 'Pickup', delivery: 'Delivery', name: 'Full name', phone: 'Mobile number', address: 'Delivery address', notes: 'Notes for the kitchen', payment: 'Online payment', paymentPending: 'Demo mode only: no payment will be charged and no real order will be placed.', testPay: 'Simulate approved payment', testFail: 'Simulate declined payment', succeeded: 'Demo payment approved only. No real payment was taken and no order was sent.', declined: 'Demo payment declined. No order was sent and no payment was taken.', back: 'Back to menu', empty: 'Your bag is empty', subtotal: 'Subtotal', total: 'Total', summary: 'Your order', pickupNote: 'Pickup timing will be confirmed once real payment is connected.', deliveryNote: 'Enter your address. Delivery options will appear once delivery is configured.', deliveryFee: 'Delivery fee is not included until delivery pricing is configured.' };
   const fieldClass = 'mt-2 w-full border border-[#744438]/25 bg-[#fff8ec] px-4 py-3 text-sm text-[#321a15] outline-none transition placeholder:text-[#96796b] focus:border-[#8d4027] focus:ring-2 focus:ring-[#8d4027]/15';
   const labelClass = 'block font-mono-ui text-[9px] font-bold uppercase tracking-[.13em] text-[#6d4033]';
 
@@ -1062,14 +1064,14 @@ function OrderPage() {
                 <h2 className="font-display text-3xl">{localeAr ? 'طريقة الاستلام' : 'How would you like your order?'}</h2>
                 <div className="mt-5 grid gap-3 sm:grid-cols-2">
                   {(['pickup', 'delivery'] as const).map((option) => (
-                    <button key={option} type="button" aria-pressed={fulfillment === option} onClick={() => setFulfillment(option)} data-testid={`button-fulfillment-${option}`} className={`min-h-14 border px-4 py-3 text-start font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] transition ${fulfillment === option ? 'border-[#5c1712] bg-[#5c1712] text-[#fff2df]' : 'border-[#744438]/25 text-[#63372b] hover:border-[#5c1712]'}`}>
+                    <button key={option} type="button" aria-pressed={fulfillment === option} onClick={() => { setFulfillment(option); setPaymentResult(null); }} data-testid={`button-fulfillment-${option}`} className={`min-h-14 border px-4 py-3 text-start font-mono-ui text-[10px] font-bold uppercase tracking-[.12em] transition ${fulfillment === option ? 'border-[#5c1712] bg-[#5c1712] text-[#fff2df]' : 'border-[#744438]/25 text-[#63372b] hover:border-[#5c1712]'}`}>
                       {option === 'pickup' ? text.pickup : text.delivery}
                     </button>
                   ))}
                 </div>
                 <p className="mt-4 text-xs leading-relaxed text-[#795f50]">{fulfillment === 'pickup' ? text.pickupNote : text.deliveryNote}</p>
               </div>
-              <form className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8" onSubmit={(event) => event.preventDefault()}>
+              <form className="border border-[#63372b]/15 bg-[#fff9ef] p-5 md:p-8" onSubmit={(event) => { event.preventDefault(); const submitter = (event.nativeEvent as SubmitEvent).submitter as HTMLButtonElement | null; setPaymentResult(submitter?.value === 'declined' ? 'declined' : 'succeeded'); }}>
                 <h2 className="font-display text-3xl">{localeAr ? 'بيانات التواصل' : 'Your details'}</h2>
                 <div className="mt-6 grid gap-5 sm:grid-cols-2">
                   <label className={labelClass}>{text.name}<input className={fieldClass} name="name" autoComplete="name" required /></label>
@@ -1079,10 +1081,14 @@ function OrderPage() {
                 </div>
                 <div className="mt-7 border-t border-[#63372b]/15 pt-5">
                   <p className="flex items-center gap-2 font-mono-ui text-[10px] font-bold uppercase tracking-[.13em] text-[#6d4033]"><CreditCard size={15} />{text.payment}</p>
-                  <p className="mt-3 border border-[#9b4f2b]/20 bg-[#f6eddf] p-4 text-xs leading-relaxed text-[#795f50]">{text.paymentPending}</p>
-                  <button type="button" disabled className="mt-5 flex w-full cursor-not-allowed items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] opacity-60" data-testid="button-pay-online">
-                    <span>{localeAr ? 'الدفع بعد إعداد بوابة الدفع' : 'Online payment setup required'}</span><CreditCard size={16} />
-                  </button>
+                  <p className="mt-3 border border-[#9b4f2b]/20 bg-[#f6eddf] p-4 text-xs leading-relaxed text-[#795f50]">{mockPaymentEnabled ? text.paymentPending : (localeAr ? 'لم تُربط بوابة الدفع بعد. لم يتم تحصيل أي مبلغ.' : 'Payment gateway is not connected yet. No payment has been taken.')}</p>
+                  {mockPaymentEnabled ? (
+                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                      <button type="submit" value="succeeded" className="flex min-h-12 items-center justify-center gap-2 bg-[#5c1712] px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#fff2df] transition hover:bg-[#7a2b20]" data-testid="button-pay-online"><CreditCard size={15} />{text.testPay}</button>
+                      <button type="submit" value="declined" className="flex min-h-12 items-center justify-center border border-[#5c1712]/35 px-4 py-3 text-[10px] font-bold uppercase tracking-[.12em] text-[#5c1712] transition hover:bg-[#f6eddf]" data-testid="button-payment-test-decline">{text.testFail}</button>
+                    </div>
+                  ) : <button type="button" disabled className="mt-5 flex w-full cursor-not-allowed items-center justify-between bg-[#5c1712] px-5 py-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#fff2df] opacity-60" data-testid="button-pay-online"><span>{localeAr ? 'الدفع بعد إعداد بوابة الدفع' : 'Online payment setup required'}</span><CreditCard size={16} /></button>}
+                  {paymentResult && <p role="status" className={`mt-4 border p-4 text-xs leading-relaxed ${paymentResult === 'succeeded' ? 'border-emerald-800/20 bg-emerald-50 text-emerald-900' : 'border-red-800/20 bg-red-50 text-red-900'}`} data-testid={`status-payment-${paymentResult}`}>{paymentResult === 'succeeded' ? text.succeeded : text.declined}</p>}
                 </div>
               </form>
             </section>
