@@ -1,0 +1,1127 @@
+2026-Oct-22 13:51:36
+Docker 29.9.2 with BuildKit and Buildx detected on deployment server (localhost).
+2026-Oct-22 13:51:36
+Starting deployment of digitalabdullah1234-pixel/halreuthh:main to localhost.
+2026-Oct-22 13:51:37
+Preparing container with helper image: docker.io/coollabsio/coolify-helper:1.0.17
+2026-Oct-22 13:51:37
+[CMD]: docker stop --timeout=30 'qsfeplv6hknigpv3jnsg26xa'
+2026-Oct-22 13:51:37
+Error response from daemon: No such container: qsfeplv6hknigpv3jnsg26xa
+2026-Oct-22 13:51:37
+[CMD]: docker run -d --network 'coolify' --name qsfeplv6hknigpv3jnsg26xa  --rm -v /root/.docker/buildx:/root/.docker/buildx -v /var/run/docker.sock:/var/run/docker.sock docker.io/coollabsio/coolify-helper:1.0.17
+2026-Oct-22 13:51:37
+96c08dfa20a525eba09a9338fc42f3443d4d8f085a1b8a8708bd52b1eb5cf3b3
+2026-Oct-22 13:51:39
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'GIT_SSH_COMMAND="ssh -o ConnectTimeout=30 -p 22 -o Port=22 -o LogLevel=ERROR -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git ls-remote '\''https://github.com/digitalabdullah1234-pixel/halreuthh'\'' '\''refs/heads/main'\'''
+2026-Oct-22 13:51:39
+d90c4eb02a209a7693bc967783ba54ba66c23741	refs/heads/main
+2026-Oct-22 13:51:39
+Image not found (0ck16q5ekp2w6bxdurp273mb:d90c4eb02a209a7693bc967783ba54ba66c23741). Building new image.
+2026-Oct-22 13:51:39
+----------------------------------------
+2026-Oct-22 13:51:39
+Importing digitalabdullah1234-pixel/halreuthh:main (commit sha d90c4eb02a209a7693bc967783ba54ba66c23741) to /artifacts/qsfeplv6hknigpv3jnsg26xa.
+2026-Oct-22 13:51:39
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'git clone --depth=1 --recurse-submodules --shallow-submodules -b '\''main'\'' '\''https://github.com/digitalabdullah1234-pixel/halreuthh'\'' '\''/artifacts/qsfeplv6hknigpv3jnsg26xa'\'' && cd '\''/artifacts/qsfeplv6hknigpv3jnsg26xa'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git fetch --depth=1 origin '\''d90c4eb02a209a7693bc967783ba54ba66c23741'\'' && git -c advice.detachedHead=false checkout '\''d90c4eb02a209a7693bc967783ba54ba66c23741'\'' >/dev/null 2>&1 && cd '\''/artifacts/qsfeplv6hknigpv3jnsg26xa'\'' && if [ -f .gitmodules ]; then sed -i "s#[A-Za-z0-9._-]*@\(.*\):#https://\1/#g" '\''/artifacts/qsfeplv6hknigpv3jnsg26xa'\''/.gitmodules || true && git submodule sync && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git submodule update --init --recursive --depth=1; fi && cd '\''/artifacts/qsfeplv6hknigpv3jnsg26xa'\'' && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" git lfs pull'
+2026-Oct-22 13:51:39
+Cloning into '/artifacts/qsfeplv6hknigpv3jnsg26xa'...
+2026-Oct-22 13:51:56
+From https://github.com/digitalabdullah1234-pixel/halreuthh
+2026-Oct-22 13:51:56
+* branch            d90c4eb02a209a7693bc967783ba54ba66c23741 -> FETCH_HEAD
+2026-Oct-22 13:51:59
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'cd /artifacts/qsfeplv6hknigpv3jnsg26xa && git log -1 '\''d90c4eb02a209a7693bc967783ba54ba66c23741'\'' --pretty=%B'
+2026-Oct-22 13:51:59
+upload
+2026-Oct-22 13:52:00
+Creating build-time .env file in /artifacts (outside Docker context).
+2026-Oct-22 13:52:00
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'DOCKER_CONFIG=/root/.docker docker buildx version >/dev/null 2>&1 && echo available || echo not-available'
+2026-Oct-22 13:52:00
+available
+2026-Oct-22 13:52:00
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'test -f /artifacts/qsfeplv6hknigpv3jnsg26xa/railpack.json && echo '\''exists'\'' || echo '\''missing'\'''
+2026-Oct-22 13:52:00
+missing
+2026-Oct-22 13:52:00
+Generating Railpack build plan.
+2026-Oct-22 13:52:04
+╭─────────────────╮
+2026-Oct-22 13:52:04
+│ Railpack 0.23.0 │
+2026-Oct-22 13:52:04
+╰─────────────────╯
+2026-Oct-22 13:52:04
+2026-Oct-22 13:52:04
+↳ Found .dockerignore file, applying filters
+2026-Oct-22 13:52:04
+↳ Detected Python
+2026-Oct-22 13:52:04
+↳ Using uv
+2026-Oct-22 13:52:04
+2026-Oct-22 13:52:04
+Packages
+2026-Oct-22 13:52:04
+──────────
+2026-Oct-22 13:52:04
+python  │  3.13.17  │  railpack default (3.13)
+2026-Oct-22 13:52:04
+uv      │  0.13.5   │  railpack default (latest)
+2026-Oct-22 13:52:04
+2026-Oct-22 13:52:04
+Steps
+2026-Oct-22 13:52:04
+──────────
+2026-Oct-22 13:52:04
+▸ install
+2026-Oct-22 13:52:04
+$ uv sync --locked --no-dev --no-install-project
+2026-Oct-22 13:52:04
+2026-Oct-22 13:52:04
+▸ build
+2026-Oct-22 13:52:04
+$ uv sync --locked --no-dev --no-editable
+2026-Oct-22 13:52:04
+2026-Oct-22 13:52:04
+Deploy
+2026-Oct-22 13:52:04
+──────────
+2026-Oct-22 13:52:04
+$ python main.py
+2026-Oct-22 13:52:04
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'cat /artifacts/railpack-plan.json'
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"$schema": "https://schema.railpack.com",
+2026-Oct-22 13:52:04
+"caches": {
+2026-Oct-22 13:52:04
+"apt": {
+2026-Oct-22 13:52:04
+"directory": "/var/cache/apt",
+2026-Oct-22 13:52:04
+"type": "locked"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"apt-lists": {
+2026-Oct-22 13:52:04
+"directory": "/var/lib/apt/lists",
+2026-Oct-22 13:52:04
+"type": "locked"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"uv": {
+2026-Oct-22 13:52:04
+"directory": "/opt/uv-cache",
+2026-Oct-22 13:52:04
+"type": "shared"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"deploy": {
+2026-Oct-22 13:52:04
+"base": {
+2026-Oct-22 13:52:04
+"step": "packages:apt:runtime"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"/mise/shims",
+2026-Oct-22 13:52:04
+"/mise/installs",
+2026-Oct-22 13:52:04
+"/usr/local/bin/mise",
+2026-Oct-22 13:52:04
+"/etc/mise/config.toml",
+2026-Oct-22 13:52:04
+"/root/.local/state/mise"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "packages:mise"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"/app/.venv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "build"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"exclude": [
+2026-Oct-22 13:52:04
+".venv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"."
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "build"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"startCommand": "python main.py",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"PIP_DEFAULT_TIMEOUT": "100",
+2026-Oct-22 13:52:04
+"PIP_DISABLE_PIP_VERSION_CHECK": "1",
+2026-Oct-22 13:52:04
+"PYTHONDONTWRITEBYTECODE": "1",
+2026-Oct-22 13:52:04
+"PYTHONFAULTHANDLER": "1",
+2026-Oct-22 13:52:04
+"PYTHONHASHSEED": "random",
+2026-Oct-22 13:52:04
+"PYTHONUNBUFFERED": "1"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"secrets": [
+2026-Oct-22 13:52:04
+"COOLIFY_BRANCH",
+2026-Oct-22 13:52:04
+"COOLIFY_FQDN",
+2026-Oct-22 13:52:04
+"COOLIFY_RESOURCE_UUID",
+2026-Oct-22 13:52:04
+"COOLIFY_URL",
+2026-Oct-22 13:52:04
+"RAILPACK_DEPLOY_APT_PACKAGES"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"steps": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"assets": {
+2026-Oct-22 13:52:04
+"generated-mise-toml": "[tools]\n  python = \"3.13.17\"\n  uv = \"0.13.5\"\n\n[settings]\n  idiomatic_version_file_enable_tools = [\"python\", \"node\", \"ruby\", \"elixir\", \"go\", \"java\", \"yarn\"]\n  install_before = \"14d\"\n  paranoid = true\n  trusted_config_paths = [\"/app\"]\n  [settings.node]\n    verify = false\n  [settings.python]\n    compile = false\n"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "/mise/shims"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"customName": "create mise config",
+2026-Oct-22 13:52:04
+"name": "generated-mise-toml",
+2026-Oct-22 13:52:04
+"path": "/etc/mise/config.toml"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "mise install",
+2026-Oct-22 13:52:04
+"customName": "install mise packages: python, uv"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"image": "ghcr.io/railwayapp/railpack-builder:mise-2026.3.17"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "packages:mise",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"MISE_CACHE_DIR": "/mise/cache",
+2026-Oct-22 13:52:04
+"MISE_CONFIG_DIR": "/mise",
+2026-Oct-22 13:52:04
+"MISE_DATA_DIR": "/mise",
+2026-Oct-22 13:52:04
+"MISE_INSTALLS_DIR": "/mise/installs",
+2026-Oct-22 13:52:04
+"MISE_SHIMS_DIR": "/mise/shims"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"caches": [
+2026-Oct-22 13:52:04
+"uv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"dest": "pyproject.toml",
+2026-Oct-22 13:52:04
+"src": "pyproject.toml"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"dest": "uv.lock",
+2026-Oct-22 13:52:04
+"src": "uv.lock"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "/root/.local/bin"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "/app/.venv/bin"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "uv sync --locked --no-dev --no-install-project"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"step": "packages:mise"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "install",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"PIP_DEFAULT_TIMEOUT": "100",
+2026-Oct-22 13:52:04
+"PIP_DISABLE_PIP_VERSION_CHECK": "1",
+2026-Oct-22 13:52:04
+"PYTHONDONTWRITEBYTECODE": "1",
+2026-Oct-22 13:52:04
+"PYTHONFAULTHANDLER": "1",
+2026-Oct-22 13:52:04
+"PYTHONHASHSEED": "random",
+2026-Oct-22 13:52:04
+"PYTHONUNBUFFERED": "1",
+2026-Oct-22 13:52:04
+"UV_CACHE_DIR": "/opt/uv-cache",
+2026-Oct-22 13:52:04
+"UV_COMPILE_BYTECODE": "1",
+2026-Oct-22 13:52:04
+"UV_LINK_MODE": "copy",
+2026-Oct-22 13:52:04
+"UV_PYTHON_DOWNLOADS": "never",
+2026-Oct-22 13:52:04
+"VIRTUAL_ENV": "/app/.venv"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "uv sync --locked --no-dev --no-editable"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"step": "install"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"exclude": [
+2026-Oct-22 13:52:04
+".git",
+2026-Oct-22 13:52:04
+".cache",
+2026-Oct-22 13:52:04
+".local",
+2026-Oct-22 13:52:04
+".config",
+2026-Oct-22 13:52:04
+"attached_assets",
+2026-Oct-22 13:52:04
+"node_modules",
+2026-Oct-22 13:52:04
+"**/node_modules",
+2026-Oct-22 13:52:04
+"**/dist",
+2026-Oct-22 13:52:04
+"**/*.tsbuildinfo",
+2026-Oct-22 13:52:04
+"screenshots"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"."
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"local": true
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "build",
+2026-Oct-22 13:52:04
+"secrets": [
+2026-Oct-22 13:52:04
+"*"
+2026-Oct-22 13:52:04
+]
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"caches": [
+2026-Oct-22 13:52:04
+"apt",
+2026-Oct-22 13:52:04
+"apt-lists"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "sh -c 'apt-get update \u0026\u0026 apt-get install -y curl wget'",
+2026-Oct-22 13:52:04
+"customName": "install apt packages: curl wget"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"image": "ghcr.io/railwayapp/railpack-runtime:mise-2026.3.17"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "packages:apt:runtime"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+]
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+Final Railpack plan: {
+2026-Oct-22 13:52:04
+"$schema": "https:\/\/schema.railpack.com",
+2026-Oct-22 13:52:04
+"caches": {
+2026-Oct-22 13:52:04
+"apt": {
+2026-Oct-22 13:52:04
+"directory": "\/var\/cache\/apt",
+2026-Oct-22 13:52:04
+"type": "locked"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"apt-lists": {
+2026-Oct-22 13:52:04
+"directory": "\/var\/lib\/apt\/lists",
+2026-Oct-22 13:52:04
+"type": "locked"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"uv": {
+2026-Oct-22 13:52:04
+"directory": "\/opt\/uv-cache",
+2026-Oct-22 13:52:04
+"type": "shared"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"deploy": {
+2026-Oct-22 13:52:04
+"base": {
+2026-Oct-22 13:52:04
+"step": "packages:apt:runtime"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"\/mise\/shims",
+2026-Oct-22 13:52:04
+"\/mise\/installs",
+2026-Oct-22 13:52:04
+"\/usr\/local\/bin\/mise",
+2026-Oct-22 13:52:04
+"\/etc\/mise\/config.toml",
+2026-Oct-22 13:52:04
+"\/root\/.local\/state\/mise"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "packages:mise"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"\/app\/.venv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "build"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"exclude": [
+2026-Oct-22 13:52:04
+".venv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"."
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"step": "build"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"startCommand": "python main.py",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"PIP_DEFAULT_TIMEOUT": "100",
+2026-Oct-22 13:52:04
+"PIP_DISABLE_PIP_VERSION_CHECK": "1",
+2026-Oct-22 13:52:04
+"PYTHONDONTWRITEBYTECODE": "1",
+2026-Oct-22 13:52:04
+"PYTHONFAULTHANDLER": "1",
+2026-Oct-22 13:52:04
+"PYTHONHASHSEED": "random",
+2026-Oct-22 13:52:04
+"PYTHONUNBUFFERED": "1"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"steps": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"assets": {
+2026-Oct-22 13:52:04
+"generated-mise-toml": "[tools]\n  python = \"3.13.17\"\n  uv = \"0.13.5\"\n\n[settings]\n  idiomatic_version_file_enable_tools = [\"python\", \"node\", \"ruby\", \"elixir\", \"go\", \"java\", \"yarn\"]\n  install_before = \"14d\"\n  paranoid = true\n  trusted_config_paths = [\"\/app\"]\n  [settings.node]\n    verify = false\n  [settings.python]\n    compile = false\n"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "\/mise\/shims"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"customName": "create mise config",
+2026-Oct-22 13:52:04
+"name": "generated-mise-toml",
+2026-Oct-22 13:52:04
+"path": "\/etc\/mise\/config.toml"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "mise install",
+2026-Oct-22 13:52:04
+"customName": "install mise packages: python, uv"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"image": "ghcr.io\/railwayapp\/railpack-builder:mise-2026.3.17"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "packages:mise",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"MISE_CACHE_DIR": "\/mise\/cache",
+2026-Oct-22 13:52:04
+"MISE_CONFIG_DIR": "\/mise",
+2026-Oct-22 13:52:04
+"MISE_DATA_DIR": "\/mise",
+2026-Oct-22 13:52:04
+"MISE_INSTALLS_DIR": "\/mise\/installs",
+2026-Oct-22 13:52:04
+"MISE_SHIMS_DIR": "\/mise\/shims"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"caches": [
+2026-Oct-22 13:52:04
+"uv"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"dest": "pyproject.toml",
+2026-Oct-22 13:52:04
+"src": "pyproject.toml"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"dest": "uv.lock",
+2026-Oct-22 13:52:04
+"src": "uv.lock"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "\/root\/.local\/bin"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"path": "\/app\/.venv\/bin"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "uv sync --locked --no-dev --no-install-project"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"step": "packages:mise"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "install",
+2026-Oct-22 13:52:04
+"variables": {
+2026-Oct-22 13:52:04
+"PIP_DEFAULT_TIMEOUT": "100",
+2026-Oct-22 13:52:04
+"PIP_DISABLE_PIP_VERSION_CHECK": "1",
+2026-Oct-22 13:52:04
+"PYTHONDONTWRITEBYTECODE": "1",
+2026-Oct-22 13:52:04
+"PYTHONFAULTHANDLER": "1",
+2026-Oct-22 13:52:04
+"PYTHONHASHSEED": "random",
+2026-Oct-22 13:52:04
+"PYTHONUNBUFFERED": "1",
+2026-Oct-22 13:52:04
+"UV_CACHE_DIR": "\/opt\/uv-cache",
+2026-Oct-22 13:52:04
+"UV_COMPILE_BYTECODE": "1",
+2026-Oct-22 13:52:04
+"UV_LINK_MODE": "copy",
+2026-Oct-22 13:52:04
+"UV_PYTHON_DOWNLOADS": "never",
+2026-Oct-22 13:52:04
+"VIRTUAL_ENV": "\/app\/.venv"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "uv sync --locked --no-dev --no-editable"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"step": "install"
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"exclude": [
+2026-Oct-22 13:52:04
+".git",
+2026-Oct-22 13:52:04
+".cache",
+2026-Oct-22 13:52:04
+".local",
+2026-Oct-22 13:52:04
+".config",
+2026-Oct-22 13:52:04
+"attached_assets",
+2026-Oct-22 13:52:04
+"node_modules",
+2026-Oct-22 13:52:04
+"**\/node_modules",
+2026-Oct-22 13:52:04
+"**\/dist",
+2026-Oct-22 13:52:04
+"**\/*.tsbuildinfo",
+2026-Oct-22 13:52:04
+"screenshots"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"include": [
+2026-Oct-22 13:52:04
+"."
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"local": true
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "build",
+2026-Oct-22 13:52:04
+"secrets": [
+2026-Oct-22 13:52:04
+"*"
+2026-Oct-22 13:52:04
+]
+2026-Oct-22 13:52:04
+},
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"caches": [
+2026-Oct-22 13:52:04
+"apt",
+2026-Oct-22 13:52:04
+"apt-lists"
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"commands": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"cmd": "sh -c 'apt-get update && apt-get install -y curl wget'",
+2026-Oct-22 13:52:04
+"customName": "install apt packages: curl wget"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"inputs": [
+2026-Oct-22 13:52:04
+{
+2026-Oct-22 13:52:04
+"image": "ghcr.io\/railwayapp\/railpack-runtime:mise-2026.3.17"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+],
+2026-Oct-22 13:52:04
+"name": "packages:apt:runtime"
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+]
+2026-Oct-22 13:52:04
+}
+2026-Oct-22 13:52:04
+Building docker image with Railpack.
+2026-Oct-22 13:52:05
+To check the current progress, click on Show Debug Logs.
+2026-Oct-22 13:52:05
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'cat /artifacts/build.sh'
+2026-Oct-22 13:52:05
+DOCKER_CONFIG=/root/.docker docker buildx create --name coolify-railpack --driver docker-container 2>/dev/null || true && cd /artifacts/qsfeplv6hknigpv3jnsg26xa && set -a && source /artifacts/build-time.env && set +a && env 'RAILPACK_DEPLOY_APT_PACKAGES=curl wget' DOCKER_CONFIG=/root/.docker docker buildx build --builder coolify-railpack --add-host coolify:10.0.1.4 --add-host coolify-db:10.0.1.2 --add-host coolify-redis:10.0.1.3 --add-host coolify-sentinel:10.0.1.5 --network host --build-arg BUILDKIT_SYNTAX="ghcr.io/railwayapp/railpack-frontend:v${RAILPACK_VERSION:-$(railpack --version | cut -d " " -f 3)}" --build-arg cache-key='0ck16q5ekp2w6bxdurp273mb' --build-arg secrets-hash=1972582ad52ae25e50f94690c5befee071988a3e9a153fffb245ed5f4b01214d --secret 'id=RAILPACK_DEPLOY_APT_PACKAGES,env=RAILPACK_DEPLOY_APT_PACKAGES' --secret 'id=COOLIFY_URL,env=COOLIFY_URL' --secret 'id=COOLIFY_FQDN,env=COOLIFY_FQDN' --secret 'id=COOLIFY_BRANCH,env=COOLIFY_BRANCH' --secret 'id=COOLIFY_RESOURCE_UUID,env=COOLIFY_RESOURCE_UUID' -f /artifacts/railpack-plan.json --progress plain --load -t 0ck16q5ekp2w6bxdurp273mb:d90c4eb02a209a7693bc967783ba54ba66c23741 /artifacts/qsfeplv6hknigpv3jnsg26xa
+2026-Oct-22 13:52:05
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'bash /artifacts/build.sh'
+2026-Oct-22 13:52:05
+#0 building with "coolify-railpack" instance using docker-container driver
+2026-Oct-22 13:52:05
+2026-Oct-22 13:52:05
+#1 resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.23.0
+2026-Oct-22 13:52:07
+#1 DONE 1.2s
+2026-Oct-22 13:52:07
+#2 docker-image://ghcr.io/railwayapp/railpack-frontend:v0.23.0@sha256:ba4c430961d9ee3215c64807727a4b11e2198daac31250e9db9eaf9cee4624d6
+2026-Oct-22 13:52:07
+#2 resolve ghcr.io/railwayapp/railpack-frontend:v0.23.0@sha256:ba4c430961d9ee3215c64807727a4b11e2198daac31250e9db9eaf9cee4624d6 done
+2026-Oct-22 13:52:07
+#2 CACHED
+2026-Oct-22 13:52:07
+#3 load build definition from railpack-plan.json
+2026-Oct-22 13:52:07
+#3 transferring dockerfile: 4.58kB done
+2026-Oct-22 13:52:07
+#3 DONE 0.0s
+2026-Oct-22 13:52:08
+#4 loading .
+2026-Oct-22 13:52:08
+#4 DONE 0.0s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#5 [railpack] secrets hash
+2026-Oct-22 13:52:08
+#5 DONE 0.0s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#6 docker-image://ghcr.io/railwayapp/railpack-builder:mise-2026.3.17
+2026-Oct-22 13:52:08
+#6 resolve ghcr.io/railwayapp/railpack-builder:mise-2026.3.17
+2026-Oct-22 13:52:08
+#6 ...
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#7 docker-image://ghcr.io/railwayapp/railpack-runtime:mise-2026.3.17
+2026-Oct-22 13:52:08
+#7 resolve ghcr.io/railwayapp/railpack-runtime:mise-2026.3.17 0.6s done
+2026-Oct-22 13:52:08
+#7 DONE 0.6s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#8 install apt packages: curl wget
+2026-Oct-22 13:52:08
+#8 CACHED
+2026-Oct-22 13:52:08
+#6 docker-image://ghcr.io/railwayapp/railpack-builder:mise-2026.3.17
+2026-Oct-22 13:52:08
+#6 resolve ghcr.io/railwayapp/railpack-builder:mise-2026.3.17 0.8s done
+2026-Oct-22 13:52:08
+#6 DONE 0.8s
+2026-Oct-22 13:52:08
+#6 docker-image://ghcr.io/railwayapp/railpack-builder:mise-2026.3.17
+2026-Oct-22 13:52:08
+#6 CACHED
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#5 [railpack] secrets hash
+2026-Oct-22 13:52:08
+#5 DONE 0.0s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#9 mkdir /etc/mise
+2026-Oct-22 13:52:08
+#9 DONE 0.0s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#10 create mise config
+2026-Oct-22 13:52:08
+#10 DONE 0.0s
+2026-Oct-22 13:52:08
+2026-Oct-22 13:52:08
+#4 loading .
+2026-Oct-22 13:52:08
+#4 transferring context: 5.24MB 0.1s
+2026-Oct-22 13:52:13
+#4 transferring context: 249.78MB 4.3s done
+2026-Oct-22 13:52:13
+#4 DONE 4.3s
+2026-Oct-22 13:52:13
+2026-Oct-22 13:52:13
+#11 install mise packages: python, uv
+2026-Oct-22 13:52:14
+#11 5.867 mise python@3.13.17  [1/3] install
+2026-Oct-22 13:52:14
+#11 5.867 mise python@3.13.17  [1/3] download cpython-3.13.17+20261021-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+2026-Oct-22 13:52:14
+#11 5.869 mise uv@0.13.5       [1/3] install
+2026-Oct-22 13:52:16
+#11 8.164 mise uv@0.13.5       [1/3] download uv-x86_64-unknown-linux-musl.tar.gz
+2026-Oct-22 13:52:17
+#11 8.503 mise python@3.13.17  [1/3] generate checksum cpython-3.13.17+20261021-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+2026-Oct-22 13:52:17
+#11 8.538 mise python@3.13.17  [1/3] extract cpython-3.13.17+20261021-x86_64-unknown-linux-gnu-install_only_stripped.tar.gz
+2026-Oct-22 13:52:18
+#11 9.500 mise python@3.13.17  [1/3] python --version
+2026-Oct-22 13:52:18
+#11 9.502 mise python@3.13.17  [1/3] Python 3.13.17
+2026-Oct-22 13:52:18
+#11 9.512 mise python@3.13.17 ✓ installed
+2026-Oct-22 13:52:19
+#11 10.47 mise uv@0.13.5       [2/3] verify GitHub artifact attestations
+2026-Oct-22 13:52:24
+#11 15.54 mise Cannot parse Rekor public key with id cf1199155bddd051268d1f16ac5c0c75c009f6fb5a63f4177f8e18d7051e3fa0: Pkcs8 spki error : Ecdsa-P256 from der bytes to public key failed: unknown/unsupported algorithm OID: 1.2.840.10045.2.1
+2026-Oct-22 13:52:24
+#11 15.58 mise uv@0.13.5       [2/3] ✓ GitHub artifact attestations verified
+2026-Oct-22 13:52:24
+#11 15.58 mise uv@0.13.5       [2/3] checksum uv-x86_64-unknown-linux-musl.tar.gz
+2026-Oct-22 13:52:24
+#11 15.72 mise uv@0.13.5       [3/3] extract uv-x86_64-unknown-linux-musl.tar.gz
+2026-Oct-22 13:52:24
+#11 15.99 mise uv@0.13.5     ✓ installed
+2026-Oct-22 13:52:24
+#11 DONE 16.2s
+2026-Oct-22 13:52:25
+#12 copy pyproject.toml
+2026-Oct-22 13:52:25
+#12 DONE 0.1s
+2026-Oct-22 13:52:25
+2026-Oct-22 13:52:25
+#13 copy uv.lock
+2026-Oct-22 13:52:25
+#13 DONE 0.0s
+2026-Oct-22 13:52:25
+#14 copy /mise/shims
+2026-Oct-22 13:52:25
+#14 DONE 0.0s
+2026-Oct-22 13:52:25
+2026-Oct-22 13:52:25
+#15 uv sync --locked --no-dev --no-install-project
+2026-Oct-22 13:52:25
+#15 0.397 Using CPython 3.13.17 interpreter at: /mise/installs/python/3.13.17/bin/python3
+2026-Oct-22 13:52:25
+#15 0.397 Creating virtual environment at: .venv
+2026-Oct-22 13:52:25
+#15 0.401 Resolved 2 packages in 1ms
+2026-Oct-22 13:52:28
+#15 ...
+2026-Oct-22 13:52:28
+2026-Oct-22 13:52:28
+#16 copy /mise/installs
+2026-Oct-22 13:52:28
+#16 DONE 1.3s
+2026-Oct-22 13:52:28
+#17 copy /usr/local/bin/mise
+2026-Oct-22 13:52:28
+#17 DONE 0.3s
+2026-Oct-22 13:52:28
+2026-Oct-22 13:52:28
+#15 uv sync --locked --no-dev --no-install-project
+2026-Oct-22 13:52:28
+#15 3.258 Downloading pymupdf (24.6MiB)
+2026-Oct-22 13:52:28
+#15 ...
+2026-Oct-22 13:52:28
+2026-Oct-22 13:52:28
+#18 copy /etc/mise/config.toml
+2026-Oct-22 13:52:28
+#18 DONE 0.0s
+2026-Oct-22 13:52:28
+2026-Oct-22 13:52:28
+#19 copy /root/.local/state/mise
+2026-Oct-22 13:52:28
+#19 DONE 0.0s
+2026-Oct-22 13:52:28
+#15 uv sync --locked --no-dev --no-install-project
+2026-Oct-22 13:52:30
+#15 5.486  Downloaded pymupdf
+2026-Oct-22 13:52:30
+#15 5.486 Prepared 1 package in 5.08s
+2026-Oct-22 13:52:30
+#15 5.650 Installed 1 package in 163ms
+2026-Oct-22 13:52:31
+#15 6.621 Bytecode compiled 17 files in 970ms
+2026-Oct-22 13:52:31
+#15 6.621  + pymupdf==1.28.2
+2026-Oct-22 13:52:31
+#15 DONE 6.8s
+2026-Oct-22 13:52:32
+#20 copy / /app
+2026-Oct-22 13:52:32
+#20 DONE 0.5s
+2026-Oct-22 13:52:32
+#21 uv sync --locked --no-dev --no-editable
+2026-Oct-22 13:52:32
+#21 0.390 Resolved 2 packages in 1ms
+2026-Oct-22 13:52:33
+#21 0.761 Bytecode compiled 17 files in 370ms
+2026-Oct-22 13:52:33
+#21 DONE 0.8s
+2026-Oct-22 13:52:41
+#22 copy /app/.venv
+2026-Oct-22 13:52:41
+#22 DONE 0.1s
+2026-Oct-22 13:52:41
+2026-Oct-22 13:52:41
+#23 copy /app
+2026-Oct-22 13:52:41
+#23 DONE 0.2s
+2026-Oct-22 13:52:42
+#24 [railpack] merge $packages:apt:runtime, $packages:mise, $build, $build
+2026-Oct-22 13:52:42
+#24 DONE 0.0s
+2026-Oct-22 13:52:42
+2026-Oct-22 13:52:42
+#25 exporting to oci image format
+2026-Oct-22 13:52:42
+#25 exporting layers
+2026-Oct-22 13:52:52
+#25 exporting layers 10.7s done
+2026-Oct-22 13:52:52
+#25 exporting manifest sha256:1754d8a0eed2bac5c11144f3722212b8fa42607026dde994753fe9fd9ad74432 0.0s done
+2026-Oct-22 13:52:52
+#25 exporting config sha256:25140270afacdf235ca6a45a22cee00ad729f3af40ecf369ad4974744f17f4ed done
+2026-Oct-22 13:52:52
+#25 sending tarball
+2026-Oct-22 13:53:08
+#25 ...
+2026-Oct-22 13:53:08
+2026-Oct-22 13:53:08
+#26 importing to docker
+2026-Oct-22 13:53:08
+#26 DONE 0.0s
+2026-Oct-22 13:53:08
+2026-Oct-22 13:53:08
+#25 exporting to oci image format
+2026-Oct-22 13:53:08
+#25 sending tarball 15.7s done
+2026-Oct-22 13:53:08
+#25 DONE 26.4s
+2026-Oct-22 13:53:08
+Creating .env file with runtime variables for container.
+2026-Oct-22 13:53:08
+----------------------------------------
+2026-Oct-22 13:53:08
+Rolling update started.
+2026-Oct-22 13:53:09
+[CMD]: docker exec qsfeplv6hknigpv3jnsg26xa bash -c 'COOLIFY_URL='\''http://bianco.testea.site'\'' COOLIFY_FQDN='\''bianco.testea.site'\'' COOLIFY_BRANCH='\''main'\'' COOLIFY_RESOURCE_UUID='\''0ck16q5ekp2w6bxdurp273mb'\''  docker compose --project-name 0ck16q5ekp2w6bxdurp273mb --project-directory /artifacts/qsfeplv6hknigpv3jnsg26xa -f /artifacts/qsfeplv6hknigpv3jnsg26xa/docker-compose.yaml up --build -d'
+2026-Oct-22 13:53:09
+Container 0ck16q5ekp2w6bxdurp273mb-20261022T135134 Creating
+2026-Oct-22 13:53:09
+0ck16q5ekp2w6bxdurp273mb-20261022T135134 Your kernel does not support memory swappiness capabilities or the cgroup is not mounted. Memory swappiness discarded.
+2026-Oct-22 13:53:09
+Container 0ck16q5ekp2w6bxdurp273mb-20261022T135134 Created
+2026-Oct-22 13:53:09
+Container 0ck16q5ekp2w6bxdurp273mb-20261022T135134 Starting
+2026-Oct-22 13:53:09
+Container 0ck16q5ekp2w6bxdurp273mb-20261022T135134 Started
+2026-Oct-22 13:53:09
+New container started.
+2026-Oct-22 13:53:09
+Removing old containers.
+2026-Oct-22 13:53:09
+Rolling update completed.
+2026-Oct-22 13:53:10
+Gracefully shutting down build container: qsfeplv6hknigpv3jnsg26xa
+2026-Oct-22 13:53:10
+[CMD]: docker stop --timeout=30 'qsfeplv6hknigpv3jnsg26xa'
+2026-Oct-22 13:53:10
+qsfeplv6hknigpv3jnsg26xa
