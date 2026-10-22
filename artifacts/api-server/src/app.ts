@@ -1,5 +1,5 @@
 import express, { type Express } from "express";
-import cors from "cors";
+import cors, { type CorsOptions } from "cors";
 import pinoHttp from "pino-http";
 import router from "./routes";
 import { logger } from "./lib/logger";
@@ -7,6 +7,24 @@ import { getStripeClient } from "./lib/stripe";
 import { applyStripeWebhookEvent } from "./routes/payments";
 
 const app: Express = express();
+const allowedOrigins = (process.env.CORS_ORIGIN ?? "")
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+const corsOptions: CorsOptions = {
+  origin(origin, callback) {
+    // Same-origin requests do not need a CORS response header.
+    if (!origin) {
+      callback(null, true);
+      return;
+    }
+    if (process.env.NODE_ENV !== "production" || allowedOrigins.includes(origin)) {
+      callback(null, true);
+      return;
+    }
+    callback(null, false);
+  },
+};
 
 app.use(
   pinoHttp({
@@ -27,7 +45,7 @@ app.use(
     },
   }),
 );
-app.use(cors());
+app.use(cors(corsOptions));
 app.post("/api/stripe/webhook", express.raw({ type: "application/json" }), async (req, res): Promise<void> => {
   const signature = req.headers["stripe-signature"];
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
